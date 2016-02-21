@@ -1,0 +1,200 @@
+\begin{thebibliography}{35}
+\providecommand{\natexlab}[1]{#1}
+\providecommand{\url}[1]{\texttt{#1}}
+\expandafter\ifx\csname urlstyle\endcsname\relax
+  \providecommand{\doi}[1]{doi: #1}\else
+  \providecommand{\doi}{doi: \begingroup \urlstyle{rm}\Url}\fi
+
+\bibitem[Abramowitz and Stegun(1972)]{abramowitz1972}
+Milton Abramowitz and Irene Stegun.
+\newblock \emph{Handbook of Mathematical Functions}.
+\newblock Dover, 9 edition, 1972.
+
+\bibitem[Bachman and Narici(1966)]{bachman1966}
+George Bachman and Lawrence Narici.
+\newblock \emph{Functional Analysis}.
+\newblock Academic Press, 1966.
+
+\bibitem[Besag(1974)]{besag1974}
+Julian Besag.
+\newblock Spatial interaction and the statistical analysis of lattice systems.
+\newblock \emph{Journal of the Royal Statistical Society. Series B
+  (Methodological)}, pages 192--236, 1974.
+
+\bibitem[Bracewell(1965)]{bracewell}
+R.~Bracewell.
+\newblock \emph{The Fourier Transform and Its Applications}.
+\newblock McGraw-Hill, 1965.
+
+\bibitem[Calvetti and Somersalo(2007)]{calvetti2007introduction}
+Daniela Calvetti and Erkki Somersalo.
+\newblock \emph{An Introduction to Bayesian Scientific Computing: Ten Lectures
+  on Subjective Computing}, volume~2.
+\newblock Springer Science \& Business Media, 2007.
+
+\bibitem[Cressie(1993)]{cressie1993statistics}
+Noel~AC Cressie.
+\newblock \emph{Statistics for spatial data}.
+\newblock Wiley New York, 1993.
+
+\bibitem[Da~Prato(2006)]{daprato2006}
+Giuseppe Da~Prato.
+\newblock \emph{An introduction to infinite-dimensional analysis}.
+\newblock Spriner Science \& Business Media, 2006.
+
+\bibitem[Doering et~al.(1992)Doering, Gray, and Basart]{doering1992}
+Edward~R. Doering, Joseph Gray, and John~P. Basart.
+\newblock Point spread function estimation of image intensifier tubes.
+\newblock \emph{Review of Progress in Quantitative Nondestructive Evaluation},
+  11:\penalty0 323--329, 1992.
+
+\bibitem[Durrett(2010)]{durrett2010probability}
+Richard Durrett.
+\newblock \emph{Probability: theory and examples}.
+\newblock Cambridge university press, 2010.
+
+\bibitem[Epstein(2008)]{epstein2008}
+Charles~L. Epstein.
+\newblock \emph{Introduction to the Mathematics of Medical Imaging}.
+\newblock Society for Industrial and Applied Mathematics, 2008.
+\newblock ISBN 9780898716429.
+
+\bibitem[Fabrizio et~al.(2012)Fabrizio, Wiper, and Insua]{2012farizio}
+Ruggeri Fabrizio, Michael~P Wiper, and David~Rios Insua.
+\newblock \emph{Bayesian analysis of stochastic process models}.
+\newblock Wiley, 2012.
+
+\bibitem[Griffel(2002)]{griffel2002}
+David~H Griffel.
+\newblock \emph{Applied functional analysis}.
+\newblock Courier Corporation, 2002.
+
+\bibitem[Hansen(2010)]{hansen2010}
+P.~C. Hansen.
+\newblock \emph{Discrete Inverse Problems: Insight and Algorithms}.
+\newblock SIAM, Philadelphia, 2010.
+
+\bibitem[Hansen(1994)]{hansen1994}
+P.C. Hansen.
+\newblock Numerical tools for analysis and solution of {F}redholm integral
+  equations of the first kind.
+\newblock \emph{Inverse Problems}, 8:\penalty0 956--972, 1994.
+
+\bibitem[Hansen et~al.(2006)Hansen, Nagy, and O'Leary]{hasen2006}
+P.C. Hansen, J.G. Nagy, and D.P. O'Leary.
+\newblock \emph{Deblurring Images: Matrices, Spectra, and Filtering}.
+\newblock SIAM, Philadelphia, 2006.
+
+\bibitem[H\:ormander(1983)]{hormander1983}
+Lars H\:ormander.
+\newblock \emph{The analysis of linear partial differential operators {I}}.
+\newblock Springer-Verlag, 1983.
+
+\bibitem[Hutson and Pym(1980)]{hutson1980}
+V.~Hutson and J.~S. Pym.
+\newblock \emph{Applications of Functional Analysis and Operator Theory},
+  volume 146 of \emph{Mathematics in Science and Engineering}.
+\newblock Academic Press, 1980.
+
+\bibitem[Jain(1989)]{jain1989}
+A.K. Jain.
+\newblock \emph{Fundamentals of Digital Image Processing}.
+\newblock Prentice-Hall information and system sciences series. Prentice Hall,
+  1989.
+
+\bibitem[Johnson(2002)]{johnson02thecurious}
+Warren~P. Johnson.
+\newblock The curious history of faà di bruno’s formula.
+\newblock \emph{Amer. Math. Monthly}, 109:\penalty0 217--234, 2002.
+
+\bibitem[Kaipio and Somersalo(2005)]{kaipo2005}
+J.~Kaipio and E.~Somersalo.
+\newblock \emph{Statistical and Computational Methods for Inverse Problems}.
+\newblock Springer, 2005.
+
+\bibitem[Knill et~al.(1993)Knill, Dgani, and Vogel]{knill93}
+O.~Knill, R.~Dgani, and M.~Vogel.
+\newblock A new approach to abel's integral operator.
+\newblock \emph{Astronomy and Astrophysics}, 274:\penalty0 1002--1008, 1993.
+
+\bibitem[Kundur and Hatzinakos(1996{\natexlab{a}})]{kundur1996blind}
+D.~Kundur and D.~Hatzinakos.
+\newblock Blind image deconvolution.
+\newblock \emph{IEEE Signal Processing Magazine}, 13\penalty0 (3):\penalty0
+  43--64, 1996{\natexlab{a}}.
+
+\bibitem[Kundur and Hatzinakos(1996{\natexlab{b}})]{kundur1996revisited}
+D.~Kundur and D.~Hatzinakos.
+\newblock Blind image deconvolution revisited.
+\newblock \emph{IEEE Signal Processing Magazine}, 13\penalty0 (6):\penalty0
+  61--63, 1996{\natexlab{b}}.
+
+\bibitem[Morozov and Stessin(1993)]{morozov1993}
+Vladimir~Aleseevich Morozov and Michael Stessin.
+\newblock \emph{Regularization methods for ill-posed problems}.
+\newblock CRC Press, 1993.
+
+\bibitem[Morton and Mayers(2005)]{morton2005numerical}
+Keith~W Morton and David~Francis Mayers.
+\newblock \emph{Numerical solution of partial differential equations: an
+  introduction}.
+\newblock Cambridge university press, 2005.
+
+\bibitem[Pyt'ev(1986)]{pytev86}
+Y.P. Pyt'ev.
+\newblock Methods of reduction of measurements in {H}ilbert spaces.
+\newblock \emph{Mathematics of the USSR-Sbornik}, 54\penalty0 (2):\penalty0
+  525--549, 1986.
+
+\bibitem[Rudin(1991)]{rudin1991}
+Walter Rudin.
+\newblock \emph{Functional analysis. International series in pure and applied
+  mathematics}.
+\newblock McGraw-Hill, Inc., New York, 1991.
+
+\bibitem[S{\"a}rkk{\"a}(2011)]{sarkka11linear}
+S.~S{\"a}rkk{\"a}.
+\newblock Linear operators and stochastic partial differential equations in
+  gaussian process regression.
+\newblock In \emph{Artificial Neural Networks and Machine Learning-–ICANN
+  2011}, pages 151--158. Springer, 2011.
+
+\bibitem[Showalter et~al.(2006)Showalter, Gordon, and Olson]{voyager}
+MR~Showalter, MK~Gordon, and D~Olson.
+\newblock Vg1/vg2 saturn iss processed images v1.0.
+\newblock NASA Planetary Data System, 2006.
+
+\bibitem[Strichartz(2000)]{strichartz2000}
+Robert~S Strichartz.
+\newblock \emph{The way of analysis}.
+\newblock Jones \& Bartlett Learning, 2000.
+
+\bibitem[Stuart(2010)]{stuart2010}
+A.~M. Stuart.
+\newblock Inverse problems: A bayesian perspective.
+\newblock \emph{Acta Numerica}, 19:\penalty0 451--559, 2010.
+
+\bibitem[Tikhonov(1963)]{tikhonov1963}
+A.N. Tikhonov.
+\newblock Regularization of incorrectly posed problems.
+\newblock \emph{Soviet Mathematics Doklady}, 4:\penalty0 1624--1627, 1963.
+
+\bibitem[Vogel(1984)]{vogel84stochastic}
+C.R. Vogel.
+\newblock Stochastic inversion of linear first kind integral equations. ii.
+  discrete theory and convergence results.
+\newblock \emph{Journal of Integral Equations}, 7:\penalty0 73--92, 1984.
+
+\bibitem[Vogel(2002)]{vogel2002}
+Curtis~R. Vogel.
+\newblock \emph{Computational Methods of Inverse Problems}.
+\newblock Society for industrual and applied mathematics, 2002.
+
+\bibitem[Watson(1993)]{watson1993}
+Scott~A. Watson.
+\newblock Real-time spot size measurement for pulsed high-energy radiographic
+  machines.
+\newblock \emph{Proceedings of the 1993 Particle Accelerator Converence},
+  4:\penalty0 2447--2449, 1993.
+
+\end{thebibliography}

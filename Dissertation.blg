@@ -1,0 +1,56 @@
+This is BibTeX, Version 0.99d (TeX Live 2015/Arch Linux)
+Capacity: max_strings=35307, hash_size=35307, hash_prime=30011
+The top-level auxiliary file: Dissertation.aux
+A level-1 auxiliary file: TitlePage.aux
+A level-1 auxiliary file: AbstractPage.aux
+A level-1 auxiliary file: AcknowledgmentsPage.aux
+A level-1 auxiliary file: NotationsPage.aux
+A level-1 auxiliary file: introduction.aux
+The style file: plainnat.bst
+Database file #1: Dissertation.bib
+Warning--I didn't find a database entry for "mendel????"
+Warning--I didn't find a database entry for "eddington1902"
+Warning--I didn't find a database entry for "hansen2006"
+Warning--I didn't find a database entry for "hadamard1902"
+You've used 35 entries,
+            2773 wiz_defined-function locations,
+            790 strings with 9216 characters,
+and the built_in function-call counts, 12930 in all, are:
+= -- 1110
+> -- 549
+< -- 34
++ -- 198
+- -- 162
+* -- 862
+:= -- 2024
+add.period$ -- 108
+call.type$ -- 35
+change.case$ -- 139
+chr.to.int$ -- 34
+cite$ -- 70
+duplicate$ -- 723
+empty$ -- 1241
+format.name$ -- 215
+if$ -- 2725
+int.to.chr$ -- 2
+int.to.str$ -- 1
+missing$ -- 55
+newline$ -- 184
+num.names$ -- 140
+pop$ -- 380
+preamble$ -- 1
+purify$ -- 124
+quote$ -- 0
+skip$ -- 493
+stack$ -- 0
+substring$ -- 401
+swap$ -- 58
+text.length$ -- 4
+text.prefix$ -- 0
+top$ -- 0
+type$ -- 280
+warning$ -- 0
+while$ -- 131
+width$ -- 0
+write$ -- 447
+(There were 4 warnings)

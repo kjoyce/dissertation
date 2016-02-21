@@ -1,0 +1,6 @@
+\addvspace {10\p@ }
+\contentsline {figure}{\numberline {1.1}{\ignorespaces The PSF forward integral operator kernel $g(x,r)$ represented as the arc measure of $v$ in $(-\pi ,\pi )$ where $x \ge r\qopname \relax o{cos}v$. }}{11}{figure.1.1}
+\contentsline {figure}{\numberline {1.2}{\ignorespaces A schematic of the measurement model for an X-Ray image of an edge. An opaque block aligned with the imaging plane blocks light on the half plane to produce a blurred edge.}}{11}{figure.1.2}
+\contentsline {figure}{\numberline {1.3}{\ignorespaces A synthetically blurred edge with simulated measurement error and a line-out (horizontal cross-section) from the data.}}{12}{figure.1.3}
+\addvspace {10\p@ }
+\addvspace {10\p@ }
