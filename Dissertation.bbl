@@ -1,4 +1,4 @@
-\begin{thebibliography}{35}
+\begin{thebibliography}{39}
 \providecommand{\natexlab}[1]{#1}
 \providecommand{\url}[1]{\texttt{#1}}
 \expandafter\ifx\csname urlstyle\endcsname\relax
@@ -53,6 +53,13 @@ Richard Durrett.
 \newblock \emph{Probability: theory and examples}.
 \newblock Cambridge university press, 2010.
 
+\bibitem[Dyson et~al.(1920)Dyson, Eddington, and C.]{eddington1920}
+F.W. Dyson, A.S. Eddington, and Davidson C.
+\newblock A determination of the deflection of light by the sun's gravitational
+  field, from observations made at the total eclipse of 29 may 1919.
+\newblock \emph{Philosophical Transactions of the Royal Society},
+  220A:\penalty0 291--333, 1920.
+
 \bibitem[Epstein(2008)]{epstein2008}
 Charles~L. Epstein.
 \newblock \emph{Introduction to the Mathematics of Medical Imaging}.
@@ -64,10 +71,22 @@ Ruggeri Fabrizio, Michael~P Wiper, and David~Rios Insua.
 \newblock \emph{Bayesian analysis of stochastic process models}.
 \newblock Wiley, 2012.
 
+\bibitem[Grafakos(2014)]{grafakos2014}
+L.~Grafakos.
+\newblock \emph{Classical Fourier Analysis}.
+\newblock Graduate Texts in Mathematics. Springer New York, 2014.
+\newblock ISBN 9781493911943.
+
 \bibitem[Griffel(2002)]{griffel2002}
 David~H Griffel.
 \newblock \emph{Applied functional analysis}.
 \newblock Courier Corporation, 2002.
+
+\bibitem[Hadamard(1902)]{hadamard1902}
+Jacques Hadamard.
+\newblock Sur les problèmes aux dérivées partielles et leur signification
+  physique.
+\newblock \emph{Princeton University Bulletin}, pages 49--52, 1902.
 
 \bibitem[Hansen(2010)]{hansen2010}
 P.~C. Hansen.
@@ -128,6 +147,11 @@ D.~Kundur and D.~Hatzinakos.
 \newblock Blind image deconvolution revisited.
 \newblock \emph{IEEE Signal Processing Magazine}, 13\penalty0 (6):\penalty0
   61--63, 1996{\natexlab{b}}.
+
+\bibitem[Magner(2002)]{magner2002}
+L.N. Magner.
+\newblock \emph{History of the Life Sciences}.
+\newblock New York: Marcel Dekker, Inc, 2002.
 
 \bibitem[Morozov and Stessin(1993)]{morozov1993}
 Vladimir~Aleseevich Morozov and Michael Stessin.
