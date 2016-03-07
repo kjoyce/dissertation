@@ -102,6 +102,7 @@ titlepage,oneside]{book}
                         % chapter2 etc.).
 \include{theoretical}
 \include{computational}
+\include{results}
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %
@@ -125,10 +126,12 @@ titlepage,oneside]{book}
 %
 %   Lastly the lines for the bibliography section.  You must choose a bibliography style. I
 %   recommend "plain" or "alpha," but there are many options to choose from (see online).
-\nocite{*} % Show everything in the Bibliography
+% \nocite{*} % Show everything in the Bibliography
 \addcontentsline{toc}{chapter}{Bibliography}
+\begin{singlespace}
 \bibliographystyle{plainnat}
 \bibliography{Dissertation}
+\end{singlespace}
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
 

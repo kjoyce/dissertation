@@ -1,0 +1,81 @@
+\setlength{\parindent}{2ex}
+\newcommand{\Ab}{{\bf A}}
+\newcommand{\N}{\mathcal{N}}
+\begin{chapter}{Computational Methods}\label{chapter:computational}
+
+In the last chapter, we established the theory for defining the inverse problem in an infinte dimensional Hilbert space.
+Of course, to carry out numerical estimation, the data and the estimate for the PSF must be represented by a fintite set of numbers on computer.
+The discrete representations will be point-based on equally spaced grids, and each operator defined in the \Cref{chapter:theoretical} will be estimated using either numerical quadrature or finite differencing.
+Hence, to each operator we will define a matrix that defines their action on the point-wise estimates, and they will be derived in \Cref{sec:discretization}
+We then develop the \emph{discrete} probability spaces associated with the matrix-operators defined in \Cref{sec:discretization}, which will serve as our discrete approximation of the infinite dimensional space defined in \Cref{chapter:theoretical}.
+In this development, we will add ``uninformative'' prior assumptions for the parameters $\lambda$ and $\delta$, forming a hierarchical Bayesian model.
+From there, the discrete posterior distribution can be expressed in terms of conditional distributions in such a way so that Markov Chain Monte Carlo sampling techniques (e.g. Gibbs' sampling) can be applied to provide estimates and quantification of uncertainty.
+In \Cref{sec:pcgibbs}, we will derive a standard Gibbs' sampling algorithm \cite{geman1984stochastic} and improve upon it using a technique called \emph{partial collapse}, which can motivated by several recent theoretical and practial analyses \citep{van2008partially,agapiou2014analysis,fox2015fast}.
+We will also briefly review standard convergence diagnostics for comparing Markov Chain based sampling algorithms, which will show that our adapted alorithm is indeed an enhancement of standard Gibbs' sampling.
+
+\section{Discrete representation of the inference problem} \label{sec:discretization}
+
+  Recall, the radial Laplacian $R: \mathcal H_1 \to \mathcal H_1$ by
+  \begin{equation}
+    [Rp](r) = r^{-1}\frac{d}{dr}\left(r \,\frac{d}{dr}p(r)\right). \\
+  \end{equation}
+%  \begin{align}
+%    \Delta k
+%      &= \Delta(x \circ T) \nonumber \\
+%      &= \mathrm{div}\Big( \big((Dx) \circ T\big) \nabla T \Big)\nonumber\\
+%      &= \Big((D^2 x) \circ T \Big)(\nabla T \cdot \nabla T) + \Big((Dx) \circ T\Big) \Delta T\nonumber\\
+%      &= \Big( D^2 x +   r^{-1}\,Dx \Big) \circ T \nonumber\\
+%      &= r^{-1}\Big( D\big(r \,D\big)x \Big) \circ T \nonumber \\
+%  \end{align}
+
+  Recall also that the inner product for the regularization is also affected by the change of variables, i.e.
+  \begin{eqnarray}
+    \int_{-\infty}^\infty\int_{-\infty}^\infty k(s',t')\,(\Delta^n k)(s',t')\,ds'dt'
+    &= 2\pi\int_0^\infty x(r) (R^nx)(r)\, r^{1-n}dr, \label{radialProfilePrior}
+  \end{eqnarray}
+  so the Laplacian regularization of order $n$ smoothness on $k$ induces a regularization operator on $x$ of the form $r^{1-n} R^n$.
+  We take $n=2$, which in the probabilistic framework, guarantees that the corresponding prior covariance operator on $k$ is trace class \cite{Stu10}.
+
+  For numerical estimation, we discretize the forward integral operator in (\ref{fredholmEquation}) using midpoint quadrature, and, imposing the same resolution on the reconstructed radial profile as the data results in $\Ab$ being an $N \times (N-1)/2 = N\times M$ matrix.
+  The differential operator $R$ is discretized using centered differencing, i.e.~for $h = 1/M$ denote $r_{j\pm1/2} = h\cdot j \pm h/2$, $x_j = x(r_j)$ and
+  \begin{equation}
+    [\bm R \bm x]_j \eqdef \frac{1}{h^2} \Big( r_{j+1/2}(x_{j+1} - x_j) - r_{j-1/2}(x_{j} - x_{j-1})\Big).
+    \label{laplacian_discretization}
+  \end{equation}
+  or as a matrix stencil
+  \begin{equation}
+    \frac{1}{h^2}
+    \left[\begin{array}{ccc}
+      -(r_{j-3/2} + r_{j-1/2}) & r_{j-1/2} & 0             \\
+      r_{j-1/2} & -(r_{j-1/2} + r_{j+1/2}) & r_{j+1/2}     \\
+      0 & r_{j+1/2} & -(r_{j+1/2} + r_{j+3/2}) \\
+    \end{array}\right]
+    \left[\begin{array}{c}
+      x_{j-1} \\
+      x_{j}   \\
+      x_{j+1} \\
+    \end{array}\right].
+    \label{laplacian_discretization_stencil}
+  \end{equation}
+  The discretization of $\bm R$ has a zero right boundary condition since $\lim\limits_{r\to\infty}x(r) = 0$ (we assume the domain for the radial profile is sufficiently large so that $r_M$ is less than machine epsilon) and a reflective left boundary condition because of the assumption of radial symmetry.
+  We then take $\bm L = \bm r^{-1} \odot \bm R^2$, i.e., the coordinate wise multiplication of reciprocals of the grid points $r_j$ composed with $\bm R^2$.
+  Finally, the discretization of the transformed inverse problem is
+  \begin{equation}\label{eq:psfDiscInvProblem}
+    \bm b = \Ab x + \bm \eps,
+  \end{equation}
+  with $\bm \eps \sim \N(\bm 0, \lambda^{-1} \bm I)$ and $\bm x \sim \N( \bm 0, \delta^{-1} \bm (\bm L^T\bm L)^{-1})$.
+  \subsection{The discrete hierarchical Bayesian model}
+  \subsection{The discrete posterior distribution}
+  \begin{equation} \label{eq:posterior}
+
+  \end{equation}
+\section{Markov Chain Monte Carlo estimation} \label{sec:pcgibbs}
+  As was seen 
+  \subsection{Preliminaries}
+  \subsection{Gibbs sampling}
+  \subsection{The partially collapsed Gibbs sampler}
+\section{Evaluating Convergence}
+  \subsection{Theoretical justification for partial collapse}
+  \subsection{Estimating Burn-in}
+  \subsection{Integrated Autocorrelation}
+\end{chapter}

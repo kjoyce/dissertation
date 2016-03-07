@@ -1,4 +1,4 @@
-This is pdfTeX, Version 3.14159265-2.6-1.40.16 (TeX Live 2015/Arch Linux) (preloaded format=pdflatex 2015.11.27)  22 FEB 2016 09:28
+This is pdfTeX, Version 3.14159265-2.6-1.40.16 (TeX Live 2015/Arch Linux) (preloaded format=pdflatex 2015.11.27)  7 MAR 2016 10:20
 entering extended mode
  \write18 enabled.
  %&-line parsing enabled.
@@ -798,7 +798,7 @@ File: pgflibraryfadings.code.tex 2008/02/07 v3.0.1a (rcs-revision 1.3)
 ) (./Dissertation.aux
 (./TitlePage.aux) (./AbstractPage.aux) (./AcknowledgmentsPage.aux)
 (./NotationsPage.aux) (./introduction.aux) (./theoretical.aux)
-(./computational.aux))
+(./computational.aux) (./results.aux))
 \openout1 = `Dissertation.aux'.
 
 LaTeX Font Info:    Checking defaults for OML/cmm/m/it on input line 26.
@@ -815,7 +815,8 @@ LaTeX Font Info:    Checking defaults for U/cmr/m/n on input line 26.
 LaTeX Font Info:    ... okay on input line 26.
 LaTeX Font Info:    Checking defaults for TS1/cmr/m/n on input line 26.
 LaTeX Font Info:    Try loading font information for TS1+cmr on input line 26.
- (/usr/share/texmf-dist/tex/latex/base/ts1cmr.fd
+
+(/usr/share/texmf-dist/tex/latex/base/ts1cmr.fd
 File: ts1cmr.fd 2014/09/29 v2.5h Standard LaTeX font definitions
 )
 LaTeX Font Info:    ... okay on input line 26.
@@ -981,44 +982,45 @@ pdfTeX warning (ext4): destination with the same identifier (name{page.1}) has
 been already used, duplicate ignored
 <to be read again> 
                    \relax 
-l.11 
+l.12 
       [1
 
 
-] [2] [3] [4] [5] [6] [7pdfTeX warning (ext4): destination with the same identi
-fier (name{thm.1.2.1}) has been already used, duplicate ignored
-
-\AtBegShi@Output ...ipout \box \AtBeginShipoutBox 
-                                                  \fi \fi 
-l.144   \end{prop}
-                  ] [8] [9] [10]
-<figures/g_function.pdf, id=324, 449.68pt x 337.26pt>
-File: figures/g_function.pdf Graphic file (type pdf)
-
-<use figures/g_function.pdf>
-Package pdftex.def Info: figures/g_function.pdf used on input line 250.
-(pdftex.def)             Requested size: 222.23003pt x 166.67404pt.
-
-<figures/blurredEdgeData.pdf, id=335, 825.0825pt x 660.4675pt>
+] [2] [3] [4] [5] [6]
+<figures/blurredEdgeData.pdf, id=319, 825.0825pt x 660.4675pt>
 File: figures/blurredEdgeData.pdf Graphic file (type pdf)
 
 <use figures/blurredEdgeData.pdf>
-Package pdftex.def Info: figures/blurredEdgeData.pdf used on input line 346.
+Package pdftex.def Info: figures/blurredEdgeData.pdf used on input line 228.
 (pdftex.def)             Requested size: 200.00566pt x 160.09766pt.
 
-<figures/psfLineoutData.pdf, id=336, 827.09pt x 660.4675pt>
+<figures/psfLineoutData.pdf, id=320, 827.09pt x 660.4675pt>
 File: figures/psfLineoutData.pdf Graphic file (type pdf)
 
 <use figures/psfLineoutData.pdf>
-Package pdftex.def Info: figures/psfLineoutData.pdf used on input line 347.
+Package pdftex.def Info: figures/psfLineoutData.pdf used on input line 229.
 (pdftex.def)             Requested size: 200.00566pt x 159.7147pt.
- [11] [12 <./figures/g_function.pdf>]) [13 <./figures/blurredEdgeData.pdf> <./f
-igures/psfLineoutData.pdf>]
+ [7] [8 <./figures/blurredEdgeData.pdf> <./figures/psfLineoutData.pdf>] [9] [10
+pdfTeX warning (ext4): destination with the same identifier (name{thm.1.3.1}) h
+as been already used, duplicate ignored
+
+\AtBegShi@Output ...ipout \box \AtBeginShipoutBox 
+                                                  \fi \fi 
+l.289   \end{equation}
+                      ] [11] [12] [13]
+<figures/g_function.pdf, id=423, 449.68pt x 337.26pt>
+File: figures/g_function.pdf Graphic file (type pdf)
+
+<use figures/g_function.pdf>
+Package pdftex.def Info: figures/g_function.pdf used on input line 386.
+(pdftex.def)             Requested size: 222.23003pt x 166.67404pt.
+ [14 <./figures/g_function.pdf>]) [15]
 \openout2 = `theoretical.aux'.
 
- (./theoretical.tex
+
+(./theoretical.tex
 Chapter 2.
-) [14
+) [16
 
 
 
@@ -1027,55 +1029,41 @@ Chapter 2.
 
  (./computational.tex
 Chapter 3.
-
-Package natbib Warning: Citation `Stu10' on page 15 undefined on input line 23.
-
-
-
-LaTeX Warning: Reference `fredholmEquation' on page 15 undefined on input line 
-25.
-
-! Undefined control sequence.
-<recently read> \Ab 
-                    
-l.25 ...radial profile as the data results in $\Ab
-                                                  $ being an $N \times (N-1)...
-
-? 
-[15
+[17
 
 
 
 ]
-! Undefined control sequence.
-l.50   \bm b = \Ab
-                   x + \bm \eps,
-? 
-! Undefined control sequence.
-l.52 with $\bm \eps \sim \N
-                           (\bm 0, \lambda^{-1} \bm I)$ and $\bm x \sim \N( ...
 
-? 
-! Undefined control sequence.
-l.52 ...0, \lambda^{-1} \bm I)$ and $\bm x \sim \N
-                                                  ( \bm 0, \delta^{-1} \bm (...
-
-? 
-) [16] (./Dissertation.bbl [17
+Package natbib Warning: Citation `Stu10' on page 18 undefined on input line 37.
 
 
-]
+
+LaTeX Warning: Reference `fredholmEquation' on page 18 undefined on input line 
+39.
+
+[18]) [19] [20]
+\openout2 = `results.aux'.
+
+ (./results.tex
+Chapter 4.
+) [21
+
+
+
+] (./Dissertation.bbl
 Missing character: There is no Ã in font cmr10!
 Missing character: There is no ¨ in font cmr10!
 Missing character: There is no Ã in font cmr10!
 Missing character: There is no © in font cmr10!
 Missing character: There is no Ã in font cmr10!
 Missing character: There is no © in font cmr10!
-Missing character: There is no Ã in font cmr10!
-Missing character: There is no   in font cmr10!
-Missing character: There is no â in font cmr10!
-Missing character: There is no € in font cmr10!
-Missing character: There is no ™ in font cmr10!
+ [22
+
+
+])
+
+Package natbib Warning: There were undefined citations.
 
 
 Package Fancyhdr Warning: \headheight is too small (12.0pt): 
@@ -1083,38 +1071,30 @@ Package Fancyhdr Warning: \headheight is too small (12.0pt):
  We now make it that large for the rest of the document.
  This may cause the page layout to be inconsistent, however.
 
-[18]
-Missing character: There is no â in font cmti10!
-Missing character: There is no € in font cmti10!
-Missing character: There is no “ in font cmti10!
- [19])
-
-Package natbib Warning: There were undefined citations.
-
-[20]
-Package atveryend Info: Empty hook `BeforeClearDocument' on input line 135.
-Package atveryend Info: Empty hook `AfterLastShipout' on input line 135.
+[23]
+Package atveryend Info: Empty hook `BeforeClearDocument' on input line 138.
+Package atveryend Info: Empty hook `AfterLastShipout' on input line 138.
  (./Dissertation.aux (./TitlePage.aux) (./AbstractPage.aux)
 (./AcknowledgmentsPage.aux) (./NotationsPage.aux) (./introduction.aux)
-(./theoretical.aux) (./computational.aux))
-Package atveryend Info: Executing hook `AtVeryEndDocument' on input line 135.
-Package atveryend Info: Executing hook `AtEndAfterFileList' on input line 135.
+(./theoretical.aux) (./computational.aux) (./results.aux))
+Package atveryend Info: Executing hook `AtVeryEndDocument' on input line 138.
+Package atveryend Info: Executing hook `AtEndAfterFileList' on input line 138.
 Package rerunfilecheck Info: File `Dissertation.out' has not changed.
-(rerunfilecheck)             Checksum: E3EABEB256C8A44385B4CA040490C9A6;768.
+(rerunfilecheck)             Checksum: 167385D01450528B548B8F497020FBAC;1794.
 
 
 LaTeX Warning: There were undefined references.
 
-Package atveryend Info: Empty hook `AtVeryVeryEnd' on input line 135.
+Package atveryend Info: Empty hook `AtVeryVeryEnd' on input line 138.
  ) 
 Here is how much of TeX's memory you used:
- 22622 strings out of 493054
- 433713 string characters out of 6140585
- 508365 words of memory out of 5000000
- 25573 multiletter control sequences out of 15000+600000
- 16189 words of font info for 63 fonts, out of 8000000 for 9000
+ 22638 strings out of 493054
+ 433828 string characters out of 6140585
+ 506365 words of memory out of 5000000
+ 25569 multiletter control sequences out of 15000+600000
+ 16794 words of font info for 65 fonts, out of 8000000 for 9000
  1141 hyphenation exceptions out of 8191
- 59i,11n,72p,1053b,1169s stack positions out of 5000i,500n,10000p,200000b,80000s
+ 59i,11n,72p,1053b,1172s stack positions out of 5000i,500n,10000p,200000b,80000s
 </usr/share/texmf-dist/fonts/type1/public/amsfonts/cm/cmbx10.pfb></usr/share/
 texmf-dist/fonts/type1/public/amsfonts/cm/cmbx12.pfb></usr/share/texmf-dist/fon
 ts/type1/public/amsfonts/cm/cmex10.pfb></usr/share/texmf-dist/fonts/type1/publi
@@ -1129,10 +1109,10 @@ mf-dist/fonts/type1/public/amsfonts/cm/cmsy10.pfb></usr/share/texmf-dist/fonts/
 type1/public/amsfonts/cm/cmsy8.pfb></usr/share/texmf-dist/fonts/type1/public/am
 sfonts/cm/cmsy9.pfb></usr/share/texmf-dist/fonts/type1/public/amsfonts/cm/cmti1
 0.pfb></usr/share/texmf-dist/fonts/type1/public/amsfonts/symbols/msbm10.pfb>
-Output written on Dissertation.pdf (28 pages, 522072 bytes).
+Output written on Dissertation.pdf (31 pages, 534805 bytes).
 PDF statistics:
- 503 PDF objects out of 1000 (max. 8388607)
- 425 compressed objects within 5 object streams
- 102 named destinations out of 1000 (max. 500000)
- 258 words of extra memory for PDF output out of 10000 (max. 10000000)
+ 613 PDF objects out of 1000 (max. 8388607)
+ 531 compressed objects within 6 object streams
+ 115 named destinations out of 1000 (max. 500000)
+ 362 words of extra memory for PDF output out of 10000 (max. 10000000)
 
