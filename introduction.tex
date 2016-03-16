@@ -1,7 +1,7 @@
 \setlength{\parindent}{2ex}
 \begin{chapter}{Images and Blur}\label{chapter:introduction}
   \section{Introduction}
-  In addition to being a rich source of artistic and creative value, images (or more precicely, visual data from projections of light) are an important source of scientific information.
+  In addition to being a rich source of artistic and creative value, images (or more precisely, visual data from projections of light) are an important source of scientific information.
   Even the word ``observation'' generally connotes the visual perception, and its use as a catch-all for the measured verification of a hypothesis exemplifies the central role of vision in science.
   Many important scientific results have used visual data to discover and explain natural phenomena; for example, visual observations such as the color and shape of various plant organs in Gregor Mendel's famous experiments on hybridized peas formed the primary source of data for developing his famous model for genetic inheritance \citep{magner2002}.
   Arthur Eddington's famous 1919 image of the gravitationally lensed path of a comet during a solar eclipse \citep{eddington1920} provided the first experimental evidence supporting Albert Einstein's general theory of relativity.
@@ -15,7 +15,7 @@
   The domain of interest for imaging systems can vary greatly in both spatial dimension and the spectrum of light captured. 
   The energy response of light is spectrum dependent, and typically is analyzed at fixed bands of frequency with very high spatial resolution.
 %  The raw volume of recorded data is usually very large.
-  For example, astronomical images captured by the interstellar robotic probes Voyagers I and II measured 5 bands in the visible spetrum on a pixel grid with dimension $800 \times 800$ \citep{voyager}.
+  For example, astronomical images captured by the interstellar robotic probes Voyagers I and II measured 5 bands in the visible spectrum on a pixel grid with dimension $800 \times 800$ \citep{voyager}.
   In medical imaging, computed tomography (CT) is an imaging process where a series of axial measurements of attenuation of electromagnetic radiation are used to reconstruct a cross-section of a scanned object \citep{epstein2008}.
   The primary focus in this work are pulsed X-ray measurements, referred to as radiographs, that are used as an experimental diagnostic of high-energy physics experiments.  
   In this case, X-rays are pulsed through an experiment, then the attenuated X-rays excite a crystal that responds by luminescing visible light at an intensity related to the energy of the attenuated wave-front.  
@@ -60,7 +60,7 @@
   A widely used model for blurring \citep{hansen2010,jain1989,vogel2002,epstein2008} expresses this relationship as a linear filter that maps the ideal image $f$ to $b$ by integrating
   %this relationship through a point-wise integral product with a function that describes interaction with neighboring points, e.g.
 \begin{equation}\label{eq:generalFilterForm}
-  b(x,y) = \iint_{\RR^2} k(x,y;s,t) f(s,t)\,dsdt,
+  b(x,y) = \iint_{\R^2} k(x,y;s,t) f(s,t)\,dsdt,
 \end{equation}
   where $b(x,y)$ represents the intensity of the blurred image at $(x,y)$; $f(s,t)$ represents the intensity of the ideal un-blurred image at $(s,t)$; and $k$ is the kernel of the filter, which characterizes the blurring process.
   Informally, we can view the effect of blur point-wise by observing the system response of a ``point-source'' at $(\bar x,\bar y)$ (formally, take $f = \delta_{\bar x,\bar y}$, Dirac's delta translated to $(\bar x,\bar y)$), then $b(x,y) = k(x,y;\bar x,\bar y)$ represents the ``spread'' at the point source.
@@ -69,12 +69,12 @@
   In \eqref{eq:generalFilterForm}, this means
 \begin{align} 
   b(x-\bar x,y-\bar y) 
-  &= \iint_{\RR^2} k(x,y;s,t) f(s-\bar x,t - \bar y)dsdt \nonumber\\
-  &= \iint_{\RR^2} k(x,y;s'+\bar x,t'+\bar y) f(s',t')ds'dt'.\label{eq:convDerive1}
+  &= \iint_{\R^2} k(x,y;s,t) f(s-\bar x,t - \bar y)dsdt \nonumber\\
+  &= \iint_{\R^2} k(x,y;s'+\bar x,t'+\bar y) f(s',t')ds'dt'.\label{eq:convDerive1}
 \end{align}
   On the other hand
 \begin{equation} \label{eq:convDerive2}
-  b(x-\bar x,y-\bar y) = \iint_{\RR^2} k(x-\bar x,y-\bar y,s,t) f(s,t)dsdt. 
+  b(x-\bar x,y-\bar y) = \iint_{\R^2} k(x-\bar x,y-\bar y,s,t) f(s,t)dsdt. 
 \end{equation}
   Since \eqref{eq:convDerive1} and \eqref{eq:convDerive2} hold for all $f$, we have for each $x,y,\bar x, \bar y,s,$ and $t$,
 \begin{align} 
@@ -86,7 +86,7 @@
 \end{align}
   Let us denote $k(x,y;\bar x,\bar y) = k(x-\bar x,y-\bar y)$, then the linear filter in \eqref{eq:generalFilterForm} reduces to   
 \begin{equation}\label{eq:deconvolutionProblem}
-  b(x,y) = \iint_{\RR^2} k(x-s,y-t) f(s,t)\,dsdt.
+  b(x,y) = \iint_{\R^2} k(x-s,y-t) f(s,t)\,dsdt.
 \end{equation}
   Equation \eqref{eq:deconvolutionProblem} is called the \emph{convolution} of $f$ by $k$.
   In fact, a general result about arbitrary linear filters defined on $L^p$ spaces states that the action of any linear filter can be expressed through convolution with some generalized function $k$ \citep{grafakos2014}.
@@ -96,7 +96,7 @@
   Note that a change of variables by $s'=x-s$ and $t'=y-t$ results in a convolution of $k$ by $f$, which is to say that convolution, as an operation, is symmetric.
   That is
 \begin{equation}\label{eq:dualConvolutionDeterministic}
-  b(x,y) = \iint_{\RR^2} k(s,t) f(x-s,y-t)\,dsdt.
+  b(x,y) = \iint_{\R^2} k(s,t) f(x-s,y-t)\,dsdt.
 \end{equation}
   This dual relationship between the PSF and the image will allow us to use the framework and many of the tools of deconvolution for the problem of PSF estimation.
 
@@ -108,18 +108,18 @@
   In astronomical imaging, the point-source can be a bright distant star, or in a controlled setting where visible light is measured, a focused laser beam provides a good point-source estimate.
   However, in the spectral regime of X-rays, focusing the high-frequency light is notoriously difficult and usually is impractical in situations of interest, so a point-source estimate of the PSF is usually unavailable at these frequencies.
   Instead, the system response of a uniformly opaque calibration object with a simple geometry can be measured.
-  Under the assumption that the object is sufficiently thick so that X-rays are completely attenuated on the profile of the object, then $f$ is given by an indicator function on a set $E \subseteq \RR^2$ determined by the object's profile.
+  Under the assumption that the object is sufficiently thick so that X-rays are completely attenuated on the profile of the object, then $f$ is given by an indicator function on a set $E \subseteq \R^2$ determined by the object's profile.
   Calibration objects typically have simple geometry and reduce the complexity of solving the deconvolution problem in \eqref{eq:dualConvolutionDeterministic}.  
   For example, the object could be a circular aperture or two perpendicular edges aligned with the imaging plane \citep{doering1992,watson1993}.
   An additional assumption of \emph{radial symmetry} on $k$, will allow for a very simple calibration object -- an edge. 
   That is, if the calibration object completely attenuates X-rays along a vertical edge at the fixed location at $s=0$ in the imaging plane, then $E=\{(s,t):s\ge0\}$ and $f(s,t) \eqdef f_E(s) = 1$ if $s\ge0$ and $0$ if $s <0$; see \Cref{fig:edgePicture,fig:edgeData} for a schematic of the calibration object and measurement system and an example of recorded intensity data.
   The model for blur in \eqref{eq:dualConvolutionDeterministic} reduces to
 \begin{equation}\label{eq:psfForwardModelDeterministic2D}
-  b(x,y) = \iint_{\RR^2} k(s,t) f_E(x-s)dsdt. 
+  b(x,y) = \iint_{\R^2} k(s,t) f_E(x-s)dsdt. 
 \end{equation}
   Note that $b$ does not depend on $y$ in \eqref{eq:psfForwardModelDeterministic2D}, so denoting $b(x,0) = b(x)$, \eqref{eq:psfForwardModelDeterministic2D} reduces to
 \begin{equation}\label{eq:psfForwardModelDeterministic}
-  b(x) = \iint_{\RR^2} k(s,t) f_E(x-s)dsdt. 
+  b(x) = \iint_{\R^2} k(s,t) f_E(x-s)dsdt. 
 \end{equation} 
   
   In general, estimating $k$ from $b$ in \eqref{eq:psfForwardModelDeterministic} is underdetermined, since there are many distinct $k$ that can result in the same output $b$.
@@ -210,7 +210,7 @@
     %    %putting arrows and labels:
 	\node at (2,2.5) (label1) {Opaque Edge};
 	\draw[-latex,thick] (2,-2) to node[below] {Image System Response} (7.5,-2);
-	\node at (4.65,-3.4) (math1) {$\displaystyle{b(x)=\iint_{\RR^2} k(s,t) f(x-s)\,dsdt}$};
+	\node at (4.65,-3.4) (math1) {$\displaystyle{b(x)=\iint_{\R^2} k(s,t) f(x-s)\,dsdt}$};
 
 	\node at (7,2.5) (label3) {Blurred Profile};
 
@@ -333,7 +333,7 @@
   In this section, we will return to \eqref{eq:psfForwardModelDeterministic}, and perform a different variable transformation to explicitly illustrate the instability, and in doing so, will derive a form that is more suitable for analysis and numerical discretization.
 
   The measurements of the imaging system are generally not deterministic and are subject to measurement noise.
-  Precisely modeling the stochastic effect of measurement error is system dependent and can be quite complicated.
+  Precisely modelling the stochastic effect of measurement error is system dependent and can be quite complicated.
   In the X-ray radiography example, uncertainty can enter into the system at the luminescing crystal response, at the counts of CCD array, or through the electrical transmission of the signal.
   In order to be broadly applicable, and appealing generally to various central-limit-theorem-like results in probability \citep{durrett2010probability}, we model the stochastic measurement effect in aggregate as an additive, independent Gaussian noise process with zero mean and unknown variance.  
   For now, this assumption can be viewed as a small perturbation from the model, but its form will be important for the inference techniques developed in subsequent chapters.
@@ -353,7 +353,7 @@
   Defining these spaces in detail is technical and will be addressed in in Chapter 2; however, assuming these spaces have been defined, we can illustrate that the problem of reconstructing the radial profile is ill-posed.
 
   Returning to \eqref{eq:psfForwardModelDeterministic}, a variable transformation
-  %(again assuming $\Omega$ is full measure in $\RR^2$)  
+  %(again assuming $\Omega$ is full measure in $\R^2$)  
   by $(s,t) = T(r,v) = (r\cos v,r\sin v)$, has $|dT(r,v)| = r$ and 
   \begin{align}
     b(x) &= \int_0^\infty p(r) \left( \int_{-\pi}^\pi f_E(x - r\cos v)dv \right)\,r dr\nonumber \\
@@ -398,7 +398,7 @@ where
   \begin{equation}
     [Gp](x) = \int_0^\infty p(r) g(x,r) r dr.
   \end{equation}
-  Hence, $G$ is a compact Hilbert-Schmidt operator since $g$ is continuous and $\mathcal H_1$ and $\mathcal H_2$ are seperable Hilbert spaces.
+  Hence, $G$ is a compact Hilbert-Schmidt operator since $g$ is continuous and $\mathcal H_1$ and $\mathcal H_2$ are separable Hilbert spaces.
   Moreover, $G$ is an injective operator since we showed that $b = Gp$ has an analytic solution. 
   The spectral theorem for such operators implies that $G$ has a countable spectrum which has zero as a limit point, and hence, its inverse $G^{-1}$ is unbounded. %, which results in an ill-posed problem. 
   See one of many texts on functional analysis \citep{bachman1966,rudin1991} and \citep{tikhonov1963,vogel2002,morozov1993} for the analytic treatment of ill-posed problems.
@@ -406,7 +406,7 @@ where
   Solving ill-posed inverse problems requires \emph{regularization} of the unbounded inverse.
   Recall that the original formulation of the problem is cast in terms of deconvolution, and much of the literature of inverse problems is devoted to this subject.
   This work draws heavily from techniques for that purpose. 
-  In particular, we will take a Bayesian approach to the inverse problem so that, in addition to estimating $k$, uncertainties in the estimate can be quantified by analysing the so-called \emph{posterior distribution}.
+  In particular, we will take a Bayesian approach to the inverse problem so that, in addition to estimating $k$, uncertainties in the estimate can be quantified by analyzing the so-called \emph{posterior distribution}.
   These methods have been the subject of much recent research (see the books \citep{calvetti2007introduction,kaipo2005,stuart2010}), and the problem of PSF reconstruction fits neatly into that framework once the spaces $\mathcal H_1$ and $\mathcal H_2$ have been defined, which we address in the next chapter.
 
 \end{chapter}

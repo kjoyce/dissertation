@@ -8,3 +8,7 @@ imap <F6> <ESC>:w<CR>:!(cd .. && exec pdflatex --enable-write Dissertation.tex)<
 
 " The following command runs zathura on an expected pdf output
 nmap <buffer> <F4> :!zathura ../Dissertation.pdf 2> /dev/null &<CR>
+
+" Force spell checking, sometimes it isn't enabled because of missing
+" begin{document}
+set spelllang=en spell
