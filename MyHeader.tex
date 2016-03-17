@@ -1,5 +1,7 @@
 %   Your header stuff goes here
 \usepackage{natbib}
+  \bibliographystyle{plainnat}
+  \setcitestyle{square,citesep{;}}
 \usepackage{amsmath}
 \usepackage{amsthm}
 \usepackage{amssymb}
@@ -34,6 +36,9 @@
 \newtheorem{prop}[thm]{Proposition}
 \newtheorem{cor}[thm]{Corollary}
 \newtheorem{defn}[thm]{Definition}
+
+% Allow equations to span pages
+\allowdisplaybreaks[1]
 
 % Spaces
 \newcommand{\R}{\ensuremath{\mathbb R}}  % Real numbers
