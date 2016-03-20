@@ -1,33 +1,49 @@
 \setlength{\parindent}{2ex}
 \begin{chapter}{Images and Blur}\label{chapter:introduction}
+  \textcolor{red}{
+   Fix all the emphasis crap.
+   Comma after first word stuff.
+   Subject verb agreement.
+  }
   \section{Introduction}
   In addition to being a rich source of artistic and creative value, images (or more precisely, visual data from projections of light) are an important source of scientific information.
-  Even the word ``observation'' generally connotes the visual perception, and its use as a catch-all for the measured verification of a hypothesis exemplifies the central role of vision in science.
+  Even the word `observation' generally connotes the visual perception, and its use as a catch-all for the measured verification of a hypothesis exemplifies the central role of vision in science.
   Many important scientific results have used visual data to discover and explain natural phenomena; for example, visual observations such as the color and shape of various plant organs in Gregor Mendel's famous experiments on hybridized peas formed the primary source of data for developing his famous model for genetic inheritance \citep{magner2002}.
   Arthur Eddington's famous 1919 image of the gravitationally lensed path of a comet during a solar eclipse \citep{eddington1920} provided the first experimental evidence supporting Albert Einstein's general theory of relativity.
 %  The richness of the raw data content in an image and our human propensity to digest visual information -- the focus of our mind's eye, so to say -- make visual data in images a compelling source of scientific evidence and information.
-  Yet, in these cases, only the \emph{qualitative} components of the visual response and their relationship to the experiment were relevant.
+  In these cases, only the \emph{qualitative} components of the visual response and their relationship to the experiment were relevant.
   With the advent of the camera, photosensitive chemistry, and later digital imaging technology, high-fidelity recording of visual observations became possible, allowing the potential to \emph{quantitatively} analyze visual information.
   The ever-progressing technology in optical science and engineering are rapidly increasing the amount of data that can be measured in an image; yet, the extreme quantity and spatial organization that comes with high resolution data makes a rigorous quantitative analysis quite challenging.
 
   Images, when viewed quantitatively, can be described as the response of the incidence of light, and the subsequent exchange of energy, on a grid of regularly spaced grid elements, which we refer to as pixels.
   %In our application, the grid elements are square.
   The domain of interest for imaging systems can vary greatly in both spatial dimension and the spectrum of light captured. 
-  The energy response of light is spectrum dependent, and typically is analyzed at fixed bands of frequency with very high spatial resolution.
+  The energy response of light is spectrum dependent, and typically is analyzed at fixed bands of frequency with very high spatial density.
+
 %  The raw volume of recorded data is usually very large.
   For example, astronomical images captured by the interstellar robotic probes Voyagers I and II measured 5 bands in the visible spectrum on a pixel grid with dimension $800 \times 800$ \citep{voyager}.
   In medical imaging, computed tomography (CT) is an imaging process where a series of axial measurements of attenuation of electromagnetic radiation are used to reconstruct a cross-section of a scanned object \citep{epstein2008}.
-  The primary focus in this work are pulsed X-ray measurements, referred to as radiographs, that are used as an experimental diagnostic of high-energy physics experiments.  
+  The primary focus in this work is pulsed X-ray measurements, referred to as radiographs, that are used as an experimental diagnostic of high-energy physics experiments.  
   In this case, X-rays are pulsed through an experiment, then the attenuated X-rays excite a crystal that responds by luminescing visible light at an intensity related to the energy of the attenuated wave-front.  
-  The light is then measured on a high resolution array (on the order of $1000\times1000$ or more) of carge coupled devices (CCD) calibrated to count photons at a specified spectral band.
+  The light is then measured on a high resolution array (on the order of $1000\times1000$ or more) of charge coupled devices (CCD) calibrated to count photons at a specified spectral band.
 
+
+\textcolor{red}{
+establish a dichotomy instead of asking a question
   Having established the form of image data, i.e.~\emph{what} the data is, \emph{how} does one analyze it?
-  Although images often provide a large volume of data, their spatial nature make measurements at each pixel highly dependent on measurments of adjacent pixels.
+}
+There is a dichotomy between the amount of information available in image data and the complexity of how to quantitatively analyze it.
+That is, despite large volume of data, their spatial nature make measurements at each pixel highly dependent on measurements of adjacent pixels.
   A quantitative analysis of the image cannot assume that measured values are independent, because it is precisely this lack of independence that makes an image interesting -- independent image data is \emph{white noise} (perhaps more appropriately, ``gray noise'') from which one can only infer the average of the measured pixels.
   %A quantitative analysis of image data must take into account pixel-to-pixel dependence.
   %That is, the measured values at one pixel depends heavily on adjacent or neighboring pixels, thus, one expects the measured data to be highly correlated.
 
   From a statistical point of view, the field of spatial statistics considers broadly the analysis of data that is structured and spatially correlated in this way.
+
+  \textcolor{red}{
+  This needs to change to emphasis GMRF.
+  Sentences need to read as easy possible.
+  }
 %  The relatively recent date of this publication (in mathematical terms) coupled with the prevalence of image data prior to this, hints that the requisite tools for a rigorous statistical analysis require modern mathematical theory and state of the art computation.
   This field has had much development over the past half-century and has inspired a wealth of theory and computational tools, but is far from complete.
   Moreover, a broad field of scientific disciplines have considered image data, or more generally spatially correlated data, in one way or another; fields such as astronomy, astrophysics, biology, medicine, geology, computer science, and nuclear physics to name a few.
@@ -41,12 +57,14 @@
   The following sections outline the modeling of image blur via the \emph{point spread function}, the primary quantity of interest in this work.
   In particular, we will introduce a model for the blurring of an opaque edge. 
   The model can be cast in various mathematical forms without changing the physical assumptions.
-  We will exploit these different mathematical formulations (e.g.~by changing variables) to show that a blurred edge is sufficient for estimation and to show that the problem is ``ill-posed''.
+  We will exploit these different mathematical formulations (e.g.~by changing variables) to show that a blurred edge is sufficient for estimation and to show that the problem is ill-posed.
+
 
   In the next chapter, we will derive the necessary theory and technical definitions so that the problem is well-defined on a Hilbert space.
   %Primarily, we will develop the theoretical framework of how inference can be carried out on the radial profile of the PSF, when prior assumptions are placed on the PSF itself.
   \Cref{chapter:theoretical} will be mainly theoretical, but the explicit forms for the discrete model of the forward operator and prior information are motivated and derived there.
   \Cref{chapter:computational} will give details on how to carry out the estimation on a computer.
+  \textcolor{red}{and blah blah}
   There, we will deal with how to discretely represent each of the necessary components in the estimation problem.
   We will also motivate and present the design of a detailed algorithm for carrying out statistical estimation.
   Finally, in \Cref{chapter:results}, we present the results of an implementation on synthetically derived data and on measured data from a high-energy X-ray imaging system at the U.S.~Department of Energy's Nevada National Security Site.
@@ -58,6 +76,7 @@
   One major component of the spatial relationship of neighboring pixels of an image is due to blur from the imaging instrumentation.
   That is, under the assumption that arbitrary images are consistently measured by the modeled system, what contribution does this system have on how pixels are related, and how can we quantify this relationship?
   A widely used model for blurring \citep{hansen2010,jain1989,vogel2002,epstein2008} expresses this relationship as a linear filter that maps the ideal image $f$ to $b$ by integrating
+  \textcolor{red}{symmetrize this sentence}
   %this relationship through a point-wise integral product with a function that describes interaction with neighboring points, e.g.
 \begin{equation}\label{eq:generalFilterForm}
   b(x,y) = \iint_{\R^2} k(x,y;s,t) f(s,t)\,dsdt,
@@ -67,6 +86,7 @@
   The function $k$ is referred to as the \emph{point spread function} (PSF) of the system at $(\bar x,\bar y)$.
   When the effect of blurring does not depend on the location of this point, that is, translating $f$ by $(\bar x, \bar y)$ results in $b$ translated by $(\bar x,\bar y)$, we say that it is \emph{spatially invariant}. 
   In \eqref{eq:generalFilterForm}, this means
+  \textcolor{red}{for purpose of modeling we assume each function is continuous}
 \begin{align} 
   b(x-\bar x,y-\bar y) 
   &= \iint_{\R^2} k(x,y;s,t) f(s-\bar x,t - \bar y)dsdt \nonumber\\
@@ -101,17 +121,17 @@
   This dual relationship between the PSF and the image will allow us to use the framework and many of the tools of deconvolution for the problem of PSF estimation.
 
   Typically, deconvolution methods assume that the form of the PSF can be accurately described by modeling the imaging system \citep{jain1989,hansen2010}, but for complex imaging systems such as the one described for X-ray radiography, this is not realistic.
+  \textcolor{red}{ For X-ray radiography this is not realistic}
   Instead, if the imaging system is designed so that repeated images can be taken under consistent conditions, then by convolution symmetry in \eqref{eq:dualConvolutionDeterministic}, the blurring of a \emph{known calibration image} can be cast as deconvolving the PSF from the ideal $f$ corresponding to the known image.
 
-  Recall that the PSF models the blurring response of a single point.
-  So, a direct estimate of $k$ can be obtained by imaging a bright point-source, which approximates the impulse response to \eqref{eq:dualConvolutionDeterministic}.
-  In astronomical imaging, the point-source can be a bright distant star, or in a controlled setting where visible light is measured, a focused laser beam provides a good point-source estimate.
+  Recall that the PSF models the blurring response of a single point, so a direct estimate of $k$ can be obtained by imaging a bright point-source, which approximates the impulse response to \eqref{eq:dualConvolutionDeterministic}.
+  In astronomical imaging, the point-source can be a bright distant star, or in a controlled setting where visible light is measured, a focused laser provides a good point-source estimate.
   However, in the spectral regime of X-rays, focusing the high-frequency light is notoriously difficult and usually is impractical in situations of interest, so a point-source estimate of the PSF is usually unavailable at these frequencies.
   Instead, the system response of a uniformly opaque calibration object with a simple geometry can be measured.
   Under the assumption that the object is sufficiently thick so that X-rays are completely attenuated on the profile of the object, then $f$ is given by an indicator function on a set $E \subseteq \R^2$ determined by the object's profile.
   Calibration objects typically have simple geometry and reduce the complexity of solving the deconvolution problem in \eqref{eq:dualConvolutionDeterministic}.  
   For example, the object could be a circular aperture or two perpendicular edges aligned with the imaging plane \citep{doering1992,watson1993}.
-  An additional assumption of \emph{radial symmetry} on $k$, will allow for a very simple calibration object -- an edge. 
+  The additional assumption of \emph{radial symmetry} on $k$ allows for a very simple calibration object -- an edge. 
   That is, if the calibration object completely attenuates X-rays along a vertical edge at the fixed location at $s=0$ in the imaging plane, then $E=\{(s,t):s\ge0\}$ and $f(s,t) \eqdef f_E(s) = 1$ if $s\ge0$ and $0$ if $s <0$; see \Cref{fig:edgePicture,fig:edgeData} for a schematic of the calibration object and measurement system and an example of recorded intensity data.
   The model for blur in \eqref{eq:dualConvolutionDeterministic} reduces to
 \begin{equation}\label{eq:psfForwardModelDeterministic2D}
@@ -129,6 +149,10 @@
   \end{equation}
   for all $s$ since the integrand is odd in $t$.
   So given any solution $k$, $k(s,t)+te^{-t^2 - s^2}$ is also a solution but is \emph{not} radially symmetric.
+  \textcolor{red}{
+    Be explicit about what we are solving for. Why has has it changed from $f$
+  }
+
   We will see in the next section that the assumption of radial symmetry on $k$ is sufficient for a well-defined analytic solution to \eqref{eq:psfForwardModelDeterministic}.
 
   In summary, we've assumed that the effect of blur is modelled by a spatially invariant linear filter with a radially symmetric kernel, and \eqref{eq:psfForwardModelDeterministic} describes the blurring of a calibration object whose profile is an edge.
@@ -219,7 +243,7 @@
 	\node at (11,-3.4) (math1) {$+\eps_x \sim N(0, \sigma^2)$};
 
     \end{tikzpicture}
-  \caption{ A schematic of the measurement model for an X-Ray image of an edge. An opaque block aligned with the imaging plane blocks light on the half plane to produce a blurred edge.}\label{fig:edgePicture}
+  \caption{ A schematic of the measurement model for an X-ray image of an edge. An opaque block aligned with the imaging plane blocks light on the half plane to produce a blurred edge.}\label{fig:edgePicture}
 \end{center}
 \end{figure}
 
@@ -232,6 +256,10 @@
 \end{figure}
   
 \section{The Abel transform and a deterministic solution}
+\textcolor{red}{
+Get rid of future tenses, like we will show to we show
+Analytic isn't the right word.
+}
   In this section, we will show that radial symmetry is sufficient to guarantee a unique analytic answer.
 %  This will lay out an analytic solution to \eqref{eq:psfForwardModelDeterministic}. 
   However, the suggested analytic method will be problematic as will be seen in the following section.
@@ -259,15 +287,16 @@
          &= \int_{-\infty}^x \ell(s)ds. \label{eq:abelForward}
   \end{align}
 
-  Observe that $b$ exhibits point symmetry about $b(0)$.
-  To see this analytically, note that when $x>0$ 
+  Observe that $b$ exhibits \emph{point symmetry} about $b(0)$.
+  That is, for any $x>0$, the point $(0,b(0))$ is the mid-point between the points $(x,b(x))$ and $(-x,b(-x))$. 
+  To see this explicitly, let $\tilde b(x) \eqdef b(x) - b(0)$, then for $x>0$
   \begin{align}
-    b(x) - \int_{-\infty}^0 \ell(s)ds 
-      &= \int_0^x \ell(s)ds \nonumber \\
+    -\tilde b(x) &= -\left(b(x) - \int_{-\infty}^0 \ell(s)ds\right) \nonumber \\
+      &= -\int_0^x \ell(s)ds \nonumber \\
       &= \int_0^{-x}\ell(s')ds'  \nonumber \\
-      &= b(-x) - b(0).
+      &= b(-x) - b(0) = \tilde b(-x).
   \end{align}
-  Since the function $\tilde b(x) = b(x) - b(0)$ is odd, $b(x)$ has reflection symmetry about $(0,b(0))$.
+  Since $\tilde b(x)$ is odd, $b(x)$ has reflection symmetry about $(0,b(0))$.
   Hence, data defined on either $x\in(-\infty,0]$ or $x\in[0,\infty)$ should be sufficient for estimating $p$.
   This observation will be important in the next section.
 
@@ -363,7 +392,7 @@ where
 \begin{equation} \label{eq:radialForwardKernel}
   g(x,r) \eqdef \left\{\begin{array}{lr}
     0 & x < - r\\
-    2(\pi - \acos(x/r)) & |x| < r\\
+    2(\pi - \acos(x/r)) & |x| \le r\\
     2\pi &  x> r
   \end{array}\right..  
 \end{equation}
@@ -396,7 +425,7 @@ where
 
   With these observations, we can define $G: \mathcal H_1 \to \mathcal H_2$ is an operator between closed isometric subspaces of $L^2([0,\infty))$ that acts by the integral equation in \eqref{eq:radialForwardModelDeterministic}, i.e., 
   \begin{equation}
-    [Gp](x) = \int_0^\infty p(r) g(x,r) r dr.
+    [\G p](x) = \int_0^\infty p(r) g(x,r) r dr.
   \end{equation}
   Hence, $G$ is a compact Hilbert-Schmidt operator since $g$ is continuous and $\mathcal H_1$ and $\mathcal H_2$ are separable Hilbert spaces.
   Moreover, $G$ is an injective operator since we showed that $b = Gp$ has an analytic solution. 

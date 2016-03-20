@@ -6,7 +6,7 @@
 In the last chapter, we established the theory for defining the inverse problem in an infinite dimensional Hilbert space. 
 The development led to defining the functional $\Phi:\HH_1 \times \HH_2 \to \R$
 \begin{equation} \label{eq:regularizingFunctional}
-  \Phi(p; b) = \lambda\|\G p - b\|_{\HH_2}^2 + \delta\langle p, \L p\rangle_{\HH_1},
+  \Phi(p; b) = \lambda\|\G p - b\|_{\HH_2}^2 + \delta\langle p, \L^n p\rangle_{\HH_1},
 \end{equation}
 where $\G$ is the operator that takes a radial profile $p$ to a line of blurred image of an edge $b$, and $\L$ is the induced radial Laplacian. 
 We also showed that $\L^n$ was trace class for all $n$ in $\HH_1$. %, which allowed for a well-defined posterior probability measure for $p$.
@@ -26,9 +26,10 @@ They analyzed the infinite dimensional Gibbs sampler, and showed that it had def
 They then introduced two algorithms that alleviate this issue.
 Although their analysis is not directly applicable to PSF reconstruction since our prior is the \emph{radial} Laplacian, we take cues from their work to design the algorithm for exploring the \emph{discrete} posterior density for PSF reconstruction.
 Also, by discretizing at this stage, we will be able to develop an algorithm that allows for the noise precision $\lambda$ to be estimated.
+We follow the general development outlined in \citep{bardsley2012mcmc}, which has been adopted successfully in many other applications of linear inverse problems related to imaging \citep{howard2016bayesian,bardsley2016metropolis,fowler2016stochastic,bardsley2015dealing,bardsley2013efficient}.
 
 The discrete representations will be point-based on equally spaced grids, and each operator defined in the \Cref{chapter:theoretical} will be estimated using either numerical quadrature or finite differencing.
-Hence, to each operator we will define a matrix that defines their action on the point-wise estimates, and they will be derived in \Cref{sec:discretization}
+Hence, to each operator we will define a matrix that defines their action on the point-wise estimates, and they will be derived in \Cref{sec:discretization}.
 We then develop the \emph{discrete} probability spaces associated with the matrix-operators defined in \Cref{sec:discretization}, which will serve as our discrete approximation of the infinite dimensional space defined in \Cref{chapter:theoretical}.
 In this development, we will add ``uninformative'' prior assumptions for the parameters $\lambda$ and $\delta$, forming a hierarchical Bayesian model.
 From there, the discrete posterior distribution can be expressed in terms of conditional distributions in such a way so that Markov Chain Monte Carlo sampling techniques (e.g. Gibbs sampling) can be applied to provide estimates and quantification of uncertainty.
@@ -37,23 +38,120 @@ We will also briefly review standard convergence diagnostics for comparing Marko
 
 \section{Discrete representation of the inference problem} \label{sec:discretization}
 
-Recall that the radial Laplacian $\L: \HH_1 \to \HH_1$ acted by
+\textcolor{red}{
+  We need to step away from the continuum to the discrete.
+  The objects we are studying are functionals that have bounded special norm according to 3.4.
+  We will proceed by using using differencing schemes and for the differential operations, and numerical quadrature for integral inner products.
+  Both methods rely on point-wise Taylor expansions to ensure convergence.
+  The objects we modeled with in the continuum do not have such expansions, 
+  BUT
+  Hence, we do not have an explicit expression of the error of our approximation with respect to the theoretical objects, but only on functions that are smooth (hence have Taylor exponsions).
+  We mention that other methods that use a truncation of an orthonormal bases of $\HH _1$ and $\HH_2$ are theoretically more appealing (Galerkin methods), and the radial Laplacian is known to be diagonalized a class of Bessel functions, the analysis is more involved and requires a transformation of the data given on a grid to the appropriate coefficients.
+  It also requires knowledge of how the forward operator acts on Bessel functions.
+}
+
+Transitioning from the model on the continuum to a discrete representation is a delicate process for which error is introduced at many levels.  
+For example, we do not even have full access to all $\R$, since a computer must represent a real number with a floating-point approximation corresponding to a binary integer from a finite set (although, this error is not addressed in this work). 
+Our formal notions of $p$ and $b$ are as functionals that act on compactly supported smooth functions, which has many levels of abstraction beyond a point-wise definition, and we will attempt briefly address the approximation at each of these levels.
+
+Our primary tools for discretization will be finite-differencing for the regularizing differential operator $\L$ and numerical quadrature for the integral operator $\G$ and integral inner products associated with $\HH_1$ and $\HH_2$.
+Both methods assume $p$ and $g$ are functions with known evaluations on a discrete grid.
+The error analysis associated with these methods are based on Taylor expansions, which assume a function that is at least twice differentiable at each point in the interior of their domain and that the second derivatives are uniformly bounded in order to obtain error $O(h)$, where $h$ is the width between grid points,
+%This assumption could motivates that the regularization operator be squared, i.e.~$\L^2$, to ensure bounded second derivatives, but, our objects are not functions and Taylor's theorem is not available. 
+This analysis is not directly applicable since $p$ and $b$ are not functions and Taylor's theorem is not available.
+In fact, any element with discrete support in $\HH_1$ and $\HH_2$ is equivalent to $0$, since each is a subspace of an $L^2$ space.
+Yet, we justify our use of quadrature methods by recalling from \Cref{chapter:theoretical} that smooth functions are dense in $\HH_1$ and $\HH_2$.
+In theory, one could use that result to construct a smooth approximation, then apply quadrature on the approximation in order to explicitly control the error of the approximation.
+Such an analysis is beyond the scope of this work, and we discretize each operator assuming that they act on smooth functions and that the data and computational grids are sufficiently fine so that second order methods introduce errors at a scale that is negligible.
+\textcolor{red}{
+  I hate this paragraph, but it seems necessary. Any suggestions?
+}
+
+We mention that there are other methods that are theoretically more appealing which use truncation orthonormal bases of $\HH _1$ and $\HH_2$.
+It can be shown that a class of Bessel functions are an orthonormal set of eigenvectors for the radial Laplacian where the eigenvalues are the first positive root of the eigenvector, hence elements of $\HH_1$ can be easily represented in that basis.
+However, proceeding with this method requires estimation of roots, as well as evaluation of the forward operator on Bessel functions, both analytically difficult.
+\textcolor{red}{
+  I did this a while ago with MAP estimation for fixed lambda and delta, and the results were not good. I numerically estimated both roots (using a code I found on the internet) and numerically estimated the forward operator on the Bessel functions.
+  Should I mention this?
+}
+
+In what follows, we define the discrete representations $\vect p$ and $\vect b$ as well as the corresponding operator approximations and address the error at each level.
+
+We assume that the domain of $b$ is scaled so that data are collected on equally spaced points in $x_i \in [-1,1]$, with $x_i = \frac iN$ for $-N\le i\le N$.
+Let $\vect b \in \R^{2N + 1}$ with entries $b_i \eqdef b(x_i)$ and $h\eqdef \frac 1N$. 
+Note that the point-symmetry of the operator implies that for $N$ independent estimates of $p$, we need data on $2N + 1$ points (the extra estimate is for $r(0)$).
+In what follows, we define $\acos(t)$ on all of $\R$ by taking the convention that $\acos(t) = 0$ if $|t| > 1$.
+\Cref{fig:radialForwardKernel} is useful for visualizing the following arguments.
+
+Recall, the integral kernel for $\G$ was
+\begin{equation} 
+  g(x,r) = \left\{\begin{array}{lr}
+    0 & x < - r\\
+    2(\pi - \acos(x/r)) & |x| \le r\\
+    2\pi &  x> r
+  \end{array}\right..  
+\end{equation}
+For a fixed  $x_i<0$, we have
+\begin{equation} \label{eq:radialForwardNegative}
+  [\G p](x_i) = \int_0^{-x_i} p(r)2(\pi - \acos(x_i/r))\,dr.
+\end{equation}
+As in \citep{bardsley2012mcmc}, we discretize the integral using midpoint quadrature which guarantees a second-order integration method.
+Because the upper bound in \eqref{eq:radialForwardNegative} depends on $x_i$, $\{r_j\}$ are placed at midpoints of $\{|x_i|\}$, hence, $r_j \eqdef j-\frac h2$ for $j=1,\dots N$. 
+
+When $x_i \le 0$, then $i \le 0$ and using $\acos(t) = 0$ for $t<-1$
+\begin{align}
+  [\G p](x_i) 
+    &\approx \sum_{j=1}^{-i} p(r_j)2(\pi - \acos(x_i/r_j)) r_jh \nonumber\\
+    &= \sum_{j=1}^{N} p(r_j)2(\pi - \acos(x_i/r_j)) r_jh. \label{eq:radialForwardApproxPositive}
+\end{align}
+When $x_i > 0$, then $i \ge 0$ and using $\acos(t) = 0$ for $t>1$ 
+\begin{align}
+  [\G p](x_i) 
+    &= 2\pi \int_0^{x_i} p(r)\,rdr + \int_{x_i}^\infty p(r)2(\pi - \acos(x_i/r))\,rdr\nonumber \\
+    &= \int_0^{x_i} p(r) 2(\pi - \acos(x_i/r))\,rdr + \int_{x_i}^\infty p(r)2(\pi - \acos(x_i/r))\,dr\nonumber \\
+    &\approx \sum_{j=1}^{N} p(r_j)2(\pi - \acos(x_i/r_j)) r_jh. \label{eq:radialForwardApproxNegative}
+\end{align}
+
+Now, let $\vect p$ be the $N\times 1$ column vector with entries $\vect p_j = p(r_j)$, then using \eqref{eq:radialForwardApproxNegative} and \eqref{eq:radialForwardApproxPositive} if we define the matrix $\vect G$ with entries $\vect G_{ij} = 2(\pi - \acos(x_i/r_j)) r_j h$, then the quadrature approximation can be expressed by the matrix-vector equation $\vect b \approx \vect G \vect p$.
+Finally, we use $\|f\|_{\HH_2} \approx \|\vect f\|_{\R^{2N+1}}$ to approximate the norm in $\HH_2$, where $\vect f$ are point-wise evaluations of $f$.
+Combining these approximations, we have for the first term in \eqref{eq:regularizingFunctional},
+\begin{equation}
+  \lambda \|b - \G p\|_{\HH_2} \approx \lambda h^2 \|\vect b - \vect G \vect p\|_{\R^{2N+1}}.
+\end{equation}
+
+The radial Laplacian $\L: \HH_1 \to \HH_1$ operates on continuous functions by
 \begin{equation} \label{eq:infiniteRadialLaplacian}
   [\L p](r) = r^{-1}\frac{d}{dr}\left(r \,\frac{d}{dr}p(r)\right). 
 \end{equation}
-Recall also that the inner product for the regularization is also affected by the change of variables, i.e.
-\begin{equation} \label{eq:infiteRadialInnerProduct}
-  \langle p_1, \L^n p_2 \rangle_{\HH_1}
-    = 2\pi\int_0^\infty p_1(r) [\L^n p_2](r) \, rdr. 
-\end{equation}
+For definiteness, we take $n=2$ in the inner product in \eqref{eq:regularizingFunctional}, so
+\begin{align} 
+  \langle p, \L^2 p \rangle_{\HH_1}
+  &= 2\pi\int_0^\infty p(r) [\L^2 p](r) \, rdr \nonumber\\
+  &= 2\pi\int_0^\infty p(r) \left[\frac{d}{dr}\left(r \,\frac{d}{dr}p(r)\right)\right]^2 \, r^{-1}dr.
+  \label{eq:infiteRadialInnerProduct}
+\end{align}
 
-%For numerical estimation, we discretize the forward integral operator in (\ref{fredholmEquation}) using midpoint quadrature, and, imposing the same resolution on the reconstructed radial profile as the data results in $\Ab$ being an $N \times (N-1)/2 = N\times M$ matrix.
-The differential operator $R$ is discretized using centered differencing, i.e.~for $h = 1/M$ denote $r_{j\pm1/2} = h\cdot j \pm h/2$, $x_j = x(r_j)$ and
+The discretization of \eqref{eq:infiniteRadialLaplacian} will occur in two steps. 
+We will use quadrature to estimate the integral in \eqref{eq:infiniteRadialLaplacian}, and use finite differencing to estimate the differential operator $\frac d{dr} r \frac d{dr}$ and squaring the approximation.
+
+Following similar arguments in \citep{morton2005numerical} for approximating a general parabolic operator, let $r_{j\pm 1/2}$ denote $r_j \pm \frac h2$, then using a center differencing scheme to approximate 
 \begin{equation}
-  [\bm R \bm x]_j \eqdef \frac{1}{h^2} \Big( r_{j+1/2}(x_{j+1} - x_j) - r_{j-1/2}(x_{j} - x_{j-1})\Big).
+  \left[\frac d{dr} r\frac d{dr} p\right]_{r_j} \approx\frac 1h\left( \left[r\frac d{dr}p\right]_{r_{j-1/2}} +  \left[r\frac d{dr}p\right]_{r_{j+1/2}}\right). 
+\end{equation}
+The center difference approximation of the first term is
+\begin{equation}
+  \left[r\frac d {dr}p\right]_{r_{j-1/2}} \approx r_{j-1/2} \frac{p_{j-1} - p_{j}}{h},
+\end{equation}
+and on the second term is
+\begin{equation}
+  \left[r\frac d {dr}p\right]_{r_{j+1/2}} \approx r_{j+1/2} \frac{p_{j} - p_{j+1}}{h},
+\end{equation}
+and summing these gives for $1<j<N$
+\begin{equation}
+  [\bm R \bm p]_j \eqdef \frac{1}{h^2} \Big( r_{j+1/2}(p_{j+1} - p_j) - r_{j-1/2}(p_{j} - p_{j-1})\Big).
   \label{laplacian_discretization}
 \end{equation}
-or as a matrix stencil
+The matrix stencil for the interior of $\vect R$ is
 \begin{equation}
   \frac{1}{h^2}
   \left[\begin{array}{ccc}
@@ -62,20 +160,34 @@ or as a matrix stencil
     0 & r_{j+1/2} & -(r_{j+1/2} + r_{j+3/2}) \\
   \end{array}\right]
   \left[\begin{array}{c}
-    x_{j-1} \\
-    x_{j}   \\
-    x_{j+1} \\
+    p_{j-1} \\
+    p_{j}   \\
+    p_{j+1} \\
   \end{array}\right].
   \label{laplacian_discretization_stencil}
 \end{equation}
-The discretization of $\bm R$ has a zero right boundary condition since $\lim\limits_{r\to\infty}x(r) = 0$ (we assume the domain for the radial profile is sufficiently large so that $r_M$ is less than machine epsilon) and a reflective left boundary condition because of the assumption of radial symmetry.
-We then take $\bm L = \bm r^{-1} \odot \bm R^2$, i.e., the coordinate wise multiplication of reciprocals of the grid points $r_j$ composed with $\bm R^2$.
-Finally, the discretization of the transformed inverse problem is
-\begin{equation}\label{eq:psfDiscInvProblem}
-  \bm b = \Ab x + \bm \eps,
+Since we assume that $rp(r) \to 0$ as $r\to \infty$ and the scale of the domain of $p$ is such that $p(1+\delta)\approx 0$ for all $\delta >0$, the discretization of $\bm R$ has a zero right boundary condition, so $p_{N}= 0$ implies
+\begin{equation}
+  [\vect R\vect p]_N = r_{N-1/2}p_{N-1} - (r_{N-1/2}+r_{N+1/2})p_N.
 \end{equation}
-with $\bm \eps \sim \N(\bm 0, \lambda^{-1} \bm I)$ and $\bm x \sim \N( \bm 0, \delta^{-1} \bm (\bm L^T\bm L)^{-1})$.
-  \subsection{The discrete posterior distribution}
+Since $p(r)$ is a radial profile, the implicit symmetry implies that $\frac d{dr}p(r) = 0$ which implies a Nuemann left-boundary condition. 
+Since $\{r_j\}$ were defined on half-grid points, this implies $p_1 = p_{0}$ and
+\begin{align}
+  [\vect R\vect p]_1 &= r_{j-1/2}p_0 - (r_{j-1/2}+r_{j+1/2})p_1 + r_{j+1/2}p_{2} \nonumber\\
+  &= r_{j+1/2}p_1 + r_{j+1/2}p_{2}.
+\end{align}
+We then take $\bm L = \bm r^{-1} \odot \bm R^2$, i.e., the coordinate wise multiplication of reciprocals of the grid points $r_j$ composed with $\bm R^2$.
+Finally, we approximate the integral in \eqref{eq:infiniteRadialLaplacian} 
+\begin{equation}\label{eq:psfDiscInvProblem}
+  \langle p, \L^2 p\rangle_{\HH_1} \approx 2\pi h \langle \vect p, \vect L \vect p\rangle_{\R^N}.
+\end{equation}
+So the complete approximatin to \eqref{eq:regularizingFunctional} is
+\begin{equation} \label{eq:discreteRegularizingFunctional}
+  \Phi(p; b) \approx \lambda h \|\vect G\vect p - \vect b\|_{\R^{2N+1}}^2 + \delta 2\pi h\langle \vect p, \vect L \vect p\rangle_{\R^N}.
+\end{equation}
+
+  \subsection{The discrete hierarchical posterior distribution}
+
 \section{Markov Chain Monte Carlo Simulation} \label{sec:pcgibbs}
 In this section we give an overview of Markov Chain Monte Carlo (MCMC) methods for analyzing a probability distribution known up to a scaling constant.
 Statistical analysis is based on the ergodic theorem for Markov chains, which can be thought of as the analogous central limit theorem for Markov chains. 
@@ -361,7 +473,6 @@ This lack of dependence is crucial for partially collapsing components out of th
     \tilde\K\Big[ \pi(\vect x)&\pi(\tilde x_p|\vect x)\Big](\tilde{\vect x}') \nonumber \\ 
     &= \K_p \tilde\K_{p-1} \K_{p-2}\dots\K_{1} \big[\pi(\vect x)\pi(\tilde x_p|\vect x)\big](\tilde{\vect x}') \nonumber\\
     &= \int\limits_{x_p} \pi(x_p'|\rem xp')\iint\limits_{\tilde x_p,x_{p-1}}\tilde K_{p-1}(\tilde{\vect x}')\idotsint\limits_{x_{p-2}\dots x_1}\dots \pi(\vect x)\pi(\tilde x_p|\vect x)dx_1\dots d\tilde x_p dx_p \nonumber\\
-    &=\int\limits_{x_p}\pi(x_p'|\rem xp') \int\limits_{x_{p-1}}\tilde K_{p-1}(\tilde{\vect x}')\int\limits_{x_{p-2}}\dots \int\limits_{x_1}\pi(x_1'|\rem x1)\pi(\vect x)\left(\int_{\tilde x_p}\pi(\tilde x_p|\vect x)\tilde x_p \right)d\vect x \label{eq:conditionedGibbsCalc}
   \end{align}
   where we used Fubini's theorem to integrate first in $\tilde x_p$ for which each kernel $K_i$ does not depend. 
   Since  $\int\pi(\tilde x_p|\vect x)d\tilde x_p = 1$, and each of the inner $p-2$ integrations express the action of the first $p-2$ steps of the standard Gibbs sampler, continuing from \eqref{eq:conditionedGibbsCalc} results in 
