@@ -6,193 +6,47 @@
 In the last chapter, we established the theory for defining the inverse problem in an infinite dimensional Hilbert space. 
 The development led to defining the functional $\Phi:\HH_1 \times \HH_2 \to \R$
 \begin{equation} \label{eq:regularizingFunctional}
-  \Phi(p; b) = \lambda\|\G p - b\|_{\HH_2}^2 + \delta\langle p, \L^n p\rangle_{\HH_1},
+  \Phi(p; b,\lambda,\delta) = \frac 12 \left(\lambda\|\G p - b\|_{\HH_2}^2 + \delta\langle p, \L^n p\rangle_{\HH_1}\right),
 \end{equation}
-where $\G$ is the operator that takes a radial profile $p$ to a line of blurred image of an edge $b$, and $\L$ is the induced radial Laplacian. 
+where $\G$ is the operator that takes a radial profile, $p$, to a line-out of a blurred image of an edge, $b$, with $\L$ the induced negative radial Laplacian. 
 We also showed that $\L^n$ was trace class for all $n$ in $\HH_1$. %, which allowed for a well-defined posterior probability measure for $p$.
-Hence, in the infinite dimensional Bayesian perspective, if $p\sim \mu_p$ where $\mu_p$ is a Gaussian measure with mean $0$ and precision $\delta \L$, then in the presence of independent noise precision $\lambda I$ (with corresponding measure $\mu^b$) the posterior is Gaussian with a Radon-Nykodym derivative with respect to $\mu_p$
-%we modeled the likelihood as a white-noise process with covariance $\lambda \delta$, which with the assumption that $p$ is random variable distributed by a Gaussian measure, $\rho_0$, on $\HH_1$ with zero mean and the radial Laplacian as the precision operator $L$, radon $p$  
+Hence, in the infinite dimensional Bayesian perspective, if $p\sim \mu_p$ where $\mu_p$ is a Gaussian measure with mean $0$ and precision $\delta \L$, then in the presence of independent noise precision $\lambda I$ (with corresponding measure $\mu^b$), the posterior is Gaussian with a Radon-Nykodym derivative with respect to $\mu_p$
+%we modeled the likelihood as a white-noise process with covariance $\lambda \delta$, which with the assumption that $p$ is random variable distributed by a Gaussian measure, $\rho_0$, on $\HH_1$ with zero mean and the negative radial Laplacian as the precision operator $L$, radon $p$  
 %That is, in the infinite dimensional Bayesian perspective, when $\lambda$ and $\delta$ were given this led to a conditional random variable for $p$ with Gaussian measure and a probability density
 \begin{equation} \label{eq:posteriorInfinite}
-  \frac{\mu^b}{\mu_p}(p) \propto \exp\left(-\Phi(p;b)\right),
+  \frac{\mu^b}{\mu_p}(p) \propto \exp\left(-\Phi(p;b,\lambda,\delta)\right),
 \end{equation}
-where $\Phi(p;b)$ is unique up to scaling by a factor dependent on $b$.
+where $\Phi(p;b,\lambda,\delta)$ is unique up to scaling by a factor dependent on $b$.
 We called this the infinite dimensional posterior for $p$ given $b$.
 
-Of course, to carry out numerical estimation, the data and the estimate for the PSF must be represented by a finite set of numbers on computer.
-In the framework of \citep{stuart2010}, one would design an algorithm that samples the \emph{infinite} dimensional posterior. 
-This approach was undertaken in \citep{agapiou2014analysis} for linear inverse problems with a Laplacian precision operator and a hierarchical Gamma prior for $\delta$ with a given estimate for $\lambda$. 
+Of course, to carry out numerical estimation, the data and the estimate for the PSF must be represented by a finite set of numbers on a computer.
+In the framework of \citep{stuart2010}, one would design an algorithm that samples the infinite dimensional posterior. 
+This approach was undertaken in \citep{agapiou2014analysis} for linear inverse problems with a Laplacian precision operator and a hierarchical gamma prior for $\delta$ with a given estimate for $\lambda$. 
 They analyzed the infinite dimensional Gibbs sampler, and showed that it had deficiencies in sampling $\delta$ that exacerbate as the discretization converges.
 They then introduced two algorithms that alleviate this issue.
-Although their analysis is not directly applicable to PSF reconstruction since our prior is the \emph{radial} Laplacian, we take cues from their work to design the algorithm for exploring the \emph{discrete} posterior density for PSF reconstruction.
+Although their analysis is not directly applicable to PSF reconstruction since our prior is the negative radial Laplacian, we take cues from their work to design the algorithm for exploring the discrete posterior density for PSF reconstruction.
 Also, by discretizing at this stage, we will be able to develop an algorithm that allows for the noise precision $\lambda$ to be estimated.
 We follow the general development outlined in \citep{bardsley2012mcmc}, which has been adopted successfully in many other applications of linear inverse problems related to imaging \citep{howard2016bayesian,bardsley2016metropolis,fowler2016stochastic,bardsley2015dealing,bardsley2013efficient}.
 
-The discrete representations will be point-based on equally spaced grids, and each operator defined in the \Cref{chapter:theoretical} will be estimated using either numerical quadrature or finite differencing.
+We begin this chapter with a brief overview of the general theory for the Markov Chain Monte Carlo alorithms that will be used.
+In \Cref{sec:pcgibbs}, we will derive the standard Gibbs' sampling algorithm first outlined by \citep{geman1984stochastic} and improve upon it using a technique called \emph{partial collapse}, which can motivated by several recent theoretical and practial analyses \citep{van2008partially,agapiou2014analysis,fox2015fast}.
+This section will give a full development from first principles, and prove the assertions of invariance stated in \citep{van2008partially}.
+
+\Cref{sec:discretization} returns to the PSF estimation problem, in which we discus how to transition from the continuum to numerical estimation on a computer.
+We then derive all of the necessary probability densities for carrying out the algorithms in \Cref{sec:pcgibbs}.
+The discrete representations will be point-based on equally spaced grids, and each operator defined in \Cref{chapter:theoretical} will be estimated using either numerical quadrature or finite differencing.
 Hence, to each operator we will define a matrix that defines their action on the point-wise estimates, and they will be derived in \Cref{sec:discretization}.
 We then develop the \emph{discrete} probability spaces associated with the matrix-operators defined in \Cref{sec:discretization}, which will serve as our discrete approximation of the infinite dimensional space defined in \Cref{chapter:theoretical}.
-In this development, we will add ``uninformative'' prior assumptions for the parameters $\lambda$ and $\delta$, forming a hierarchical Bayesian model.
+In this development, we will add `uninformative' prior assumptions for the parameters $\lambda$ and $\delta$, forming a hierarchical Bayesian model.
 From there, the discrete posterior distribution can be expressed in terms of conditional distributions in such a way so that Markov Chain Monte Carlo sampling techniques (e.g. Gibbs sampling) can be applied to provide estimates and quantification of uncertainty.
-In \Cref{sec:pcgibbs}, we will derive a standard Gibbs' sampling algorithm \cite{geman1984stochastic} and improve upon it using a technique called \emph{partial collapse}, which can motivated by several recent theoretical and practial analyses \citep{van2008partially,agapiou2014analysis,fox2015fast}.
 We will also briefly review standard convergence diagnostics for comparing Markov Chain based sampling algorithms, which will show that our adapted algorithm is indeed an enhancement of standard Gibbs' sampling.
 
-\section{Discrete representation of the inference problem} \label{sec:discretization}
-
-\textcolor{red}{
-  We need to step away from the continuum to the discrete.
-  The objects we are studying are functionals that have bounded special norm according to 3.4.
-  We will proceed by using using differencing schemes and for the differential operations, and numerical quadrature for integral inner products.
-  Both methods rely on point-wise Taylor expansions to ensure convergence.
-  The objects we modeled with in the continuum do not have such expansions, 
-  BUT
-  Hence, we do not have an explicit expression of the error of our approximation with respect to the theoretical objects, but only on functions that are smooth (hence have Taylor exponsions).
-  We mention that other methods that use a truncation of an orthonormal bases of $\HH _1$ and $\HH_2$ are theoretically more appealing (Galerkin methods), and the radial Laplacian is known to be diagonalized a class of Bessel functions, the analysis is more involved and requires a transformation of the data given on a grid to the appropriate coefficients.
-  It also requires knowledge of how the forward operator acts on Bessel functions.
-}
-
-Transitioning from the model on the continuum to a discrete representation is a delicate process for which error is introduced at many levels.  
-For example, we do not even have full access to all $\R$, since a computer must represent a real number with a floating-point approximation corresponding to a binary integer from a finite set (although, this error is not addressed in this work). 
-Our formal notions of $p$ and $b$ are as functionals that act on compactly supported smooth functions, which has many levels of abstraction beyond a point-wise definition, and we will attempt briefly address the approximation at each of these levels.
-
-Our primary tools for discretization will be finite-differencing for the regularizing differential operator $\L$ and numerical quadrature for the integral operator $\G$ and integral inner products associated with $\HH_1$ and $\HH_2$.
-Both methods assume $p$ and $g$ are functions with known evaluations on a discrete grid.
-The error analysis associated with these methods are based on Taylor expansions, which assume a function that is at least twice differentiable at each point in the interior of their domain and that the second derivatives are uniformly bounded in order to obtain error $O(h)$, where $h$ is the width between grid points,
-%This assumption could motivates that the regularization operator be squared, i.e.~$\L^2$, to ensure bounded second derivatives, but, our objects are not functions and Taylor's theorem is not available. 
-This analysis is not directly applicable since $p$ and $b$ are not functions and Taylor's theorem is not available.
-In fact, any element with discrete support in $\HH_1$ and $\HH_2$ is equivalent to $0$, since each is a subspace of an $L^2$ space.
-Yet, we justify our use of quadrature methods by recalling from \Cref{chapter:theoretical} that smooth functions are dense in $\HH_1$ and $\HH_2$.
-In theory, one could use that result to construct a smooth approximation, then apply quadrature on the approximation in order to explicitly control the error of the approximation.
-Such an analysis is beyond the scope of this work, and we discretize each operator assuming that they act on smooth functions and that the data and computational grids are sufficiently fine so that second order methods introduce errors at a scale that is negligible.
-\textcolor{red}{
-  I hate this paragraph, but it seems necessary. Any suggestions?
-}
-
-We mention that there are other methods that are theoretically more appealing which use truncation orthonormal bases of $\HH _1$ and $\HH_2$.
-It can be shown that a class of Bessel functions are an orthonormal set of eigenvectors for the radial Laplacian where the eigenvalues are the first positive root of the eigenvector, hence elements of $\HH_1$ can be easily represented in that basis.
-However, proceeding with this method requires estimation of roots, as well as evaluation of the forward operator on Bessel functions, both analytically difficult.
-\textcolor{red}{
-  I did this a while ago with MAP estimation for fixed lambda and delta, and the results were not good. I numerically estimated both roots (using a code I found on the internet) and numerically estimated the forward operator on the Bessel functions.
-  Should I mention this?
-}
-
-In what follows, we define the discrete representations $\vect p$ and $\vect b$ as well as the corresponding operator approximations and address the error at each level.
-
-We assume that the domain of $b$ is scaled so that data are collected on equally spaced points in $x_i \in [-1,1]$, with $x_i = \frac iN$ for $-N\le i\le N$.
-Let $\vect b \in \R^{2N + 1}$ with entries $b_i \eqdef b(x_i)$ and $h\eqdef \frac 1N$. 
-Note that the point-symmetry of the operator implies that for $N$ independent estimates of $p$, we need data on $2N + 1$ points (the extra estimate is for $r(0)$).
-In what follows, we define $\acos(t)$ on all of $\R$ by taking the convention that $\acos(t) = 0$ if $|t| > 1$.
-\Cref{fig:radialForwardKernel} is useful for visualizing the following arguments.
-
-Recall, the integral kernel for $\G$ was
-\begin{equation} 
-  g(x,r) = \left\{\begin{array}{lr}
-    0 & x < - r\\
-    2(\pi - \acos(x/r)) & |x| \le r\\
-    2\pi &  x> r
-  \end{array}\right..  
-\end{equation}
-For a fixed  $x_i<0$, we have
-\begin{equation} \label{eq:radialForwardNegative}
-  [\G p](x_i) = \int_0^{-x_i} p(r)2(\pi - \acos(x_i/r))\,dr.
-\end{equation}
-As in \citep{bardsley2012mcmc}, we discretize the integral using midpoint quadrature which guarantees a second-order integration method.
-Because the upper bound in \eqref{eq:radialForwardNegative} depends on $x_i$, $\{r_j\}$ are placed at midpoints of $\{|x_i|\}$, hence, $r_j \eqdef j-\frac h2$ for $j=1,\dots N$. 
-
-When $x_i \le 0$, then $i \le 0$ and using $\acos(t) = 0$ for $t<-1$
-\begin{align}
-  [\G p](x_i) 
-    &\approx \sum_{j=1}^{-i} p(r_j)2(\pi - \acos(x_i/r_j)) r_jh \nonumber\\
-    &= \sum_{j=1}^{N} p(r_j)2(\pi - \acos(x_i/r_j)) r_jh. \label{eq:radialForwardApproxPositive}
-\end{align}
-When $x_i > 0$, then $i \ge 0$ and using $\acos(t) = 0$ for $t>1$ 
-\begin{align}
-  [\G p](x_i) 
-    &= 2\pi \int_0^{x_i} p(r)\,rdr + \int_{x_i}^\infty p(r)2(\pi - \acos(x_i/r))\,rdr\nonumber \\
-    &= \int_0^{x_i} p(r) 2(\pi - \acos(x_i/r))\,rdr + \int_{x_i}^\infty p(r)2(\pi - \acos(x_i/r))\,dr\nonumber \\
-    &\approx \sum_{j=1}^{N} p(r_j)2(\pi - \acos(x_i/r_j)) r_jh. \label{eq:radialForwardApproxNegative}
-\end{align}
-
-Now, let $\vect p$ be the $N\times 1$ column vector with entries $\vect p_j = p(r_j)$, then using \eqref{eq:radialForwardApproxNegative} and \eqref{eq:radialForwardApproxPositive} if we define the matrix $\vect G$ with entries $\vect G_{ij} = 2(\pi - \acos(x_i/r_j)) r_j h$, then the quadrature approximation can be expressed by the matrix-vector equation $\vect b \approx \vect G \vect p$.
-Finally, we use $\|f\|_{\HH_2} \approx \|\vect f\|_{\R^{2N+1}}$ to approximate the norm in $\HH_2$, where $\vect f$ are point-wise evaluations of $f$.
-Combining these approximations, we have for the first term in \eqref{eq:regularizingFunctional},
-\begin{equation}
-  \lambda \|b - \G p\|_{\HH_2} \approx \lambda h^2 \|\vect b - \vect G \vect p\|_{\R^{2N+1}}.
-\end{equation}
-
-The radial Laplacian $\L: \HH_1 \to \HH_1$ operates on continuous functions by
-\begin{equation} \label{eq:infiniteRadialLaplacian}
-  [\L p](r) = r^{-1}\frac{d}{dr}\left(r \,\frac{d}{dr}p(r)\right). 
-\end{equation}
-For definiteness, we take $n=2$ in the inner product in \eqref{eq:regularizingFunctional}, so
-\begin{align} 
-  \langle p, \L^2 p \rangle_{\HH_1}
-  &= 2\pi\int_0^\infty p(r) [\L^2 p](r) \, rdr \nonumber\\
-  &= 2\pi\int_0^\infty p(r) \left[\frac{d}{dr}\left(r \,\frac{d}{dr}p(r)\right)\right]^2 \, r^{-1}dr.
-  \label{eq:infiteRadialInnerProduct}
-\end{align}
-
-The discretization of \eqref{eq:infiniteRadialLaplacian} will occur in two steps. 
-We will use quadrature to estimate the integral in \eqref{eq:infiniteRadialLaplacian}, and use finite differencing to estimate the differential operator $\frac d{dr} r \frac d{dr}$ and squaring the approximation.
-
-Following similar arguments in \citep{morton2005numerical} for approximating a general parabolic operator, let $r_{j\pm 1/2}$ denote $r_j \pm \frac h2$, then using a center differencing scheme to approximate 
-\begin{equation}
-  \left[\frac d{dr} r\frac d{dr} p\right]_{r_j} \approx\frac 1h\left( \left[r\frac d{dr}p\right]_{r_{j-1/2}} +  \left[r\frac d{dr}p\right]_{r_{j+1/2}}\right). 
-\end{equation}
-The center difference approximation of the first term is
-\begin{equation}
-  \left[r\frac d {dr}p\right]_{r_{j-1/2}} \approx r_{j-1/2} \frac{p_{j-1} - p_{j}}{h},
-\end{equation}
-and on the second term is
-\begin{equation}
-  \left[r\frac d {dr}p\right]_{r_{j+1/2}} \approx r_{j+1/2} \frac{p_{j} - p_{j+1}}{h},
-\end{equation}
-and summing these gives for $1<j<N$
-\begin{equation}
-  [\bm R \bm p]_j \eqdef \frac{1}{h^2} \Big( r_{j+1/2}(p_{j+1} - p_j) - r_{j-1/2}(p_{j} - p_{j-1})\Big).
-  \label{laplacian_discretization}
-\end{equation}
-The matrix stencil for the interior of $\vect R$ is
-\begin{equation}
-  \frac{1}{h^2}
-  \left[\begin{array}{ccc}
-    -(r_{j-3/2} + r_{j-1/2}) & r_{j-1/2} & 0             \\
-    r_{j-1/2} & -(r_{j-1/2} + r_{j+1/2}) & r_{j+1/2}     \\
-    0 & r_{j+1/2} & -(r_{j+1/2} + r_{j+3/2}) \\
-  \end{array}\right]
-  \left[\begin{array}{c}
-    p_{j-1} \\
-    p_{j}   \\
-    p_{j+1} \\
-  \end{array}\right].
-  \label{laplacian_discretization_stencil}
-\end{equation}
-Since we assume that $rp(r) \to 0$ as $r\to \infty$ and the scale of the domain of $p$ is such that $p(1+\delta)\approx 0$ for all $\delta >0$, the discretization of $\bm R$ has a zero right boundary condition, so $p_{N}= 0$ implies
-\begin{equation}
-  [\vect R\vect p]_N = r_{N-1/2}p_{N-1} - (r_{N-1/2}+r_{N+1/2})p_N.
-\end{equation}
-Since $p(r)$ is a radial profile, the implicit symmetry implies that $\frac d{dr}p(r) = 0$ which implies a Nuemann left-boundary condition. 
-Since $\{r_j\}$ were defined on half-grid points, this implies $p_1 = p_{0}$ and
-\begin{align}
-  [\vect R\vect p]_1 &= r_{j-1/2}p_0 - (r_{j-1/2}+r_{j+1/2})p_1 + r_{j+1/2}p_{2} \nonumber\\
-  &= r_{j+1/2}p_1 + r_{j+1/2}p_{2}.
-\end{align}
-We then take $\bm L = \bm r^{-1} \odot \bm R^2$, i.e., the coordinate wise multiplication of reciprocals of the grid points $r_j$ composed with $\bm R^2$.
-Finally, we approximate the integral in \eqref{eq:infiniteRadialLaplacian} 
-\begin{equation}\label{eq:psfDiscInvProblem}
-  \langle p, \L^2 p\rangle_{\HH_1} \approx 2\pi h \langle \vect p, \vect L \vect p\rangle_{\R^N}.
-\end{equation}
-So the complete approximatin to \eqref{eq:regularizingFunctional} is
-\begin{equation} \label{eq:discreteRegularizingFunctional}
-  \Phi(p; b) \approx \lambda h \|\vect G\vect p - \vect b\|_{\R^{2N+1}}^2 + \delta 2\pi h\langle \vect p, \vect L \vect p\rangle_{\R^N}.
-\end{equation}
-
-  \subsection{The discrete hierarchical posterior distribution}
 
 \section{Markov Chain Monte Carlo Simulation} \label{sec:pcgibbs}
 In this section we give an overview of Markov Chain Monte Carlo (MCMC) methods for analyzing a probability distribution known up to a scaling constant.
 Statistical analysis is based on the ergodic theorem for Markov chains, which can be thought of as the analogous central limit theorem for Markov chains. 
 These notions will be briefly overviewed in the next section, and complete treatments can be found in \citep{robert2013monte,liu2008monte}.
-In the context of PSF reconstruction, samples will be taken from the posterior $p(\vect x,\delta,\lambda|\vect b)$.
+In the context of PSF reconstruction, samples will be taken from the posterior $\pi(\vect x,\delta,\lambda|\vect b)$.
 Our development will lead to an algorithm based on Gibbs' sampling that uses a technique referred to as partial collapse.  
 In partially collapsed Gibbs sampling, conditional densities are modified to remove dependence between components of the joint density.
 Our use of partial collapse will be motivated by the marginal algorithm in \citep{agapiou2014analysis}, a similar infinite dimensional sampler.
@@ -311,7 +165,7 @@ Formally, for a Borel set $A$, the \emph{average number of passages} of $(\vect 
 Again, verifying this condition is beyond the scope of this work, and we cite \citep{robert2013monte} who ensures that transitions associated with Gibbs sampling and Metropolis-Hastings are Harris recurrent.
 
 We now state the main theorem that allows for the end behaviour Markov chains to be used as tools for estimating statistics of a given probability distribution:
-\begin{thm}
+\begin{thm} \label{thm:ergodicTheorem}
   \citep{tierney1994markov} Suppose $\K$ defines a stationary Markov chain with invariant density $\pi$. If the chain is $\pi$-irreducible and Harris recurrent, then $\pi$ is unique and for any initial density $\pi_0$ and all $\vect x$ but a subset whose measure under $\pi$ is zero,
   \begin{enumerate}[(i)]
     \item Almost surely with respect to $\pi$, for any integrable $h$ \begin{equation} \lim_{N\to \infty}\frac 1N\sum_{n=1}^N h(\vect X^n) = \int h(\vect x) \pi(\vect x) d\vect x. \label{eq:ergodicStat}\end{equation}
@@ -396,7 +250,7 @@ To see this, when $(x_{i+1}\dots x_p)$ are given, then $\pi(\vect x)/\pi(x_{i+1}
 Viewing Gibbs sampling as composed conditional sub-transitions allows for the flexibility to design and analyze algorithms that modify each sub-transition step. 
 That is, if an intermediate step in the Gibbs sampler is modified, say with $\tilde K_i$, then in order to prove invariance, we need only show that $\tilde \K_i\K_{i-1}\dots\K_1$ is invariant with respect to $\pi(x_1\dots x_i|x_{i+1}\dots x_p)$.
 We state this result formally:
-\begin{cor}
+\begin{cor} \label{cor:conditionalTransition}
   Suppose $\K = \K_p\dots\K_1$ is the transition operator for \Cref{alg:gibbs}, and $\tilde \K_i$ given $\rem xi$ is an operator such that $\tilde \K_i \big[\pi(x_i|\rem xi)\big] = \pi(x_1'|\rem xi)$, then $\K_p\dots\tilde \K_i\K_{i-1}\dots\K$ is invariant with respect to $\pi$.
 \end{cor}
 \begin{proof} 
@@ -530,7 +384,7 @@ This results in the same transition kernel as the $p$-Conditioned sampler except
 By \eqref{eq:pcGibbsInvariance}, the corresponding Markov Chain is invariant with respect to $\pi$.
 The following algorithm simulates this chain:
 \begin{algorithm}[h]
-\caption{$p$-Partially Collapsed Gibbs sampler} \label{alg:conditionedGibbs}
+\caption{$p$-Partially Collapsed Gibbs sampler} \label{alg:pcgibbs}
 Given $\tilde{\vect x}^{k-1} = (x_1^{k-1}\dots \tilde x_p^{k-1},x_p^{k-1})$, simulate 
 \begin{flalign*}
   \text{1.~}&   X_1^{k} \sim \pi(x_1|x_2^{k-1},x_3^{k-1}\dots x_p^{k-1})                    & \\
@@ -564,15 +418,16 @@ In the next section we give a brief overview of the random walk Metropolis-Hasti
 
 \subsection{Metropolis-Hastings within partially collapsed Gibbs}
 The Metropolis-Hastings algorithm \citep{metropolis1953equation} has been studied extensively as an MCMC method, and over the last half-century, has been generalized and adapted to encompass a large class of MCMC algorithms for simulating samples for a large class of problems. 
-In fact, Gibbs sampling can be viewed as successive Metropolis-Hastings transitions \citep{robert2013monte}.  We will focus on random walk Metropolis-Hastings and how it can be incorporated into the partially collapsed Gibbs sampler.
+In fact, Gibbs sampling can be viewed as successive Metropolis-Hastings transitions \citep{robert2013monte}.
+We will focus on Metropolis-Hastings algorithms with reversible proposals and how they can be incorporated into the partially collapsed Gibbs sampler.
 Again, see one of the books \citep{calvetti2007introduction,liu2008monte,robert2013monte} and references there for a complete treatment.
 
 Consider the following algorithm for simulating a transition for a univariate Markov chain $(X^1,X^2\dots)$:
 \begin{algorithm}[H]
-\caption{Random walk Metropolis-Hastings} \label{alg:metropolis}
-Given $X^k = x^{k}$, 
+\caption{Reversible Metropolis-Hastings} \label{alg:metropolis}
+Given $X^k = x^{k}$, and reversible proposal density such that $\rho(y|x) = \rho(x|y)$.
 \begin{enumerate}[1.]
-  \item Simulate $Y^k \sim \pi_0(|y - x^{k}|)$
+  \item Simulate $Y^k \sim \rho(y|x^k)$
   \item Set
   \begin{equation*}
     X^{k+1} = \begin{cases}
@@ -584,8 +439,8 @@ Given $X^k = x^{k}$,
 \end{enumerate}
 \end{algorithm} 
 
-The simulation $Y^k\sim \pi_0(|y-x^k|)$ is called the \emph{proposal} transition.
-The idea of the Metropolis-Hastings is, first generate a `proposal' from a given transition operator ($\pi_0(|y-x|)$) from your current state, then if your guess `improves' how likely you your next step is to be from the desired distribution $\pi$, then move there, otherwise stay put.
+The simulation $Y^k\sim \rho(y|x^k)$ called the \emph{proposal} transition.
+The idea of the Metropolis-Hastings is, first generate a `proposal' from a given transition operator ($\pi(y|x)$) from your current state, then if your guess `improves' how likely you your next step is to be from the desired distribution $\pi$, then move there, otherwise stay put.
 At first glance, this algorithm might not seem useful since it requires a computation of a ratio of $\pi$, which we initially assumed was difficult to simulate.
 However, it is precisely because it appears as a \emph{ratio} that makes the method useful -- we need only know $\pi$ up to a constant of proportionality since they cancel in the ratio.
 
@@ -607,7 +462,7 @@ To see formally that \Cref{alg:metropolis} defines an invariant Markov chain for
 The Metropolis-Hastings kernel is, in some sense, designed to satisfy detailed balance and \citep{calvetti2007introduction} presents the development of the Metropolis-Hastings algorithm with that perspective.
 We summarize that discussion, to develop to give an explicit description of the transition kernel corresponding to \Cref{alg:metropolis}.
 
-\begin{prop}
+\begin{prop} \label{prop:metropolisInvariance}
   The Markov chain generated by \Cref{alg:metropolis} is invariant with respect to $\pi$.
 \end{prop}
 \begin{proof}
@@ -620,55 +475,552 @@ Then, for any event $A$
     &= \mathbb P\left( Y^k \in A\text{ and } U = 1 |X^k=x^k \right) \nonumber\\
     &\quad\quad+ \mathbb P\left(x^k \in A\text{ and } U = 0| X^k=x^k \right). \label{eq:metropolisKernelProb}
 \end{align}
-The mixed continuous/discrete density for $(Y^k,U|X^k = x^k)$ satisfies $\pi(y,u|x^k) = \pi(u|y,x^k))\pi_0(|y-x^k|)$ by the definition of conditional density.  
+The mixed continuous/discrete density for $(Y^k,U|X^k = x^k)$ satisfies $\pi(y,u|x^k) = \pi(u|y,x^k))\rho(y|x^k)$ the definition of conditional density.  
 Moreover, $\pi(u=1|y,x^k) = \alpha(x^k,y)$ 
 and 
 \begin{equation*}
-  \pi(u=0|x^k) = \int \pi(u=0,y'|x^k)dy' = \int \pi(u=0|y',x^k)\pi(y|x^k)dy' = \int (1-\alpha(x^k,y'))\pi_0(|y'-x^k)dy'.
+  \pi(u=0|x^k) = \int \pi(u=0,y'|x^k)dy' = \int \pi(u=0|y',x^k)\pi(y|x^k)dy' = \int (1-\alpha(x^k,y'))\rho(|y'-x^k)dy'.
 \end{equation*}
 so continuing from \eqref{eq:metropolisKernelProb},
 \begin{align}
-    &= \int_A \alpha(x^k,y)\pi_0(|y-x^k|)dy + I_A(x^k) \int (1 - \alpha(x^k,y'))\pi_0(|y'-x^k|)dy'
+    &= \int_A \alpha(x^k,y)\rho(y|x^k) I_A(x^k) \int (1 - \alpha(x^k,y'))\rho(y|x^k))dy'
 \end{align}
 where $I_A$ denotes the indicator function for the set $A$.
 Note that $I_A(x^k) = \int_A \delta_x(y)dy$ ($\delta_x$ denotes the Dirac probability measure), so the transition kernel for \Cref{alg:metropolis} is
 \begin{equation} \label{eq:metropolisKernel}
-  K(x,y) = \alpha(x,y)\pi_0(|y-x|) + \delta_x(y) \left(1 - \int \alpha(x,y')\pi_0(|y'-x|)dy'\right).
+  K(x,y) = \alpha(x,y)\rho(y|x) \delta_x(y) \left(1 - \int \alpha(x,y')\rho(y'|x)dy'\right).
 \end{equation}
 
 Now, in order to show that $K(x,y)$ satisfies the detailed balance equation, it suffices to show it for each term in \eqref{eq:metropolisKernel}.
 If $\pi(y) >= \pi(x)$ then $\alpha(x,y) = 1$ and $\alpha(y,x) = \pi(x)/\pi(y)$ so 
 \begin{equation}
-  \alpha(x,y)\pi_0(|y-x|)\pi(x) = \pi_0(|x-y|)\pi(x) = \frac{\pi(x)}{\pi(y)}\pi_0(|x-y|)\pi(y) = \alpha(y,x)\pi_0(|x-y|)\pi(y).
+  \alpha(x,y)\rho(y|x)\pi(x) = \rho(x|y)\pi(x) = \frac{\pi(x)}{\pi(y)}\rho(x|y)\pi(y) = \alpha(y,x)\rho(x|y)\pi(y).
 \end{equation}
 Moreover, for any integrable function $f$, we have (in the distributional or Dirac measure sense)
 \begin{equation}
   f(x)\int_A \delta_x(y) \pi(y)dy = f(x)I_A(x)\pi(x) = \pi(x)\int_A \delta_x(y) f(y)dy
 \end{equation}
-for all events $A$, so taking $f(x) = 1 - \int\alpha(x,y')\pi_0(|y'-x|)dy'$ proves that $K(x,y)$ satisfies the detail balance condition, hence the Markov chain for \Cref{alg:metropolis} is invariant with respect to $\pi$.
+for all events $A$, so taking $f(x) = 1 - \int\alpha(x,y')\rho(y'|x)dy'$ proves that $K(x,y)$ satisfies the detail balance condition, hence the Markov chain for \Cref{alg:metropolis} is invariant with respect to $\pi$.
 \end{proof}
 
+Combining \Cref{prop:metropolisInvariance} and \Cref{cor:conditionalTransition}, proves the invariance with respect to $\pi$ of \Cref{alg:MHpcgibbs}.
+\begin{algorithm}[H]
+\caption{Metropolis Hastings within $p$-Partially Collapsed Gibbs sampler} \label{alg:MHpcgibbs}
+Given $\tilde{\vect x}^{k-1} = (x_1^{k-1}\dots \tilde x_p^{k-1},x_p^{k-1})$, simulate 
+\begin{flalign*}
+  \text{1.~}&   X_1^{k} \sim \pi(x_1|x_2^{k-1},x_3^{k-1}\dots x_p^{k-1})                    & \\
+  \text{2.~}&   X_2^{k} \sim \pi(x_2|x_1^k,x_3^{k-1}\dots x_p^{k-1})                        & \\
+  \vdots &                                                                                  & \\
+  \text{p-1.~}&\text{Simulate } X^k_{p-1}\text{ from \Cref{alg:metropolis} for }
+    \pi (x_{p-1}|x_1^k,x_2^k\dots x_{p-2}^k)                    & \\
+  \text{p.~}&   X_p^{k} \sim \pi(x_p|x_1^k,x_2^{k}\dots x_{p-1}^{k})                        & 
+\end{flalign*}
+\end{algorithm} 
+One implementation question remains as to whether to iterate step p-1. to obtain `better' simulations from $\pi(x_{p-1}|x_1^k,x_2^k\dots x_{p-2}^k)$. 
+When implemented in standard Gibbs sampling, \citep{robert2013monte} recommend only one simulation.
+Although, in \citep{van2015metropolis}, they recommend that iterating the Metropolis step improves convergence rates.
 \textcolor{red}{
-  State some kind of algorithm that cites the Metropolis step for sampling the $p-1$ conditioned step.
-  Talk about how the corollary ensures that the sampler is invariant since it is invariant with respect to the conditional density.
-  We are now ready to return to PSF estimation
+  Can we view the iteration as a delayed rejection for a one step process?
+  If so, then there is theory that says there is a convergence improvement (which is intuitively obvious, and in our case comes with an added computational cost).
+  Moreover, if we add an adaptive step, is this related to the DRAM algorithm?
 }
+
+As we've shown, each scheme is invariant with respect to $\pi$, however, as we will see with PSF estimation, generating the proposal for \Cref{alg:metropolis} may be computationally expensive, and the improvement in convergence may not worth the computational expense, since the less expensive but slower to converge scheme can be run for longer.
+These issues are problem dependent, and in \Cref{sec:evaluatingConvergence}, we will address these issues explicitly for PSF estimation.
+
+We now return to the problem of PSF estimation, where we will explicitly implement and describe Gibbs sampling and Metropolis Hastings within partially collapsed Gibbs sampling for PSF reconstruction.
+
+\section{From the continuum to the discrete} \label{sec:discretization}
+
+Transitioning from the model on the continuum to a discrete representation is a delicate process for which error is introduced at many levels.  
+For example, we do not even have full access to all of $\R$, since a computer must represent a real number with a floating-point approximation corresponding to a binary integer from a finite set (although, this error is not addressed in this work). 
+This approximation provides a good analogy for how we will use smooth functions as a approximations for $p$ and $b$.
+The formal notions of $p$ and $b$ are as functionals that act on compactly supported smooth functions, which have many levels of abstraction beyond a point-wise definition, and we will attempt to briefly address the approximation at each of these levels.
+
+\subsection{Discretization methods}
+Our primary tools for discretization will be finite-differencing for the regularizing differential operator $\L$ and numerical quadrature for the integral operator $\G$ and integral inner products associated with $\HH_1$ and $\HH_2$.
+Both methods assume $p$ and $g$ are functions with known evaluations on a discrete grid.
+The error analysis associated with these methods are based on Taylor expansions, which assume a function that is at least twice differentiable at each point in the interior of their domain and that the second derivatives are uniformly bounded in order to obtain error $O(h)$, where $h$ is the width between grid points.
+%This assumption could motivates that the regularization operator be squared, i.e.~$\L^2$, to ensure bounded second derivatives, but, our objects are not functions and Taylor's theorem is not available. 
+This analysis is not directly applicable since $p$ and $b$ are not functions and Taylor's theorem is not available.
+In fact, any element with discrete support in $\HH_1$ and $\HH_2$ is equivalent to $0$, since each is a subspace of an $L^2$ space.
+Yet, we justify our use of quadrature methods by recalling from \Cref{chapter:theoretical} that smooth functions are dense in $\HH_1$ and $\HH_2$.
+In theory, one could use that result to construct a smooth approximation, then apply quadrature on the approximation in order to explicitly control the error of the approximation.
+Such an analysis is beyond the scope of this work, and we discretize each operator assuming that they act on smooth functions and that the data and computational grids are sufficiently fine so that second order methods introduce errors at a scale that is negligible.
+%\textcolor{red}{
+%  I hate this paragraph, but it seems necessary. Any suggestions?
+%}
+
+We mention that there are other methods that are theoretically more appealing which use a truncation of orthonormal bases of $\HH _1$ and $\HH_2$, sometimes referred to as Gelerkin methods.
+It can be shown that a class of Bessel functions are an orthonormal set of eigenvectors for the negative radial Laplacian where the eigenvalues are the first positive root of the eigenvector, hence elements of $\HH_1$ can be easily represented in that basis.
+However, proceeding with this method requires estimation of roots, as well as evaluation of the forward operator on Bessel functions -- both analytically difficult.
+\textcolor{red}{
+  I did this a while ago with MAP estimation for fixed lambda and delta, and the results were not good. I numerically estimated both roots (using a code I found on the internet) and numerically estimated the forward operator on the Bessel functions.
+  It produces a crappy estimate (worse than what we have estimates for), but then again I didn't put a lot into estimating $\lambda$ and $\delta$.
+  Should I mention this?
+}
+
+%In what follows, we define the discrete representations $\vect p$ and $\vect b$ as well as the corresponding operator approximations and address the error at each level.
+
+We assume that the domain of $b$ is scaled so that data are collected on equally spaced points in $x_i \in [-1,1]$, with $x_i = \frac iN$ for $-N\le i\le N$.
+Let $\vect b \in \R^{2N + 1}$ with entries $b_i \eqdef b(x_i)$ and $h\eqdef \frac 1N$. 
+Note that the point-symmetry of the operator implies that for $N$ point estimates of $p$, a full line-out of data will have $2N + 1$ points (the extra estimate is for $b(0)$).
+In what follows, we define $\acos(t)$ on all of $\R$ by taking the convention that $\acos(t) = 0$ if $|t| > 1$.
+\Cref{fig:radialForwardKernel} is useful for visualizing the following arguments.
+
+Recall, the integral kernel for $\G$ was
+\begin{equation} 
+  g(x,r) = \left\{\begin{array}{lr}
+    0 & x < - r\\
+    2(\pi - \acos(x/r)) & |x| \le r\\
+    2\pi &  x> r
+  \end{array}\right..  
+\end{equation}
+For a fixed  $x_i<0$, we have
+\begin{equation} \label{eq:radialForwardNegative}
+  [\G p](x_i) = \int_0^{-x_i} p(r)2(\pi - \acos(x_i/r))\,dr.
+\end{equation}
+As in \citep{bardsley2012mcmc}, we discretize the integral using midpoint quadrature which guarantees a second-order integration method.
+Because the upper bound in \eqref{eq:radialForwardNegative} depends on $x_i$, $\{r_j\}$ are placed at midpoints of $\{|x_i|\}$, hence, $r_j \eqdef j-\frac h2$ for $j=1,\dots N$. 
+
+When $x_i \le 0$, then $i \le 0$ and using $\acos(t) = 0$ for $t<-1$
+\begin{align}
+  [\G p](x_i) 
+    &\approx \sum_{j=1}^{-i} p(r_j)2(\pi - \acos(x_i/r_j)) r_jh \nonumber\\
+    &= \sum_{j=1}^{N} p(r_j)2(\pi - \acos(x_i/r_j)) r_jh. \label{eq:radialForwardApproxPositive}
+\end{align}
+When $x_i > 0$, then $i \ge 0$ and using $\acos(t) = 0$ for $t>1$ 
+\begin{align}
+  [\G p](x_i) 
+    &= 2\pi \int_0^{x_i} p(r)\,rdr + \int_{x_i}^\infty p(r)2(\pi - \acos(x_i/r))\,rdr\nonumber \\
+    &= \int_0^{x_i} p(r) 2(\pi - \acos(x_i/r))\,rdr + \int_{x_i}^\infty p(r)2(\pi - \acos(x_i/r))\,dr\nonumber \\
+    &\approx \sum_{j=1}^{N} p(r_j)2(\pi - \acos(x_i/r_j)) r_jh. \label{eq:radialForwardApproxNegative}
+\end{align}
+
+Now, let $\vect p$ be the $N\times 1$ column vector with entries $\vect p_j = p(r_j)$, then using \eqref{eq:radialForwardApproxPositive} and \eqref{eq:radialForwardApproxNegative}, if we define the matrix $\vect G$ with entries $\vect G_{ij} \eqdef 2(\pi - \acos(x_i/r_j)) r_j h$, the quadrature approximation can be expressed by the matrix-vector equation $\vect b \approx \vect G \vect p$.
+Finally, we use $\|f\|_{\HH_2} \approx h\|\vect f\|_{\R^{2N+1}}$ to approximate the norm in $\HH_2$, where elements of $\vect f$ are point-wise evaluations of $f$.
+Combining these approximations, we have for the first term in \eqref{eq:regularizingFunctional},
+\begin{equation}
+  \lambda \|b - \G p\|_{\HH_2} \approx \lambda h \|\vect b - \vect G \vect p\|_{\R^{2N+1}}.
+\end{equation}
+
+The negative radial Laplacian $\L: \HH_1 \to \HH_1$ operates on continuous functions by
+\begin{equation} \label{eq:radialLaplacian}
+  [\L p](r) = -r^{-1}\frac{d}{dr}\left(r \,\frac{d}{dr}p(r)\right). 
+\end{equation}
+For definiteness, we take $n=2$ in the inner product in \eqref{eq:regularizingFunctional}, so
+\begin{align} 
+  \langle p, \L^2 p \rangle_{\HH_1}
+  &= 2\pi\int_0^\infty p(r) [\L^2 p](r) \, rdr \nonumber\\
+  &= 2\pi\int_0^\infty p(r) \left[\frac{d}{dr}\left(r \,\frac{d}{dr}p(r)\right)\right]^2 \, r^{-1}dr.
+  \label{eq:infiniteRadialInnerProduct}
+\end{align}
+
+The discretization of \eqref{eq:infiniteRadialInnerProduct} will occur in two steps. 
+We will use quadrature to estimate the integral in \eqref{eq:infiniteRadialInnerProduct}, and use finite differencing to estimate the differential operator $\frac d{dr} r \frac d{dr}$. 
+We then square that estimate, and combine it with the quadrature estimate of the integral.
+
+Following similar arguments in \citep{morton2005numerical} for approximating a general parabolic operator, let $r_{j\pm 1/2}\eqdef r_j \pm \frac h2$, then a center differencing scheme leads to the approximation 
+\begin{equation}
+  \left[\frac d{dr} r\frac d{dr} p\right]_{r_j} \approx\frac 1h\left( \left[r\frac d{dr}p\right]_{r_{j-1/2}} +  \left[r\frac d{dr}p\right]_{r_{j+1/2}}\right). 
+\end{equation}
+The center difference approximation of the first term is
+\begin{equation}
+  \left[r\frac d {dr}p\right]_{r_{j-1/2}} \approx r_{j-1/2} \frac{p_{j-1} - p_{j}}{h}
+\end{equation}
+and of the second term is
+\begin{equation}
+  \left[r\frac d {dr}p\right]_{r_{j+1/2}} \approx r_{j+1/2} \frac{p_{j} - p_{j+1}}{h}.
+\end{equation}
+Summing these gives for $1<j<N$,
+\begin{equation}
+  [\bm R \bm p]_j \eqdef \frac{1}{h^2} \Big( r_{j+1/2}(p_{j+1} - p_j) - r_{j-1/2}(p_{j} - p_{j-1})\Big).
+  \label{laplacian_discretization}
+\end{equation}
+The matrix stencil for the interior of $\vect R$ is thus
+\begin{equation}
+  \frac{1}{h^2}
+  \left[\begin{array}{ccc}
+    -(r_{j-3/2} + r_{j-1/2}) & r_{j-1/2} & 0             \\
+    r_{j-1/2} & -(r_{j-1/2} + r_{j+1/2}) & r_{j+1/2}     \\
+    0 & r_{j+1/2} & -(r_{j+1/2} + r_{j+3/2}) \\
+  \end{array}\right]
+  \left[\begin{array}{c}
+    p_{j-1} \\
+    p_{j}   \\
+    p_{j+1} \\
+  \end{array}\right].
+  \label{laplacian_discretization_stencil}
+\end{equation}
+Recall the assumption that $rp(r) \to 0$ as $r\to \infty$ and that the scale of the domain of $p$ is such that $p(1+\delta)\approx 0$ for all $\delta >0$.
+Hence, the discretization of $\bm R$ has a zero right boundary condition, so $p_{N}= 0$ implies
+\begin{equation}
+  [\vect R\vect p]_N = r_{N-1/2}p_{N-1} - (r_{N-1/2}+r_{N+1/2})p_N.
+\end{equation}
+Since $p(r)$ is a radial profile, the implicit symmetry implies that $\frac d{dr}p(r) = 0$, i.e.~a Neumann left-boundary condition. 
+Since $p_1 = p( h/2 )$, this implies $p_1 \approx p_{0}$ and
+\begin{align}
+  [\vect R\vect p]_1 &= r_{1/2}p_0 - (r_{1/2}+r_{3/2})p_1 + r_{3/2}p_{2} \nonumber\\
+  &= r_{3/2}p_1 + r_{3/2}p_{2}.
+\end{align}
+Observe that $\vect R$ is a symmetric tridiagonal matrix.
+
+We then take $\bm L \eqdef \Big(\mathrm{diag}(\vect r^{-1/2}) \bm R\Big)^2$ where $\mathrm{diag}(\vect r^{-1/2})$ denotes the $N\times N$ diagonal matrix whose diagonal entires are $(r_j^{-1/2})$.
+Note that since $0<r_j<1$, the matrix $\mathrm{diag}(\vect r^{-1/2}) \bm R$ is strictly diagonally dominant, hence is positive definite \citep[Theorem 3.4.3]{golub2012matrix}.
+This is not surprising since it is a discretization of a positive definite operator.
+Finally, we approximate the integral in \eqref{eq:infiniteRadialInnerProduct} with 
+\begin{equation}\label{eq:psfDiscInvProblem}
+  \langle p, \L^2 p\rangle_{\HH_1} \approx 2\pi h \langle \vect p, \vect L \vect p\rangle_{\R^N}.
+\end{equation}
+So the complete approximation to \eqref{eq:regularizingFunctional} is
+\begin{equation} \label{eq:discreteRegularizingFunctional}
+  \Phi(p; b,\lambda,\delta) \approx \lambda h \|\vect G\vect p - \vect b\|_{\R^{2N+1}}^2 + \delta 2\pi h\langle \vect p, \vect L \vect p\rangle_{\R^N}.
+\end{equation}
+Since $\lambda$ and $\delta$ will be stochastically modeled and estimated from the discrete hierarchical posterior, we absorb the constants $h$ and $2\pi h$ into them, and define
+\begin{equation} \label{discreteRegularizingFunctional}
+  F(\vect p; \vect b,\lambda,\delta) \eqdef \frac 12\left(\lambda \|\vect G\vect p - \vect b\|_{\R^{2N+1}}^2 + \delta \langle \vect p, \vect L \vect p\rangle_{\R^N}\right).
+\end{equation}
+\subsection{The discrete hierarchical posterior distribution}
+
+As in \citep{bardsley2012mcmc}, we employ a hierarchical model for $\lambda$ and $\delta$ that employ `uninformative' independent prior distributions that form a natural conjugacy so that the resulting full conditional densities will be known to a proportionality constant.
+In deriving this density, we will use a technique sometimes referred to as `completing the square,' which in addition to showing that the posterior density for $\vect p$ is Gaussian, will allow us to marginalize, or integrate, the full conditional densities of the parameters $\lambda$ and $\delta$.
+This will be important for implementing the partially collapsed Gibbs sampler.
+In the following computations, $\langle \cdot, \cdot \rangle$ and $\|\cdot\|$ refer to the standard Euclidean inner product and norm on the appropriate finite dimensional subspace and should be clear in context.
+If clarification is needed, they will be appropriately subscripted. 
+Moreover, we will not strictly adhere to the convention of capital letters corresponding to random variables since it conflicts with capital letters representing matrices, and again, should be clear in context.
+
+By the preceding discretization arguments, we have the following approximations for the prior, likelihood, and posterior densities,
+\begin{equation}\label{eq:discretePrior}
+  \pi(\vect p| \delta) =(2\pi)^{-N/2}\,\delta^N |\det L|^{-1/2}|\exp\left(-\frac \delta2 \langle \vect p,\vect L\vect p\rangle_{\R^N}\right),
+\end{equation}
+\begin{equation} \label{eq:discreteLiklihood}
+  \pi(\vect b |\vect p,\lambda) = (2\pi)^{-(2N+1)/2}\,\lambda^N \exp\left(-\frac \lambda2 \|\vect G\vect p-\vect b\|^2\right),
+\end{equation}
+and
+\begin{equation}\label{eq:discretePosterior}
+  \pi(\vect p | \vect b,\lambda, \delta) \propto \exp\Big(-F(\vect p;\vect b,\lambda,\delta) \Big).
+\end{equation}
+Taking the Bayesian perspective, the unknown parameters $\lambda$ and $\delta$ are modelled as independent prior random quantities.
+We assume a hierarchical structure so that the prior $\pi(\vect p|\delta)$ is independent of the noise parameter given $\delta$ and that the likelihood $\pi(\vect b|\vect b,\lambda)$ is independent of the prior parameter $\delta$ given $\vect b$ and $\lambda$, i.e.
+\begin{align}
+  \pi(\vect p|\lambda,\delta) &= \pi(\vect p|\lambda,\delta) \\
+\text{ and } \pi(\vect b|\vect p,\lambda,\delta) &= \pi(\vect b|\vect p,\lambda).
+\end{align}
+Note that both $\pi(\vect b|\delta)$ and $\pi(\vect p|\vect b,\lambda,\delta)$ are distributions in the exponential class of densities.
+As discussed in \citep{gelman2014bayesian}, the exponential class forms a natural conjugacy, meaning roughly that for any prior and likelihood in the exponential class, there is a `natural' well-defined posterior also in the exponential class.
+This convenience motivates the choice of prior distributions for $\lambda$ and $\delta$ from within the exponential class, and in particular, the gamma distribution provides a flexible family that can be made `uninformative' by appropriately chosen parameters.
+Assuming $\lambda$ and $\delta$ are independent gamma-distributed random variables, they have probability density functions 
+\begin{align} 
+                \pi(\lambda) &\propto \lambda^{\alpha -1}\,\exp(-\beta\lambda)\label{eq:deltaPrior}\\
+\quad\text{ and }\pi(\delta) &\propto \delta^{\alpha-1}\,\exp(-\beta\delta), \label{eq:lambdaPrior}
+\end{align}
+where as recommended by \citep{gelman2014bayesian}, we use parameter values $\alpha = 1$ and $\beta =  10^{-4}$. 
+Now, applying Bayes' theorem and the definition of conditional probability, the \emph{joint posterior density} is
+\begin{align}
+\pi(\vect p,\lambda,\delta|\vect b) 
+&= \frac{\pi(\vect b|\vect p,\lambda,\delta) \pi(\vect p,\lambda,\delta)}{\pi(\vect b)} \nonumber \\
+&= \frac{\pi(\vect b|\vect p,\lambda,\delta) \pi(\vect p| \delta,\lambda) \pi(\lambda,\delta)}{\pi(\vect b)} \nonumber \\
+&= \frac{\pi(\vect b|\vect p,\lambda) \pi(\vect p| \delta) \pi(\lambda)\pi(\delta)}{\pi(\vect b)} \nonumber \\
+&\propto \lambda^{(2N+1)/2+\alpha-1}\delta^{N/2+\alpha-1} \exp\left(-\frac{\lambda}{2}\|\vect{Gp} - \vect b\|^2 - \frac{\delta}{2}\langle \vect p, \vect L \vect p\rangle - \beta\lambda - \beta\delta \right). \label{eq:jointPosteriorDensity}
+\end{align}
+Our primary goal for estimation and uncertainty quantification of $\vect p$ will be drawing inference from \eqref{eq:jointPosteriorDensity}.
+As previously remarked, all priors are in the exponential family, hence there is a natural expression for each full conditional density that is also in the exponential family.
+We proceed by deriving full conditional densities for $\lambda$, $\delta$ and $\vect p$.
+
+Observe first that
+\begin{align}
+  \pi(\lambda| \vect b,\vect p,\delta) 
+  &= \frac{\pi(\vect p,\lambda,\delta|\vect b)}{\pi(\vect p,\delta|\vect b) } 
+  \propto \lambda^{(2N+1)/2+\alpha-1}\exp\left(-\lambda\left(\frac{1}{2}\|\vect{Gx} - \vect b\|^2 - \beta\right)  \right), \nonumber\\
+\text{ and }\pi(\delta| \vect b,\vect p,\lambda) 
+  &= \frac{\pi(\vect p,\lambda,\delta|\vect b)}{\pi(\vect p,\lambda|\vect b) } 
+  \propto \delta^{N/2+\alpha-1}\exp\left(-\delta\left(\frac{1}{2}\vect \langle \vect p,\vect L\vect p \rangle- \beta\right)  \right), \label{eq:lambdaDeltaConditional} 
+\end{align}
+each of which are proportional to gamma distributions with shifted scale and rate parameters.
+ 
+Deriving the density for $\vect p$ is more involved and uses a technique sometimes referred to as `completing the square' \citep{stuart2010} which shows that the discrete posterior $\pi(\vect p|\vect b,\lambda,\delta)$ is Gaussian.
+Since $\vect G$ is a discretization of an injective operator, the matrix $\vect G$ has linearly independent columns, so $\vect G^T \vect G$ is symmetric positive definite.
+Thus, the matrix 
+\begin{equation} \label{eq:regularizationOperator}
+  \vect J_{\lambda,\delta} \eqdef (\lambda \vect G^T\vect G + \delta \vect L)
+\end{equation}
+is also symmetric positive definite, and hence, invertible.
+Define
+\begin{equation} \label{eq:computeMAP}
+  \vect m_{\lambda,\delta} \eqdef \vect J_{\lambda,\delta}^{-1}\lambda \vect G^T\vect b,
+\end{equation} 
+then observe
+\begin{align}
+  2F(\vect p; \vect b,\lambda,\delta) 
+  &= \lambda\|\vect{Gx} - \vect b\|^2 + \delta\left\langle \vect p, \vect L \vect p\right\rangle \nonumber \\
+  &= \lambda\langle \vect G\vect p,\vect G \vect p\rangle -2\lambda\langle \vect G\vect p,\vect b\rangle + \lambda\langle \vect b,\vect b\rangle + \delta \langle\vect p,\vect L\vect p\rangle \nonumber\\
+  &= \left\langle \vect p,( \lambda \vect G^T \vect G + \delta \vect L)\vect p\right\rangle - 2 \lambda \left\langle \vect p, \vect G^T \vect b\right\rangle + \lambda \|\vect b\|^2\nonumber \\
+  &= \left\langle \vect p,\vect J_{\lambda,\delta}\vect p\right\rangle - 2 \left\langle \vect p, \vect J_{\lambda,\delta}\vect m_{\lambda,\delta}\right\rangle + \lambda \|\vect b\|^2\nonumber \\
+  &= \left\langle \vect p,\vect J_{\lambda,\delta}(\vect p - \vect m_{\lambda,\delta})\right\rangle - \left\langle \vect p, \vect J_{\lambda,\delta}\vect m_{\lambda,\delta}\right\rangle + \lambda \|\vect b\|^2\nonumber \\
+  &= \left\langle (\vect p-\vect m_{\lambda,\delta}),\vect J_{\lambda,\delta}(\vect p - \vect m_{\lambda,\delta})\right \rangle  + \langle \vect m_{\lambda,\delta},\vect J_{\lambda,\delta}\vect p\rangle \nonumber\\
+  &\quad\quad- \langle \vect m_{\lambda,\delta},\vect J_{\lambda,\delta}\vect m_{\lambda,\delta}\rangle - \left\langle \vect p, \vect J_{\lambda,\delta}\vect m_{\lambda,\delta}\right\rangle + \lambda \|\vect b\|^2\nonumber \\
+  &= \left\langle (\vect p-\vect m_{\lambda,\delta}),\vect J_{\lambda,\delta}(\vect p - \vect m_{\lambda,\delta})\right \rangle - \langle \vect m_{\lambda,\delta},\vect J_{\lambda,\delta}\vect m_{\lambda,\delta}\rangle + \lambda \|\vect b\|^2, \label{eq:completingSquare}
+\end{align}
+where in the second to last equality, we used the symmetry of $\vect J_{\lambda,\delta}$.
+Hence 
+\begin{align}
+  \pi(\vect p|\vect b,\lambda,\delta) 
+    &= \frac{\pi(\vect p,\lambda,\delta|\vect b)}{\pi(\lambda,\delta|\vect b) } \nonumber\\
+    &\propto \exp\left(-\frac 12\left\langle (\vect p-\vect m_{\lambda,\delta}),\vect J_{\lambda,\delta}(\vect p - \vect m_{\lambda,\delta})\right \rangle\right)\label{eq:gaussianLikelihood}
+\end{align}
+which is proportional to a multivariate Gaussian with mean $\vect m_{\lambda,\delta} = \vect J_{\lambda,\delta}^{-1}\vect G^T \vect b$ and covariance matrix $\vect J_{\lambda,\delta}^{-1}$.
+
+With explicit expressions for the full conditional densities, we can now explicitly state the algorithms for posterior PSF estimation.
 
 \section{Sampling the PSF posterior}
-  \subsection{Gibbs sampling the PSF posterior}
-  \subsection{Partially collapsed Gibbs sampling for PSF reconstruction}
-  \subsection{Blocking the sampler and a connection to marginal then conditional sampling}
+
+This section is devoted to applying the general algorithms presented in \Cref{sec:pcgibbs} to the specific PSF posterior estimation problem.  
+In the last section, we derived the full-conditional densities and wrote them in a form so that they can be easily sampled using standard algorithms for generating gamma and Gaussian random variables.
+
+The general idea for random variable generation involves transforming a uniform random variable from $[0,1]$ into a random variable with the desired distribution.
+In theory, this can always be done if an inverse of the cumulative distribution function $F(x) \eqdef \mathbb P(X \le x)$ is computationally available.
+For random variables with continuous densities, $F$ is strictly increasing onto $[0,1]$ and is thus invertible.  
+Hence, for $U\sim \mathrm{U([0,1])}$, the variable $X = F^{-1}(U)$ has 
+\begin{align}
+  \mathbb P( X \le x) 
+  &= \mathbb P( F^{-1}(U)\le  x ) \nonumber \\
+  &= \mathbb P( U \le F(x) )\nonumber\\
+  &= \int_0^{F(x)}ds\nonumber\\
+  &= F(x).
+\end{align}
+So, to simulate $X$, one generates a pseudo-random number $u$ from $[0,1]$ (see \citep{knuthart1981}), then $F^{-1}(u)$ serves as simulation for $X$.
+In practice, this method is usually analytically difficult, but the idea behind most algorithms is similar -- generate a pseudo-random number then transform it in some way so that the resulting random variable has the desired density.
+For many common distributions these algorithms are implemented efficiently in many statistical and mathematical computing packages, and we assume for the following algorithms that they are available.
+In particular, we assume that simulations from a uniform density $U([0,1])$, a gamma distribution $\Gamma(\alpha,\beta)$ for given shape and rate parameters $\alpha$ and $\beta$, and a standard Gaussian $\N(0,1)$ can each be computed.
+
+\subsection{Gibbs sampling the PSF posterior}
+
+Here, we describe how to explicitly obtain simulations from the full conditional densities $\pi(\lambda|\vect b,\vect p,\delta)$, $\pi(\lambda|\vect b,\vect p,\delta)$, and $\pi(\vect p|\vect b,\lambda,\delta)$.
+The equations in \eqref{eq:lambdaDeltaConditional} imply that both $\pi(\lambda|\vect b,\vect p,\delta)$, $\pi(\delta|\vect b,\vect p,\lambda)$ are gamma-distributed as
+\begin{align}
+  &\Gamma\left((2N+1)/2+\alpha,\frac{1}{2}\|\vect{Gx} + \vect b\|^2 + \beta\right)\nonumber\\
+  \text{ and }&\Gamma\left(N/2+\alpha,\frac{1}{2}\vect \langle \vect p,\vect L\vect p \rangle+ \beta\right)
+\end{align}
+respectively, of which simulations are assumed to be available.
+
+For simulating from $\pi(\vect p|\vect b, \lambda,\delta)$, let $\vect z$ be a vector whose entries are $N$ independent simulations from $\N(0,1)$. 
+Hence, $\vect z$ is a simulation of a multivariate Gaussian $\N(\vect 0,\vect I_{N\times N})$.
+An important feature of positive definite matrices, $\vect A$, is that they have an eigenvalue decomposition of the form $\vect U \Lambda \vect U^*$ (here $^*$ denotes the conjugate transpose since columns of $\vect U$ may be complex valued), where the columns $\vect U^*$ are mutually orthonormal with $\vect \Lambda$ a diagonal matrix of positive eigenvalues.
+Therefore, there exists a matrix $\vect M = \vect U \vect \Lambda^{-1/2} \vect U^*$, such that $\vect M^*\vect M = \vect A^{-1}$, where the $-1/2$ power is computed on the diagonal entries of $\vect \Lambda$.
+Hence, the linear transform $\vect M \vect z \sim \N(0,\vect A^{-1})$.  
+In practice, computing the eigenvalue decomposition is overly expensive, but this argument establishes the existence of such a matrix.
+
+An efficient method for computing such an $\bm M$ is the Cholesky factorization, which for a given symmetric positive definite matrix, gives a lower triangular matrix $\vect R$ with non-zero diagonals such that $\vect A = \vect M\vect M^T$ and can be computed in $O(N^3)$ floating-point operations (flops) \citep{golub2012matrix}.
+For $\vect J_{\lambda,\delta}$ define the Cholesky factors
+\begin{equation} \label{eq:choleskyJ}
+  \vect R_{\lambda,\delta}\vect R_{\lambda,\delta}^T \eqdef \vect J_{\lambda,\delta}.
+\end{equation}
+With $\vect R_{\lambda,\delta}$ in hand, it serves two purposes -- first we can solve $\vect J_{\lambda,\delta} \vect m_{\lambda,\delta} = \vect R\vect R^T \vect m_{\lambda,\delta} = \vect G^T \vect b$ efficiently by forward-substitution then by backward-substitution, both in $O(N^2)$ flops; second, the computation $\vect m_{\lambda,\delta} + \vect R_{\lambda,\delta}^{-1} \vect z$ by forward-substitution, transforms $\vect z$ into a simulation from $\pi(\vect p | \vect b,\lambda,\delta)$.
+
+Note that each time a simulation from $\pi(\vect p|\vect b,\lambda,\delta)$ is required, we must compute a factorization that depends on $\lambda$ and $\delta$, and this step will be the computational bottleneck for the Gibbs sampler.
+We remark that for the scale of our problem, Cholesky factorizations are feasible.
+In general, this may not always be the case, and \citep{bardsley2012mcmc} provides methods for sampling that rely only on linear solves which my be implemented efficiently via an algorithm like conjugate gradients.
+
+With computational methods for each full-conditional density, \Cref{alg:PSFgibbs} describes Gibbs sampling the PSF posterior.
+
+\begin{algorithm}[h]
+\caption{Hierarchical Gibbs sampler for PSF posterior estimation} \label{alg:PSFgibbs}
+Given $\lambda^k,\delta^k$, and $\vect p^k.$ %$\vect p^k = \N(\vect m_{\lambda^k,\delta^k},\vect J_{\lambda^k,\delta^k}^{-1}).$
+\begin{flalign*}
+1.&\text{ Simulate }\lambda^{k+1}\sim \Gamma\left((2N+1)/2+\alpha,\frac{1}{2}\Vert\vect G\vect p^{k}-\vect b\Vert^2+\beta\right).&\\
+2.&\text{ Simulate }\delta^{k+1}\sim \Gamma\left(N/2+\alpha,\frac{1}{2}\left\langle\vect p^{k},\vect L\vect p^{k}\right\rangle+\beta\right).&\\
+3.&\text{ Compute }\vect R_{\lambda^{k+1},\delta^{k+1}}\eqref{eq:choleskyJ},\vect m_{\lambda^{k+1},\delta^{k+1}}\eqref{eq:computeMAP}, \\
+  &\text{ and set }\vect p^{k+1} = \vect R_{\lambda^{k+1},\delta^{k+1}}^{-1}\vect z + \vect m_{\lambda^{k+1},\delta^{k+1}}\text{ where }\vect z\sim \N\left(\vect 0,\vect I_{N\times N}\right).&
+\end{flalign*}
+\end{algorithm}
+
+\subsection{Partially collapsed Gibbs sampling for PSF reconstruction}
+
+As we will see, the $(\delta^k)$ component of the Markov chain in the \Cref{alg:PSFgibbs} exhibits poor convergence,  hence asymptotic results from the ergodic theorem require longer runs of the Markov chain.
+Taking a cue from \citep{agapiou2014analysis}, we remove the conditioning of $\delta^{k+1}$ on $\vect p^k$ by implementing \Cref{alg:MHpcgibbs} on the posterior PSF estimation problem.
+
+This will require a simulation from the density $\pi(\delta | \vect b,\lambda)$. 
+To express the kernel of this density, note \eqref{eq:gaussianLikelihood} is the kernel of a Gaussian with mean $\vect m_{\lambda,\delta}$ and variance $\vect J_{\lambda,\delta}^{-1}$, thus the normalized density is 
+\begin{align}
+  \frac{\pi(\vect p,\lambda,\delta|\vect b)}{\pi(\lambda,\delta|\vect b) } 
+    &= \pi(\vect p|\vect b,\lambda,\delta) \nonumber\\
+    &= (2\pi)^{-N/2}|\det \vect J_{\lambda,\delta}|^{1/2} \exp\left( -\frac 12\langle \vect p - \vect m_{\lambda,\delta}, \vect J_{\lambda,\delta}(\vect p - \vect m_{\lambda,\delta})\rangle \right). \label{eq:exactPosterior}
+  \intertext{Dividing \eqref{eq:jointPosteriorDensity} by \eqref{eq:exactPosterior}, one obtains}
+  \pi(\lambda,\delta|\vect b)
+    &=\frac{\pi(\vect p,\lambda,\delta|\vect b)}{\pi(\vect p|\vect b,\lambda,\delta) } \nonumber\\
+    &\propto \lambda^{\frac{2N+1} 2+\alpha-1}\delta^{\frac N2 +\alpha-1}|\det \vect J_{\lambda,\delta}|^{-1/2} \nonumber\\
+    &\quad\quad \times \exp\left( \frac 12\langle \vect p - \vect m_{\lambda,\delta}, \vect J(\vect p - \vect m_{\lambda,\delta})\rangle - F(\vect p; \vect b,\lambda,\delta) - \beta \lambda - \beta \delta\right)\nonumber\\
+    &=\propto \lambda^{\frac{2N+1} 2+\alpha-1}\delta^{\frac N2 +\alpha-1}|\det \vect J_{\lambda,\delta}|^{-1/2} \nonumber \\
+    &\quad\quad \times \exp\left( -\frac12 \left(\lambda \|\vect b\|^2- \langle \vect m_{\lambda,\delta},\vect J_{\lambda,\delta}\vect m_{\lambda,\delta}\rangle \right) -\beta\lambda -\beta\delta  \right). \label{eq:marginalizedJoint}
+  \intertext{ Finally, }
+  \pi(\delta|\vect b,\lambda) 
+    &= \frac{\pi(\lambda,\delta|\vect b)}{\pi(\lambda|\vect b)} \nonumber\\
+    &\propto \delta^{\frac N2+\alpha}|\det \vect J_{\lambda,\delta}|^{-1/2} \exp\left( -\frac12 \left(\lambda \|\vect b\|^2- \langle \vect m_{\lambda,\delta},\vect J_{\lambda,\delta}\vect m_{\lambda,\delta}\rangle \right) -\beta\delta  \right). \label{eq:marginalizedDelta}
+  \end{align}
+The two terms $|\det \vect J_{\lambda,\delta}|$ and $\langle \vect m_{\lambda,\delta},\vect J_{\lambda,\delta}\vect m_{\lambda,\delta}\rangle$ in \eqref{eq:marginalizedDelta} make the density depend in a complicated way in $\delta$, so a direct simulation is not available.
+Additionally, they are potentially computationally expensive in that they involve determinants and linear solves.
+Fortunately, the Cholesky factorization $\vect R_{\lambda,\delta}$ will allow both evaluations to be computed efficiently and the Metropolis-Hastings step described in \Cref{alg:MHpcgibbs} can be computed with \eqref{eq:marginalizedDelta}.
+Since $|\det \vect J_{\lambda,\delta}|$ involves $N$ products and $\langle \vect m_{\lambda,\delta},\vect J_{\lambda,\delta}\vect m_{\lambda,\delta}\rangle$ occurs in the argument of an exponential, we perform calculations on a logarithmic scale.
+
+To  simplify some arguments, the following calculations divide \eqref{eq:marginalizedDelta} into terms that depend only on expensive quantities $\vect R_{\lambda,\delta}$ and $\vect m_{\lambda,\delta}$. 
+That is,
+\begin{align}
+    -\frac12 \left(\lambda \|\vect b\|^2- \langle \vect m_{\lambda,\delta},\vect J_{\lambda,\delta}\vect m_{\lambda,\delta}\rangle \right)
+    &= -\frac12 \left(\lambda \langle\vect b,\vect b\rangle- \langle \vect m_{\lambda,\delta},\lambda \vect G^T\vect b\rangle \right)\nonumber \\
+    &= -\frac\lambda 2 \left\langle\vect b - \vect G\vect m_{\lambda,\delta},\vect b\right\rangle \nonumber\\
+    &\eqdef -\frac \lambda 2a(\vect m_{\lambda,\delta}), \label{eq:aConst}
+\end{align}
+and
+\begin{align}
+  \ln(|\det \bm J_{\lambda,\delta}|^{-1/2})
+  &= -\frac 12\ln(|\det \bm R_{\lambda,\delta}\bm R_{\lambda,\delta}^T|)\nonumber\\
+  &= -\frac 12\ln(|\det \bm R_{\lambda,\delta}|^2)\nonumber\\
+  &= -\frac 12\ln\left(\prod_{i=1}^N |{\bm R_{\lambda,\delta}}_{ii}|^2\right) \nonumber\\
+  &= -\sum_{i=1}^N\ln|{\bm R_{\lambda,\delta}}_{ii}|\nonumber\\
+  &\eqdef -b(\vect R_{\lambda,\delta}), 
+\end{align}
+where we used the fact that $\bm R_{\lambda,\delta}$ is lower triangular to compute the determinant.
+Substituting these expressions into \eqref{eq:marginalizedDelta}
+\begin{align}
+  \pi(\delta|\vect b,\lambda)
+    &\propto \delta^{\frac N2+\alpha}|\det \vect J_{\lambda,\delta}|^{-1/2}\exp\left( -\frac\lambda 2 \left\langle\vect b - \vect G\vect m_{\lambda,\delta},\vect b\right\rangle -\beta\delta.  \right) \nonumber \\
+    &= \exp\left( \left(\frac N2 +\alpha - 1\right)\ln\delta - b(\vect R_{\lambda,\delta}) -\frac \lambda 2 a(\vect m_{\lambda,\delta}) -\beta\delta  \right)\nonumber \\
+    &\eqdef \exp\Big( c(\vect R_{\lambda,\delta},\vect m_{\lambda,\delta},\delta)  \Big). \label{eq:deltaConstant}
+\end{align}
+
+We also use a logarithmic scale for the proposal, that is, a random walk on the logarithm of $\delta$.
+This means that the proposal density is $\rho(\delta'|\delta) \eqdef \phi_\gamma(|\ln \delta' - \ln \delta|) =  \rho(\delta|\delta')$, where $\phi_\gamma$ is the density of a mean-zero normal random variable with standard deviation $\gamma$.
+To simulate the proposal, draw $w\sim \N(0,1)$ and set $\delta'\eqdef \exp(\gamma w+\ln \delta)$, then $\ln\delta'+\ln\delta \sim \rho(\delta'|\delta)$. 
+This has the added benefit of producing proposal simulations such that $\delta'>0$.
+
+We compute the acceptance ratio on a logarithmic scale as follows: observe that accepting with probability
+\begin{align}
+  \alpha(\delta,\delta') 
+    &= \min\left\{1,\frac{\pi(\delta'|\vect b,\lambda)}{\pi(\delta|\vect b,\lambda)}\right\} 
+\end{align}
+is equivalent to accepting with log uniform probability 
+\begin{equation}
+  \ln \alpha(\delta,\delta') = \min\left\{0,c(\vect R_{\lambda,\delta'},\vect m_{\lambda,\delta'},\delta')-c(\vect R_{\lambda,\delta},\vect m_{\lambda,\delta},\delta)\right\}
+\end{equation}
+since $\ln$ is increasing from $(0,1)$ onto $(-\infty,0)$.
+To implement this, generate a uniform simulation $u$ from $[0,1]$, then accept if $\ln u > \ln\alpha(\delta,\delta')$ and reject otherwise.
+All of the computational pieces are in place to explicitly describe the Metropolis-Hastings within PCG in \Cref{alg:MHpcgibbs}. %is defined and will require $O(N^3)$ steps for the computation of $\vect R_{\lambda,\delta}$.
+The full implementation is described in \Cref{alg:PSFpcgibbs}.
+Note that we were able to re-use the factorization $\vect R_{\lambda,\delta}$ and $\vect m_{\lambda,\delta}$ to sample $\vect p^{k+1}$, so there are $M+1$ Cholesky factorizations per Markov iteration.
+\begin{algorithm}
+\caption{Metropolis-Hastings within PCG sampler for PSF posterior estimation} \label{alg:PSFpcgibbs}
+Given $\gamma,\lambda^k,\delta^k$, and $\vect p^k$ 
+\begin{flalign*}
+1.&\text{ Simulate }\lambda^{k+1}\sim \Gamma\left((2N+1)/2+\alpha,\frac{1}{2}\Vert\vect G\vect p^{k}-\vect b\Vert^2+\beta\right).&\\
+2.&\text{ Set } \lambda = \lambda^{k+1},\delta = \delta^k \text{ and compute }\vect R_{\lambda,\delta}\eqref{eq:choleskyJ}, \vect m_{\lambda,\delta}\eqref{eq:computeMAP},\text{ then } c(\vect R_{\lambda,\delta},\vect m_{\lambda,\delta},\delta)\eqref{eq:deltaConstant}.\\
+  &\text{ For }j=1\dots M\\
+  &\quad\text{i.~Simulate }w \sim \N(0,1)\text{ and set }\delta' = \exp(\gamma w + \delta)\\
+  &\quad\text{ii.~Compute }\vect R_{\lambda,\delta'}, \vect m_{\lambda,\delta'},\text{ then } c(\vect R_{\lambda,\delta'},\vect m_{\lambda,\delta'},\delta').\\
+  &\quad\text{iii.~Simulate }u\sim U([0,1])\text{ and }\\
+  &\quad\quad\text{if }\ln u > \min\left\{0,c(\vect R_{\lambda,\delta'},\vect m_{\lambda,\delta'},\delta')-c(\vect R_{\lambda,\delta},\vect m_{\lambda,\delta},\delta)\right\}\\
+    &\quad\quad\quad\text{set }\delta = \delta',\vect R_{\lambda,\delta}=\vect R_{\lambda,\delta'},\vect m_{\lambda,\delta}=\vect m_{\lambda,\delta},\text{ and }c(\vect R_{\lambda,\delta},\vect m_{\lambda,\delta},\delta) = c(\vect R_{\lambda,\delta'},\vect m_{\lambda,\delta'},\delta')\\
+  &\text{ Set }\delta^{k+1} = \delta&\\
+3.&\text{ Simulate }\vect z\sim \N\left(\vect 0,\vect I_{N\times N}\right)\text{ and set }\vect p^{k+1} = \vect R_{\lambda,\delta}^{-1} \vect z + \vect m_{\lambda,\delta}.&
+\end{flalign*}
+\end{algorithm}
+
+We have not addressed how to choose the proposal variance $\gamma^2$.
+It is common to tune this parameter so that the long-run proportion of acceptances is about $0.4$ \citep{calvetti2007introduction}.
+An alternative, is to use previous values to inform $\gamma$.
+The resulting stochastic process is no longer a Markov chain, but \citep{haario2001adaptive} have shown that the stochastic process $\{X^1,X^2,\dots\}$ resulting from a Metropolis-Hastings algorithm using the empirical covariance estimate of the previous $k$ realizations as the proposal variance at step $k$ enjoys a similar ergodic result as \Cref{thm:ergodicTheorem}.
+The theory is not directly applicable, since we sample jointly $\{(\lambda^k,\delta^k,\vect p^k)\}$, and obtaining covariance estimate of the joint variable is computationally unfeasible. 
+A feasible computation for $\gamma^k$ is the marginal variance for $\delta$,
+\begin{equation}
+  4.~\text{ Set }\gamma^2 = \frac 1{k+2} \sum_{i=1}^{k+1} (\delta^i - \bar{\vect\delta_k})^2
+\end{equation}
+where $\bar{\vect\delta_k}$ is the sample mean for $\{\delta^1,\dots,\delta^k\}$.
+Although we do not directly have an ergodic theorem for this stochastic process, it exhibits similar convergence statistics in the numerical examples presented in \Cref{chapter:results} with the algorithm with a tuned $\gamma^2$, with much less 'tunning-effort.'
+From a practical standpoint, one could use the adaptive estimate of $\gamma^k$, then when the chain has stabilized, fix $\gamma$ to appeal to \Cref{thm:ergodicTheorem} for statistic estimates.
+
+
+\subsection{Blocking the sampler and a connection to marginal then conditional sampling}
+
+We now explore one more modification of the algorithm and illustrate a connection to the work of \citep{fox2015fast}.
+Note that the joint density in \eqref{eq:jointPosteriorDensity} factors in $\lambda$ and $\delta$, and since $\pi(\lambda,\delta|\vect b\vect p) \propto \pi(\lambda,\delta,\vect p|\vect b)$, the conditional variables $\lambda|\vect b, \vect p,\delta$ and $\delta|\vect b,\vect p,\lambda$ are independent.
+Hence, steps 1.~and 2.~in \Cref{alg:PSFgibbs} can be thought of as a joint sample from $\pi(\lambda,\delta|\vect b,\vect p^k)$.
+This procedure is sometimes referred to as \emph{blocking} \citep{liu2008monte}.
+To accomplish the Metropolis-Hastings step on the logarithmic scale, we derive the analogous $c$ in \eqref{eq:deltaConstant}, by using \eqref{eq:lambdaPrior} in
+\begin{align}
+  \pi(\lambda,\delta|\vect b) 
+    &=\pi(\delta|\vect b,\lambda)\pi(\lambda|\vect b) \nonumber\\
+    &\propto \pi(\delta|\vect b,\lambda)\pi(\lambda) \nonumber\\
+    &= \exp\left( \left(\frac {2N+1}2 +\alpha - 1\right)\ln\lambda + \left(\frac N2 +\alpha - 1\right)\ln\delta - b(\vect R_{\lambda,\delta}) -\frac \lambda 2 a(\vect m_{\lambda,\delta}) -\beta\lambda -\beta\delta  \right)\nonumber \\
+    &\eqdef \exp\Big(c(\vect R_{\lambda,\delta},\vect m_{\lambda,\delta},\lambda,\delta)\Big). \label{eq:jointConstant}
+\end{align}
+Applying partial collapse to the blocked Gibbs sampler results in \Cref{alg:mtc}
+
+\begin{algorithm}[h]
+\caption{Metropolis-Hastings within blocked PCG sampling for PSF posterior estimation} \label{alg:mtc}
+Given $\vect C,[\lambda^k,\delta^k]$, and $\vect p^k$ 
+\begin{flalign*}
+1.&\text{ Set } [\lambda,\delta] = [\lambda^k,\delta^k] \text{ and compute }\vect R_{\lambda,\delta}\eqref{eq:choleskyJ}, \vect m_{\lambda,\delta}\eqref{eq:computeMAP},\text{ then } c(\vect R_{\lambda,\delta},\vect m_{\lambda,\delta},\lambda,\delta)\eqref{eq:jointConstant}.\\
+  &\text{ For }j=1\dots M\\
+  &\quad\text{i.~Simulate }\vect w \sim \N(\vect 0,\vect I_{2\times 2})\text{ and set }[\lambda',\delta'] = \exp(\vect C\vect w + [\lambda,\delta]^T)\\
+  &\quad\text{ii.~Compute }\vect R_{\lambda',\delta'}, \vect m_{\lambda',\delta'},\text{ then } c(\vect R_{\lambda',\delta'},\vect m_{\lambda',\delta'},\lambda',\delta').\\
+  &\quad\text{iii.~Simulate }u\sim U([0,1])\text{ and }\\
+  &\quad\quad\text{if }\ln u > \min\left\{0,c(\vect R_{\lambda',\delta'},\vect m_{\lambda',\delta'},\delta')-c(\vect R_{\lambda,\delta},\vect m_{\lambda,\delta},\delta)\right\}\\
+    &\quad\quad\quad\text{set }[\lambda,\delta] = [\lambda',\delta'],\vect R_{\lambda,\delta}=\vect R_{\lambda',\delta'},\vect m_{\lambda',\delta}=\vect m_{\lambda',\delta},\text{ and }c(\vect R_{\lambda',\delta},\vect m_{\lambda,\delta},\delta) = c(\vect R_{\lambda',\delta'},\vect m_{\lambda',\delta'},\lambda',\delta')\\
+  &\text{ Set }\delta^{k+1} = \delta&\\
+2.&\text{ Simulate }\vect z\sim \N\left(\vect 0,\vect I_{N\times N}\right)\text{ and set }\vect p^{k+1} = \vect R_{\lambda,\delta}^{-1} \vect z + \vect m_{\lambda,\delta}.&
+\end{flalign*}
+\end{algorithm}
+
+By design, simulations of $(\lambda^k,\delta^k)$ are conditionally independent of $\vect p^k$.
+In the language of \citep{van2008partially}, $\vect p^k$ has been completely collapsed, and $(\lambda^k,\delta^k)$ provides an independent Markov chain invariant with respect to $\pi(\lambda,\delta|\vect b)$.
+Markov chains that satisfy this property are said to satisfy the \emph{Duality Principle} \citep[Section 9.2.3]{robert2013monte} and are related to hidden Markov models. %, and a result from \citep[Thoerem 9.12]{robert2013monte} implies that the stochastic sequence $\{\vect p^k\}$ is itself a Markov chain.
+Of course, $\vect p^k$ is the primary quantity of interest for estimation and uncertainty quantification, and estimating $\lambda$ and $\delta$ are auxiliary to that goal.
+Despite this apparent mismatch, it does suggest a strategy that can reduce the number of required Cholesky factorizations.
+Consider only iterating step 1.~in \Cref{alg:mtc} to obtain a Markov chain $(\lambda^k,\delta^k|\vect b)$ invariant with respect to $\pi(\lambda,\delta|\vect b)$. 
+After this chain has sufficiently converged, in say $N$ steps, we can produce a `thinned' chain $\{\vect p^{a_k}|\lambda^{a_k},\delta^{a_k},\vect b\}$ that computes estimates for some sequence $\{a_k\} \subseteq \{1\dots N\}$.
+How we choose this sequence are addressed in \Cref{sec:evaluatingConvergence} on evaluating chain convergence.
+This is precisely the MCMC algorithm presented in \citep{fox2015fast} for image deblurring, except in their case, the forward operator corresponds to a convolution, for which the discrete Fourier transform can be applied, rather than Cholesky factorization.
+Moreover, they present several other methods for speeding up the algorithm so that the costly computations involving determinants and linear solves can be done offline.
+
+To see this in our situation, first note that the computation of $a(\vect m_{\lambda,\delta})$ can be simplified as follows; continuing from \eqref{eq:aConst}, using \eqref{eq:computeMAP} then \eqref{eq:regularizationOperator}
+\begin{align}
+  a(\vect m_{\lambda,\delta}) 
+    &= \left\langle\vect b - \vect G\vect m_{\lambda,\delta},\vect b\right\rangle\nonumber\\
+    &=  \left\langle\vect b,\left(I - \vect G  \vect J_{\lambda,\delta}^{-1}\lambda\vect G^T\right) \vect b\right\rangle\nonumber\\
+    &= \left\langle \vect b,\left( I - \vect G  \left( \vect G^T\vect G + \frac{\delta}{\lambda}\vect L \right)^{-1}\vect G^T \right)\vect b \right\rangle. 
+\end{align}
+The Woodbury matrix identity \citep{woodbury1950inverting} states
+\begin{align}
+  (\bm A + \bm U\bm C\bm V)^{-1} = \bm A^{-1} - \bm A^{-1}\bm U\left(\bm V\bm A^{-1}\bm U + \bm C^{-1}\right)^{-1}\bm V\bm A^{-1},
+\end{align}
+so taking $\bm A = \vect I,\bm U=\bm G, \bm V=\bm G^T$, and $\bm C= \left(\frac\delta \lambda\bm L\right)^{-1}$ gives
+\begin{equation}
+  \left(I - \vect G  \left(\vect G^T\vect G - \frac{\delta}{\lambda}\vect L\right)^{-1}\vect G^T\right)
+  = \left(I + \frac \lambda\delta \bm G\bm L^{-1}\bm G^T\right)^{-1}.
+\end{equation}
+
+So the term $a(\vect m_{\lambda,\delta})$ depends only on the ratio $\lambda/\delta$ and can be computed efficiently via a linear solve.
+In \citep{fox2015fast}, they perform a similar calculation and compute $a$ offline on a grid of $\lambda/\delta$ using fast Fourier transforms to avoid the costly linear solves in each step of the Markov chain.
+
+Similarly, 
+\begin{equation}
+  \delta^{-1}b(\lambda,\delta) = \ln\left(\left|\det\left(\frac \lambda\delta \vect G^T\vect G + \vect L\right)\right|\right)
+\end{equation}
+can also be computed offline.  
 
 \section{Evaluating Convergence} \label{sec:evaluatingConvergence}
-\textcolor{red}{
-  This section is to introduce all of the chain statistics we will use to see how our algorithm is better than Gibbs.
-  We also compare substeps in the Metropolis step.
-}
+
+There are two final issues to address before presenting the numerical results of the algorithms on synthetic and real data.
+They are related to how close is the convergence to the invariant density and how closely do realizations of the chain represent uncorrelated samples.
+The steps in the chain where $\pi_0$ is far from converging to is referred to as burn-in and the tool for accounting for correlation is the integrated auto correlation time (IACT).
+Both issues inform how long to run the MCMC algorithm in order to effectively analyze chain as a robust sample for the PSF posterior.
+The first being that we must detect when `burn-in' has completed, and the second is for how long must the MCMC algorithm run in order to 
+
   \subsection{Estimating Burn-in}
   \textcolor{red}{
   Re-read PC Gibbs on John's section and basically copy his ideas.
   Talk about how to interpret the ergodic theorem.
   }
+  An empirical method for e
   \subsection{Integrated Autocorrelation}
   \textcolor{red}{
   Talk about IAC and how one can then develop effective sample size.  
