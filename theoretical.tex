@@ -2,76 +2,258 @@
 %\newcommand{\mathscr}{\mathcal}
 \begin{chapter}{Reconstruction on the Continuum}\label{chapter:theoretical}
 
-The goal of this section is to develop the necessary mathematical tools to encapsulate prior notions of smoothness and radial symmetry within the structure of appropriately developed Hilbert spaces.
-This is done within the framework of distributions from linear PDE theory \cite{hormander1983,rudin1991,griffel2002}. %and we establish a one-to-one correspondence between the Hilbert space of radially symmetric PSFs and the Hilbert space of their radial representations.  
-%This correspondence leads to an alternate formulation of the inverse problem on the radial representations.
-We will first establish the relevant background from that theory.
-Then, we define symmetry in terms of pre-composition with a smooth map that is many-to-one on circles.  
-This defines a pullback mapping that will ultimately establish the space of radially symmetric functions, the space of their radial representations, and an isometry between them.  
+The goal of this chapter is to develop the necessary mathematical tools to encapsulate prior notions of both smoothness and radial symmetry within the structure of a separable Hilbert space.
+This is done within the framework of distributions from linear PDE theory. 
 
-\subsection{Distributional Hilbert Spaces}
-We first establish notation and preliminaries from the theory of distributions.
-For a complete development, see one of various classical texts on the subject, such as \cite{hormander1983,rudin1991}.
+\begin{com}
+  There is enough structure here to do what we want and maintain the structure of a Hilbert space. 
+  This will make rigorous the discussion at the end of the last chapter for showing that the problem is ill-posed.
+  It will also allow us to give rigorous formal definition for an infinite dimensional stochastic formulation of the problem.
+  This will be the basis for estimation in the following chapter.
+\end{com}
 
-%For $\Omega$ an open subset of $\R^n$, the space of compactly supported infinitely differentiable functions defined on $\Omega$ is the space of test functions on $\Omega$ and we denote them as $\DD(\Omega)$.
-Let $\DD(\Omega)$ denote compactly supported smooth test functions defined on an open set $\Omega$.
-We adopt the notation $\langle f, \phi\rangle$ for the action of a linear functional $f$ on $\phi \in \DD(\Omega)$. 
-The space of continuous linear functionals, or distributions, on $\DD(\Omega)$ are denoted with $\DD^*(\Omega)$. 
-Continuity is in the sense that for every compact set $K \subset \Omega$, there exists $C$ and $k$ so that
+\section{Distribution spaces}
+In this section we establish the preliminary definitions and main results from distribution theory.
+There are several treatments of the subject in varying levels of generality, and this work draws primarily from \citep{richtmyer1978principles,hormander1983,rudin1991,griffel2002,strichartz2003guide}.
+
+  \subsection{The space of test functions and distributions}
+
+\begin{com}
+The space of distributions provides  blah blah, a bunch of bullshit from PDEs and incidentally integral equations.
+\end{com}
+
+Let $\DD(\Omega)$ be the space of compactly supported smooth functions defined on an open set $\Omega \subseteq \R^k$.
+Endow $\DD(\Omega)$ with the topology such that $(\phi_n)\subset \DD(\Omega)$ converges there exists a compact set $K$ such that 
 \begin{equation}
-  |\langle u, \phi \rangle | \le C \sum_{|\alpha| \le k} \sup |\del^\alpha \phi|,
+  \bigcup_{n=1}^\infty \supp \phi_n \subseteq K \quad\text{and}\quad
+  \sup_{m\ge n} \left|\del^\alpha (\phi_n-\phi_m)\right|\to 0, \label{eq:testFunctionContinuity}
 \end{equation} 
-for any multi-index $\alpha$.
-A functional $f$ is continuous if and only if for every sequence $\{\phi_j\}$ in $\DD(\Omega)$ converging to zero in the sense that for every fixed $\alpha$, $\sup |\del^\alpha \phi_j| \to 0$ with some fixed compact $K \subset \Omega$, such that $\supp \phi_j \subseteq K$ for all $j$, then $\langle f, \phi_j\rangle \to 0$ \cite{hormander1983}.
-We freely use the natural inclusion of functions $g \to \tilde g \in \DD^*(\Omega)$ by $\langle \tilde g, \phi \rangle = \int g\, \phi\,dx$ when the integration exists and omit the tilde notation distinguishing $g$ and $\tilde g$, as the representation should be clear from context. 
+for any multi-index such that $|\alpha|\le k$.
+That is,  $\alpha$ is a $k$-tuple of non-negative integers $(\alpha_1\dots \alpha_k)$, such that $\sum \alpha_i \le k$ and $\del^\alpha = \prod \left(\frac{\del}{\del x_i}\right)^{\alpha_i}$.
+In distribution theory, these are called \emph{test functions} on $\Omega$.
+The space of continuous linear functionals, denoted $D^*(\Omega)$, are the \emph{distributions} on $\Omega$.
+We adopt the notation $\langle f, \phi\rangle$ for the action of a linear functional $f$ on $\phi \in \DD(\Omega)$ and freely use the natural inclusion of functions $g \to \tilde g \in \DD^*(\Omega)$ by $\langle \tilde g, \phi \rangle = \int g\, \phi\,dx$ when the integration exists and omit the tilde notation distinguishing $g$ and $\tilde g$ as the representation should be clear from context. 
 
-The space of square Lebesgue integrable functions on $\Omega$, $L^2(\Omega)$, embeds naturally into $\DD^*(\Omega)$.
-This is done by taking sequences of test functions $\{\phi_n\}$ such that $\int \phi_n \bar{\phi_n}\,dx$ defines a Cauchy sequence in $\R^+$, and defining $\langle \phi, \psi\rangle := \lim_{n\to\infty} \langle \phi_n,\psi\rangle$. It can be shown that $\phi \in D^*(\Omega)$ and that sequences of test functions are sufficient for representing all elements of $L^2(\Omega)$. Moreover, it can be shown that
-\begin{equation} 
-  (\phi,\psi)_{L_2(\Omega)} := \lim_{n\to\infty} \int \phi_n,\psi_n\,dx
-\end{equation}
-defines an inner product agrees with the usual $L^2$ inner product.
+We state two general topological results regarding distributions. See \citep[Chapter 2]{hormander1983} for the proofs of each.
+\begin{thm} \label{thm:completeness}
+  Suppose $(f_n)$ is a sequence in $\DD^*(\Omega)$ such that $\lim\langle f_n,\phi\rangle$ exists for all $\phi \in \DD(\Omega)$, then there exists a unique $f\in \DD^*(\Omega)$ such that
+  \begin{equation}
+    \langle f, \phi\rangle = \lim_{n\to\infty} \langle f_n, \phi \rangle.
+  \end{equation}
+\end{thm}
+The existence of such of the bilinear form $f$ can be readily established by using the completeness of the associated field, either $\R$ or $\C$, and the main difficulty of establishing the result is showing that the resulting linear functional is continuous on $\DD(\Omega)$.
 
-In a similar way, the Sobolev space $\mathscr H^m$ embeds in $\DD^*(\Omega)$ by considering Cauchy functions with respect to inner product $\sum_{|\alpha|\le m}(\del^\alpha \cdot\,, \del^\alpha \cdot \,)_{L^2}$ where the sum is over all multi-indices $\alpha$.
-These spaces form a sequence of closed subspaces $L^2(\Omega) = \mathscr H^0(\Omega) \supset \mathscr H^1(\Omega) \supset \dots \supset \mathscr H^m(\Omega) \supset\dots \supset \DD(\Omega)$ \cite{hutson1980}.
-In our development, we will be primarily concerned with open subsets of $\R^2$ and $\R$, and we denote such subsets as $\Omega_2$ and $\Omega_1$ respectively.
-
-A standard result from distribution theory \cite[Theorem 4.1.5]{hormander1983} states 
-\begin{thm} \label{thm:testFunDensity}
-  For $\Omega$ open in $\R^n$, if $f \in \DD^*(\Omega)$, then there is a sequence of test functions $\{f_n\}\subset \DD(\Omega)$ such that $\langle f_n,\phi\rangle \to \langle f,\phi\rangle$ for all $\phi \in \DD(\Omega)$.
+The next result, sometimes referred to as localization, establishes a dense embedding of the $\DD(\Omega)$ into $\DD^*(\Omega)$.
+\begin{thm} \label{thm:density}
+  Given $f\in \DD^*(\Omega)$, there exists a sequence $(\phi_n) \subset \DD(\Omega)$ such that 
+  \begin{equation}
+    \langle f,\psi\rangle = \lim_{n\to\infty}\langle \phi_n,\psi\rangle.
+  \end{equation}
 \end{thm}
 
-%\Cref{thm:testFunDensity} will allow us to define a property of $\DD^*(\Omega)$ by establishing it on $\DD(\Omega)$.
-\Cref{thm:testFunDensity} is used in \cite{hormander1983} to establish many of the computation rules involving derivatives and, in particular, the various chain rules associated with differential forms are established on $\DD(\Omega)$ and then extended continuously to $\DD^*(\Omega)$ by a computation that expresses the action on test functions, such as integration by parts. 
-This is the general strategy we will use to establish many of the results in this section.
+These results allow for operators defined on $\DD(\Omega)$ to be extended in a continuous way to $\DD^*(\Omega)$ so long as one can define an adjoint operation with respect to the bilinear form $\langle \cdot,\cdot \rangle$.
+The classical example is extending the differential operator $\frac{\del}{\del x_i}:\DD^*(\Omega) \to \DD^*(\Omega)$. 
+First, for test functions observe that integrating by parts and using the compactness of the support of $\psi$ yields
+\begin{equation}
+  \left\langle \frac{\del}{\del x_i} \phi,\psi \right\rangle = \int_{\Omega} \frac{\del}{\del x_i} \phi(x) \psi(x) dx = - \int_{\Omega}\phi(x) \frac{\del}{\del x_i} \psi(x)dx =- \left\langle \phi, \frac{\del}{\del x_i} \psi\right\rangle.
+\end{equation}
+This motivates defining $\frac{\del}{\del x_i} f \in \DD^*(\Omega)$ by
+\begin{equation}
+  \left\langle \frac{\del}{\del x_i} f, \phi \right\rangle 
+    \eqdef  - \left\langle f, \frac{\del}{\del x_i} \psi\right\rangle
+\end{equation}
+from which we can extend the definition of $\del^\alpha$
+\begin{equation}\label{eq:distributionalDerivative}
+  \left\langle \del^\alpha f, \phi \right\rangle 
+    \eqdef  (-1)^{|\alpha|} \left\langle f, \del^\alpha \psi\right\rangle.
+\end{equation}
+For a given sequence $(\phi_n)\subset \DD(\Omega)$ converges uniformly in all derivatives, the functional defined in \eqref{eq:distributionalDerivative} is continuous, hence is in $\DD^*(\Omega)$.
+Since the operator $\del^\alpha:\DD^*(\Omega)\to\DD^*(\Omega)$ is expressed as an adjoint on test functions with respect to evaluation, its continuity follows directly from the weak-topology induced from $\DD(\Omega)$, i.e., suppose $f_n \to f$ in $\DD^*(\Omega)$, then
+\begin{align}
+  \lim_{n\to \infty}\langle \del^{\alpha}f_n, \phi\rangle 
+  = \lim_{n\to\infty}(-1)^{|\alpha|} \langle f_n,\del^{\alpha}\phi\rangle
+  = (-1)^{|\alpha|} \langle f,\del^{\alpha}\phi\rangle
+  = \langle \del^{\alpha}f, \phi\rangle.
+\end{align}
 
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-%                                                                              % 
-%                             pullback operator                                % 
-%                                                                              % 
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%% 
-\subsection{Radial Symmetry via \textcolor{red}{The} Pullback Operator} \label{sec:pullback}
-Symmetry is established by casting it in terms of a many-to-one smooth map, $T$, that is constant on circles of a fixed radius.  
-%$T(x,y) = h(x^2 + y^2)$, where $h$ is an increasing diffeomorphism of $(0,\infty)$ to itself. 
-%Typically $h$ is the square-root function.
-%Different choices of $h$ lead to non-uniform grid spacings for the reconstruction of $\rho$ and will be explored in more detail in section \ref{psf_reconstruction}.
-When $f$ is a function, it has radial symmetry if there exists a function $\rho$, so that $f = \rho \circ T$.
-This notion is easily adapted to distributions by developing the corresponding linear pullback operator to $T$ that maps $\rho$ to $f$.
-%With this viewpoint, the relationship between the inverse problem in terms of the two dimensional representation and the radial representation is given explicitly through an isometry.
-In this subsection, we will explicitly construct $T$ and show that it establishes a one-to-one correspondence. 
-Using this correspondence, we will define the space of radially symmetric distributions and the space of their radial representations.
+This approach serves as a template for how we will extend the radial change of variables in \Cref{chapter:introduction} to larger spaces of distributions.
 
+\subsection{$L^2$ as a subspace of distributions}
+
+\begin{com}
+  We need metrics and norms and algebra to play nice together.
+  The best space for that is a Hilbert space, and in particular a closed substace of $L^2$.
+  Here we show how to view the space of $L^2$ functions as a subspace of $\DD^*$.
+\end{com}
+The development follows \citep{richtmyer1978principles}, for which we need only the notion the $L^2$ inner product, as opposed to Fourier based approaches which can be found in \citep{rudin1991,hormander1983}.
+This development provides several details that are omitted in \citep{richtmyer1978principles}. 
+
+We define the $L^2$ inner-product for test functions as the bilinear form $(\cdot,\cdot)_{L^2(\Omega)}:\DD(\Omega)\times\DD(\Omega) \to \C$ by 
+\begin{equation} \label{eq:l2innerProduct}
+  (\phi,\psi)_{L^2(\Omega)} \eqdef \int_{\Omega} \phi(x)\bar{\psi(x)}\,dx,
+\end{equation}
+with the induced norm 
+\begin{equation} \label{eq:l2norm}
+  \|\phi\|^2_{L^2(\Omega)} \eqdef (\phi,\phi)_{L^2(\Omega)}.
+\end{equation}
+The linearity of \eqref{eq:l2innerProduct} is inherited by the linearity of integration and positivity follows from the positivity of $\phi(x)\bar{\phi(x)} = |\phi(x)|^2$. 
+For definiteness, note that if $\phi = 0$ then $\|\phi\|_{L^2(\Omega)} = 0$, and only if $\phi = 0$, otherwise, continuity of $\phi$ implies a neighborhood where $|\phi(x)| > 0$ which gives $\|\phi\|_{L^2(\Omega)} > 0$.
+Since \eqref{eq:l2innerProduct} defines an inner-product, the triangle inequality of the norm follows from the Cauchy-Schwarz-Bunyakovsky inequality.
+
+A sequence $(\phi_n)\subset \DD(\Omega)$ is Cauchy with respect to $L^2(\Omega)$ if
+\begin{equation} 
+  \sup_{k\ge n} \|\phi_n - \phi_k\|_{L^2(\Omega)} \to 0.
+\end{equation}
+Observe that $(\phi,\psi)_{L^2(\Omega)} = \langle \phi,\bar{\psi}\rangle$ when $\phi$ is viewed as an element of $\DD^*(\Omega)$.
+Hence, if $(\phi_n)$ is Cauchy with respect to $L^2(\Omega)$, then the sequence $\big(\langle \phi_n,\psi\rangle\big)$ is a Cauchy sequence of complex numbers, i.e., using Cauchy-Schwarz-Bunyakovsky
+\begin{equation}
+  |\langle \phi_n, \psi \rangle - \langle \phi_k,\psi\rangle| 
+    = |(\phi_n - \phi_k,\bar{\psi})_{L^2(\Omega)}|  
+    \le \|\phi_n - \phi_k\|_{L^2(\Omega)}\|\psi\|_{L^2(\Omega)}. \label{eq:cauchySchwarz}
+\end{equation}
+Hence, $\lim\langle \phi_n,\psi\rangle$ exists for all $\psi \in \DD(\Omega)$ (by completeness of $\C$), and \Cref{thm:completeness} provides uniquely an $f \in \DD^*(\Omega)$ such that
+\begin{equation}
+  \lim_{n\to\infty} \langle \phi_n, \psi\rangle = \langle f,\psi\rangle.
+\end{equation}
+All such $f$ are elements of the space $L^2(\Omega)$.
+
+Sequences $(\phi_n)$ and $(\psi_n)$ are \emph{equivalent} $L^2(\Omega)$ Cauchy sequences if
+\begin{equation}\label{eq:cauchyEquivalence}
+  \|\phi_n - \phi_n'\|_{L^2(\Omega)} \to 0.
+\end{equation}
+These distributions are well defined in the following sense: 
+\begin{prop} \label{prop:cauchyCorrespondence}
+  Sequences $(\phi_n)$ and $(\phi_n')$ determine the same distribution if and only if they are equivalent.
+\end{prop}
+\begin{proof}
+  Suppose $(\phi_n)$ and $(\phi_n')$ are equivalent Cauchy sequences for $f$ and $f'$ respectively.
+  Arguing similarly to \eqref{eq:cauchySchwarz},
+  \begin{align} 
+    |\langle f, \psi\rangle - \langle g, \psi\rangle| = \left|\lim_{n\to \infty}\langle \phi_n - \phi_n', \psi\rangle\right| \le \lim_{n\to\infty}\|\phi_n - \phi_n'\|_{L^2(\Omega)}\|\psi\|_{L^2(\Omega)} =  0
+  \end{align} 
+  for all $\psi \in \DD^(\Omega)$, hence $f = f'$.
+
+  Conversely, suppose $(\phi_n)$ and $(\phi_n')$ are Cauchy sequences that determine the same distribution $f$, hence
+  \begin{equation}
+    \lim_{n\to\infty} \langle \phi_n,\psi\rangle = \lim_{n\to\infty} \langle \phi_n',\psi\rangle = \langle f,\psi\rangle
+  \end{equation}
+  for all $\psi \in \DD^*(\Omega)$.
+  The sequence given by $\xi_n = \phi_n - \phi_n'$ is also Cauchy by the triangle inequality, and 
+  \begin{equation}
+    \lim_{n\to\infty}\langle \xi_n,\bar{\psi}\rangle^2 = \lim_{n\to\infty} (\xi_n,\psi)_{L^2(\Omega)}^2 = 0.
+  \end{equation}
+  Let $\eps >0$ be given and $n_0$ sufficiently large such that 
+  \begin{equation}
+    \sup_{k\ge n_0} \|\xi_{n_0} - \xi_k\|_{L^2(\Omega)}^2 < \eps.
+  \end{equation}
+  Using Cauchy-Schwarz-Bunyakovsky,
+  \begin{align}
+    \|\xi_n\|_{L^2(\Omega)}^2 
+      &= |(\xi_n,\xi_n)_{L^2(\Omega)}| \nonumber\\
+      &= |(\xi_n,\xi_n - \xi_{n_0})_{L^2(\Omega)}| \nonumber\\
+      &\le \|\xi_n\|_{L^2(\Omega)}\|\xi_n-\xi_{n_0}\|_{L^2(\Omega)}
+  \end{align}
+  we have that for all $\|\xi_n\|_{L^2(\Omega)} \not= 0$
+  \begin{equation}
+    \|\xi_n\|_{L^2(\Omega)} \le \|\xi_n - \xi_{n_0}\|_{L^2(\Omega)} < \eps
+  \end{equation}
+  for all $n \ge n_0$, hence $\|\xi_n\|_{L^2(\Omega)} \to 0$ which implies $\phi_n$ and $\phi_n'$ are equivalent Cauchy sequences.
+\end{proof}
+
+It can be readily shown that \eqref{eq:cauchyEquivalence} defines an equivalence relation on Cauchy sequences for which vector addition and scalar multiplication are well-defined, hence, the equivalence classes of Cauchy sequences form linear subspace of $\DD^*(\Omega)$.
+
+We can now extend the inner product to elements in $L^2(\Omega)$ in the following way,
+\begin{equation} \label{eq:l2innerProductFull}
+  (f,g)_{L^2(\Omega)} \eqdef \lim_{n\to\infty} (\phi_n,\psi_n)_{L^2(\Omega)}
+\end{equation}
+where $(\phi_n)$ and $(\psi_n)$ are Cauchy sequences corresponding to $f$ and $g$ respectively.
+\begin{prop}
+  The limit in \eqref{eq:l2innerProductFull} exists and is well-defined for equivalent Cauchy sequences. 
+  Moreover, $\lim_{n\to\infty} \langle f,\bar{\psi_n}\rangle _{L^2(\Omega)} = (f,g)_{L^2(\Omega)}$.
+\end{prop}
+\begin{proof}
+  Since $(\phi_n)$ and $(\psi_n)$ are Cauchy, the inequality $|\|\phi_n\|_{L^2(\Omega)} - \|\phi_k\|_{L^2(\Omega)}| \le \|\phi_n - \phi_k\|_{L^2(\Omega)}$ implies that $\|\phi_n\|_{L^2(\Omega)}$ and $\|\psi_n\|$ are both Cauchy sequences of positive numbers, and thus have finite limits.
+
+Now observe,
+\begin{align}
+  |(\phi_n,\psi_n)_{L^2(\Omega)} - (\phi_k,\psi_k)_{L^2(\Omega)}| 
+    &= (\phi_n,\psi_n-\psi_k)_{L^2(\Omega)} -(\phi_n-\phi_k,\psi_k)_{L^2(\Omega)}| \nonumber\\
+    &\le \|\phi_n\|_{L^2(\Omega)}\|\psi_n-\psi_k\|_{L^2(\Omega)} + \|\phi_n - \phi_k\|_{L^2(\Omega)}\|\psi_k\|_{L^2(\Omega)} \nonumber\\
+    &\le \|\phi_n\|_{L^2(\Omega)}\|\psi_n-\psi_k\|_{L^2(\Omega)} \nonumber\\
+    &\quad\quad+ \|\phi_n - \phi_k\|_{L^2(\Omega)}\big(\|\psi_k - \psi_n\|_{L^2(\Omega)} + \|\psi_n\|_{L^2(\Omega)}\big)
+\end{align}
+and taking $\sup_{k\ge n}$ then limiting in $n$ on the right hand side of the inequality results in 0 since $(\|\phi_n\|)$ and $(\|\psi_n\|$ have finite limits.
+Thus, $(\phi_n,\psi_n)$ is a Cauchy sequence in $\C$, and hence, has a finite limit.
+
+Let $\eps > 0$ be given. 
+For all $n$, choose $m$ sufficiently large so that
+\begin{align}
+  |\langle f,\bar{\psi_n}\rangle - (f,g)_{L^2(\Omega)}| 
+    &\le |\langle f - \phi_m,\bar{\psi_n}\rangle| + |\langle \phi_m - \phi_n, \bar{\psi_n}\rangle| + |\langle \phi_n,\bar{\psi_n}\rangle - (f,g)_{L^2(\Omega)}| \nonumber\\
+    &\le |\langle f - \phi_m,\bar{\psi_n}\rangle| + \| \phi_m - \phi_n\| \|\psi_n\| + |\langle \phi_n,\bar{\psi_n}\rangle - (f,g)_{L^2(\Omega)}| \nonumber\\
+    &< \eps +|\langle \phi_n,\bar{\psi_n}\rangle - (f,g)_{L^2(\Omega)}|.
+\end{align}
+Taking limits on both sides gives 
+\begin{equation} \label{eq:iteratedInnerProduct}
+  \lim_{n\to\infty} \langle f,\bar{\psi_n}\rangle = (f,g)_{L^2(\Omega)}, 
+\end{equation}
+since $\eps>0$ is arbitrary.
+
+Finally, to show that the inner product is well-defined, suppose $(\phi_n')$ and $(\psi_n')$ are equivalent Cauchy sequences to $(\phi_n)$ and $(\psi_n)$ respectively.
+\begin{align}
+%  |(f,g) - (f',g')| \lim_{n\to\infty}
+%  |(\phi_n,\psi_n)_{L^2(\Omega)} - (\phi_n',\psi_n')_{L^2(\Omega)}|
+%  &=|(\phi_n,\psi_n - \psi_n')_{L^2(\Omega)} - (\phi_n'-\phi_n,\psi_n')_{L^2(\Omega)}| \nonumber \\
+%  &=|\langle\bar{\psi_n - \psi_n'},\phi_n\rangle - \langle\phi_n'-\phi_n,\bar{\psi_n'}\rangle| \label{eq:innerProductWellDefined}
+%  = |(\phi_n - \phi_n',\phi_n - \phi_n') + (\psi_n - \psi_n',\psi_n - \psi_n') - (\phi_n',\psi_n')|
+  |\lim_{n\to\infty}(\phi_n,\psi_n)_{L^2(\Omega)} - (\phi_n',\psi_n')_{L^2(\Omega)}| 
+  &= |\lim_{n\to\infty}\langle f,\bar{\psi_n}\rangle - \lim_{n\to\infty}\langle f',\bar{\psi_n}'\rangle| &\text{by \eqref{eq:iteratedInnerProduct}}\nonumber\\
+  &= |\lim_{n\to\infty}\langle f,\bar{\psi_n} - \bar{\psi_n}'\rangle| &\text{by \Cref{prop:cauchyCorrespondence}}\nonumber \\
+  &= 0 \nonumber.
+\end{align}
+Thus, the inner product is well-defined for equivalent Cauchy sequences.
+\end{proof}
+
+Showing that \eqref{eq:l2innerProductFull} is an inner product on $L^2(\Omega)$ is straight-forward, and the resulting inner product space is a Hilbert space, as stated in the following theorem.
+\begin{thm}
+The space $L^2(\Omega)$ is complete complete with respect to the inner product defined in \eqref{eq:l2innerProductFull}, hence, is a Hilbert space.
+\end{thm}
+%\begin{proof}
+%  Let $(f_n)\subseteq $ be a Cauchy sequence with respect to \eqref{eq:l2innerProductFull}. 
+%\end{proof}
+See \citep{richtmyer1978principles} for the proof, which follows a standard diagonalization argument. %similar to the Arzela-Ascoli theorem.
+We remark that there is a correspondence with the standard notion of $L^2(\Omega)$ with respect to Lebesgue measure and this development.
+The basis of correspondence comes from the result that simple function can be arbitrarily approximated with a sequence of test functions in the standard $L^2(\Omega)$ sense with Lebesgue measure. 
+See \citep{hormander1983} for a rigorous development of this correspondence.
+%\begin{com}
+%  Use the hard work in \Cref{thm:density} maybe.
+%\end{com}
+\subsection{The Sobolev spaces $\HH^n(\Omega)$ and $\HH_0^n(\Omega)$}
+Sobolev spaces provide a framework for imposing regularity on distributions in terms of their derivatives.
+In this subsection, we briefly overview the definition of these spaces, and state a version of the Sobolev embedding theorem sufficient for characterizing PSFs of interest in this work.
+
+\section{Radial symmetry}
+Symmetry is established by casting it in terms of a many-to-one smooth map $T$ that is constant on circles of a fixed radius.  
+If $f$ is a function on $\R^2$ and there exists a function $\rho$ so that $f(x,y) = \rho(\sqrt{x^2 + y^2})$, then observe that $f$ has the common notion of radial symmetry with a radial profile $\rho$.
+This notion is easily adapted to distributions by developing the corresponding linear pullback operator to $T^\sharp$ that maps $\rho$ to $f$ by precomposition by $T(x,y)$ on sequences of test functions converging to $\rho$.
+
+\subsection{The pull-back operator}
+In this subsection, we will explicitly construct the pullback operator $T^\sharp$ for a slightly more general smooth map $T(x,y)$. 
+It will turn out that our choice of $T$ will induce a pullback operator that is injective.
+This is the content of the following theorem.
+
+This is the content of the following theorem.
 \begin{thm} \label{thm:pullback}
   Let $\Omega_1 := (0,\infty) \subset \R$ and $\Omega_2 := \R^2 \setminus \{x = 0\text{ or }y=0\}$.
-  For $h:\Omega_1\to\Omega_1$ an increasing diffeomorphism, define $T:\Omega_2 \to \Omega_1$ by $T(x,y) = h(x^2 + y^2)$, then there exists a unique, injective, continuous, linear operator $T^\sharp:\DD^*(\Omega_1) \to \DD^*(\Omega_2)$ so that $\langle T^\sharp \rho ,\phi\rangle = \langle \rho \circ T,\phi\rangle$ for all $\phi \in \DD(\Omega_2)$ and $\rho \in \DD(\Omega_1)$.
+  For $h:\Omega_1\to\Omega_1$ such that $h(t) = t^a$ for $0<a<1$, let $T:\Omega_2 \to \Omega_1$ by $T(x,y) = h(x^2 + y^2)$, then there exists a unique, injective, continuous, linear operator $T^\sharp:\DD^*(\Omega_1) \to \DD^*(\Omega_2)$ so that $\langle T^\sharp \rho ,\phi\rangle = \langle \rho \circ T,\phi\rangle$ for all $\phi \in \DD(\Omega_2)$ and $\rho \in \DD(\Omega_1)$.
 \end{thm}
 
-To prove this result, we first establish a straight-forward, yet technical, computation in the following lemma.
+To prove this result, we first establish the following lemmas.
 
 \begin{lem} \label{lem:existence}
-  For each $\phi\in \DD(\Omega_2)$ there exists $\psi_{\phi} \in \DD(\Omega_1)$ so that for any $\rho \in \DD(\Omega_1)$
+  There exists a map $T_{\sharp}:\DD(\Omega_2) \to \DD(\Omega_1)$ so that for any $\rho \in \DD(\Omega_1)$
   \begin{equation}
-    \langle \rho \circ T, \phi \rangle_{\Omega_2} = \langle \rho, \psi_\phi\rangle_{\Omega_1}.
+    \langle \rho \circ T, \phi \rangle_{\Omega_2} = \langle \rho, T_\sharp \phi\rangle_{\Omega_1}.
   \end{equation}
 \end{lem}
 \begin{proof}
@@ -80,13 +262,21 @@ To prove this result, we first establish a straight-forward, yet technical, comp
   \begin{equation}
     T_{ij}(x,y) = \Big(T(x,y), (-1)^jy\Big). 
   \end{equation}
-  Observe that each $T_{ij}$ is a diffeomorphism onto $R = \left\{(r,t): 0 < t < \sqrt{h^{-1}(r)}\right\}$ with inverse 
+  Observe that each $T_{ij}$ is a diffeomorphism onto $R = \left\{(r,t): 0 < t < \sqrt{h^{-1}(r)}\right\} = \left\{(r,t): 0 < t < r^{\frac{1}{2a}}\right\}$ with inverse 
   \begin{align}
-    &T_{ij}^{-1}(r,t) = \Big((-1)^i\sqrt{h^{-1}(r) - t^2}, (-1)^jt\Big),\\
+    T_{ij}^{-1}(r,t) 
+      &= \Big((-1)^i\sqrt{h^{-1}(r) - t^2}, (-1)^jt\Big),\nonumber\\
+      &= \Big((-1)^i\sqrt{r^{\frac 1a} - t^2}, (-1)^jt\Big),\\
     \intertext{ and }
-    &\left|dT_{ij}^{-1}(r,t)\right| = \frac12 {h^{-1}}'(r)\left(h^{-1}(r) - t^2\right)^{-1/2}. \label{eq:determinant}
+    \left|dT_{ij}^{-1}(r,t)\right| 
+      &= \frac12 \frac{\del}{\del r}[h^{-1}(r)]\left(h^{-1}(r) - t^2\right)^{-1/2}\nonumber \\
+      &= \frac{1}{2a} r^{\frac 1a-1}\left(r^{\frac 1a} - t^2\right)^{-1/2}, \label{eq:determinant}
   \end{align}
-  Furthermore, note that $T \circ T_{ij}^{-1}(r,t) = r$ by the definition of $T_{ij}$.
+  which is positive and smooth for all $(r,t)\in \Omega_2$.
+  Furthermore, note that 
+  \begin{equation}
+    T \circ T_{ij}^{-1}(r,t) = r. \label{eq:partialInverseT}
+  \end{equation}
   Now, given $\rho \in \DD(\Omega_1)$, a change of variables results in
   \begin{align}
     \langle \rho \circ T, \phi\rangle_{\Omega_2} 
@@ -98,59 +288,62 @@ To prove this result, we first establish a straight-forward, yet technical, comp
 %    &= \langle \rho, \Phi_{\phi,T_{ij}} \rangle_{\Omega_1},
   \end{align}
   Let 
-  \begin{equation}
-    \psi_\phi(r) = \int_0^{\sqrt{h^{-1}(r)}} \sum_{ij}\phi \circ T_{ij}^{-1}(r,t)\left|dT_{ij}\right|dt, \label{eq:psiPhiDef}
-  \end{equation}
-  and we must show that $\psi_\phi \in \DD(\Omega_1)$.
-  Note that $\supp \left(\phi \circ T_{ij}^{-1} \right) = T_{ij}( \supp \phi )\subseteq R$, and since $T_{ij}$ is a diffeomorphism, $\phi \circ T_{ij}^{-1} \in \DD(\Omega_2)$. 
+  \begin{align}
+    [T_\sharp\phi](r) 
+      &= \int_0^{\sqrt{h^{-1}(r)}} \sum_{ij}\phi \circ T_{ij}^{-1}(r,t)\left|dT_{ij}\right|dt \\
+      &= \frac{r^{\frac 1a -1} }{2a}\sum_{ij}\int_0^{r^{\frac{1}{2a}}} \phi \left((-1)^i\sqrt{r^{\frac 1a} - t^2}, (-1)^jt\right) \left( r^{\frac 1a} - t^2 \right)^{-1/2} dt, \label{eq:psiPhiDef}
+  \end{align}
+  and we must show that $T_\sharp\phi \in \DD(\Omega_1)$.
+  Note that $\supp \left(\phi \circ T_{ij}^{-1} \right) = T_{ij}( \supp \phi )$ is compact in $R$ as the continuous image a compact set, and since $T_{ij}$ is a diffeomorphism, $\phi \circ T_{ij}^{-1} \in \DD(\Omega_2)$. 
 %  Moreover, integrating marginally over $t$ and summing over ${i,j}$ are smooth operations, so $\Phi_{\phi,T_{ij}}$ is smooth. 
 %  The support of $\Phi_{\phi,T_{ij}}$ is the projection of the support of $\phi\circ T_{ij}^{-1}$, hence is compact.
 %  Marginially integrating $\phi\circ T_{ij}^{-1}$ results in a test function, thus $\Phi_{\phi,T_{ij}} \in \DD(\Omega_1)$. 
-  Since $\sum \phi\circ T_{ij}^{-1}(r,t)$ is smooth and compactly supported, a standard result from analysis \cite[pg. 433]{strichartz2000} implies that $\psi_\phi(r)$ resulting from integrating in $t$ is a smooth function whose support is the projection of the support of the integrand.
+  Since $\phi\circ T_{ij}^{-1}(r,t)$ is smooth, a standard result from analysis \cite[pg. 433]{strichartz2000} implies that $\int \phi \circ T_{ij}^{-1}(r,t)\,dt$ is a smooth function in $r$.  
+  The support of this function is the projection of the support of $\phi\circ T_{ij}$ onto the second coordinate, and hence, is compact.
+  Summing over $i,j$ results results in a compactly supported smooth function.
+
 \end{proof}
 
-%As a corollary to this result, we can establish the existence in the statement of \Cref{thm:pullback}. That is, define $T^\sharp:\DD^*(\Omega_1) \to \DD^*(\Omega_2)$ by 
-We can now proceed to prove \Cref{thm:pullback}.
-\begin{proof}
   Using \Cref{lem:existence}, define
+  \begin{defn}
+    Let $T^\sharp:\DD^*(\Omega_1) \to \DD^*(\Omega_2)$ by
   \begin{equation}
-    \langle T^\sharp \rho, \phi \rangle_{\Omega_2} := \langle \rho, \psi_\phi\rangle_{\Omega_1}.
+    \langle T^\sharp \rho, \phi \rangle_{\Omega_2} := \langle \rho, T_\sharp\phi\rangle_{\Omega_1}.
   \end{equation}
-  To see that $T^\sharp \rho \in \DD^*(\Omega_2)$, let $\{\phi_n\} \to 0$ in $\DD(\Omega_2)$, so in particular (for $\alpha = 0$), $\sup|\psi_n| \to 0$. 
-  Then, by \eqref{eq:psiPhiDef}, $\sup |\phi_{\psi_n}| \to 0$, and thus $\langle \rho, \psi_{\phi_n}\rangle \to 0$. 
-  The linearity and continuity of $T^\sharp$ follow directly from the definition.
+  \end{defn}
+  To see that $T^\sharp \rho \in \DD^*(\Omega_2)$ (i.e. acts continuously on $\DD(\Omega_2)$ as a linear functioal), let $\{\phi_n\} \to 0$ in $\DD(\Omega_2)$, so in particular ($\alpha = 0$ in \eqref{eq:testFunctionContinuity}), $\sup|\phi_n| \to 0$. 
+  Then, by \eqref{eq:psiPhiDef}, $\sup |T_\sharp\phi_n| \to 0$, and thus $\langle \rho, T_\sharp\phi_n\rangle \to 0$ by the continuity of $\rho$. 
+%  Moreover, if we take $\rho = Id_{\DD(\Omega_1)}$ the iden, then $\langle Id_{}$
+%  $T_\sharp:\DD(\Omega_2) \to \DD(\Omega_1)$.
+
+  The linearity and continuity of $T^\sharp$ follow directly from this definition.
   That is 
-  \begin{equation}
-    \langle T^\sharp \rho_1 + T^\sharp \rho_2,\phi\rangle_{\Omega_2} = \langle \rho_1,\psi_\phi\rangle_{\Omega_1} + \langle \rho_2 ,\psi_\phi \rangle_{\Omega_1} = \langle T^\sharp(\rho_1+\rho_2),\psi_\phi\rangle_{\Omega_2}, 
-  \end{equation} 
+  \begin{align}
+    \langle T^\sharp \rho_1 + \alpha T^\sharp \rho_2,\phi\rangle_{\Omega_2} 
+    &= \langle T^\sharp\rho_1,\phi\rangle_{\Omega_2} + \alpha\langle T^\sharp\rho_2 ,\phi \rangle_{\Omega_2} \nonumber\\ 
+    &= \langle \rho_1,T_\sharp\phi\rangle_{\Omega_1} + \alpha\langle \rho_2 ,T_\sharp\phi \rangle_{\Omega_1} \nonumber\\
+    &= \langle T^\sharp(\rho_1+\alpha \rho_2),\phi\rangle_{\Omega_2} \label{eq:linearity} 
+  \end{align} 
   and if $\langle \rho_n, \psi\rangle \to 0$ for all $\psi \in \DD(\Omega_1)$, then 
   \begin{equation}
-    \langle T^\sharp \rho_n,\phi\rangle_{\Omega_2} = \langle \rho_n,\psi_\phi\rangle_{\Omega_1} \to 0.
+    \langle T^\sharp \rho_n,\phi\rangle_{\Omega_2} = \langle \rho_n,T_\sharp\phi\rangle_{\Omega_1} \to 0.
   \end{equation}
 
-  Uniqueness is a consequence of \Cref{thm:testFunDensity}. That is, suppose $T^\dagger:\DD^*(\Omega_1) \to \DD^*(\Omega_2)$ is a continuous linear functional such that $\langle T^\dagger \rho,\phi \rangle = \langle \rho \circ T, \phi\rangle$ for all $\phi \in \DD(\Omega_2)$ whenever $\rho \in \DD(\Omega_1)$. Then, for any $\rho \in \DD^*(\Omega_1)$, let $\{\rho_n\}\subset \DD(\Omega_1)$ converge to $\rho$ (in the $\DD^*(\Omega_1)$ sense), so 
-  \begin{equation}
-    \left\langle (T^\sharp - T^\dagger)\rho,\phi\right\rangle_{\Omega_2} = \lim \langle T^\sharp\rho_n,\phi\rangle_{\Omega_2} - \lim \langle T^\dagger\rho_n,\phi\rangle_{\Omega_2} = 0.
-  \end{equation}
-  Hence $T^\sharp = T^\dagger$.
-  We have established all of the properties in \Cref{thm:pullback}.
-\end{proof}
-
-Loosely speaking, the pullback by $T$ represents a change of variables from $(x,y)$ to $(r,v)$ by extending expanding the domain of $T$ to an invertible $T_{ij}(x,y)$ with the choice of $T_{ij}$ somewhat arbitrary.  
-The uniqueness allows us to freely choose any other change of variables such that $T \circ T_{ij}(r,v) = r$, and the analysis on $T$ is still valid.
-I.e., another valid choice of $T_{ij}$ is similar to polar-coordinates transformation $(T(x,y), \mathrm{Arg}(x,y))$.
+%As a corollary to this result, we can establish the existence in the statement of \Cref{thm:pullback}. That is, define $T^\sharp:\DD^*(\Omega_1) \to \DD^*(\Omega_2)$ by 
+Loosely speaking, the pullback by $T$ represents a change of variables from $(x,y)$ to $(r,v)$ by expanding the domain of $T$ to an invertible $T_{ij}(x,y)$ with the choice of $T_{ij}$ somewhat arbitrary.  
+For example, another valid choice of $T_{ij}$, which is similar to a polar-coordinates transformation, would be $(T(x,y), \mathrm{Arg}(x,y))$.
+When uniqueness of $T^\sharp$ is shown, it will allow us to freely choose any other change of variables such that $T \circ T_{ij}(r,v) = r$, and the analysis on $T$ will still be valid.
 Our choice was such that the analysis is straight-forward, although we will make use of the polar-coordinate variable transformation later to define the forward operator on linear representations.
-
-The construction can be carried out much more generally for any smooth $T$ and is outlined in \cite{hormander1983}.
-In this case, because of the specific form of $T$ under consideration, the induced pullback $T^\sharp$ is injective. 
+The existence and continuity of a pullback operator can be carried out much more generally for any smooth $T$ and is outlined in \cite{hormander1983}.
+However, in this case, because of the specific form of $T$ under consideration, the induced pullback $T^\sharp$ is injective. 
 This will be a consequence of the next lemma.
 \begin{lem} \label{lem:innerProduct}
-  For all $\rho\in\DD^*(\Omega_1)$ and $\psi \in \DD(\Omega_1)$, if we denote the ${h^{-1}}'$ as the derivative of the inverse of $h$ in \Cref{thm:pullback} 
-  %and $\rho\cdot {h^{-1}}'$ as the distribution such that $\langle \rho \cdot {h^{-1}}',\psi\rangle = \langle \rho, {h^{-1}}' \cdot \psi\rangle$, 
+  For all $\rho\in\DD^*(\Omega_1)$ and $\psi \in \DD(\Omega_1)$, then 
   then
   \begin{equation}
     \langle T^\sharp \rho , \psi \circ T \rangle_{\Omega_2} = \pi \langle \rho,\psi \cdot {h^{-1}}'\rangle_{\Omega_1}.
   \end{equation}
+  where ${h^{-1}}'$ is the derivative of the inverse of $h$ in \Cref{thm:pullback}. 
 \end{lem}
 \begin{proof}
   First, note that both $\psi \circ T$ and ${h^{-1}}'\cdot \psi$ are elements of $\DD(\Omega_1)$.  
@@ -164,148 +357,41 @@ This will be a consequence of the next lemma.
   \begin{align}
     \langle T^\sharp \rho_n, \psi \circ T \rangle_{\Omega_2}  &= 4\int_0^\infty \rho_n(r) \psi(r)  \left(\int_0^{\sqrt{h^{-1}(r)}} \left|dT_{ij}\right| dt\right) dr \nonumber \\
       &= \pi \int_0^\infty \rho_n(r) \psi(r)\,{h^{-1}}'(r) dr \nonumber\\
-      &= \pi \left\langle\rho_n, \psi  \cdot {h^{-1}}' \right\rangle_{\Omega_1}. \label{pullbackinnerprod}
+      &= \pi \left\langle\rho_n, \psi  \cdot {h^{-1}}' \right\rangle_{\Omega_1}. \label{eq:pullbackInnerProd}
   \end{align}
-  By continuity of $T^\sharp$, the desired equality follows.
+  By continuity of $T^\sharp$, the desired equality is established.
 \end{proof}
 
-\begin{cor} \label{cor:injectivity}
-  The map $T^\sharp:\DD^*(\Omega_1) \to \DD^*(\Omega_2)$ is injective.
-\end{cor}
+We can now proceed to prove \Cref{thm:pullback}.
 \begin{proof}
-  Suppose $\rho \in \DD^*(\Omega_1)$ is such that $T^\sharp \rho = 0$.
+  It remains to show that 
+
+  Uniqueness is a consequence of \Cref{thm:testFunDensity}. That is, suppose $T^\dagger:\DD^*(\Omega_1) \to \DD^*(\Omega_2)$ is a continuous linear functional such that $\langle T^\dagger \rho,\phi \rangle = \langle \rho \circ T, \phi\rangle$ for all $\phi \in \DD(\Omega_2)$ whenever $\rho \in \DD(\Omega_1)$. Then, for any $\rho \in \DD^*(\Omega_1)$, let $\{\rho_n\}\subset \DD(\Omega_1)$ converge to $\rho$ (in the $\DD^*(\Omega_1)$ sense), so 
+  \begin{equation}
+    \left\langle (T^\sharp - T^\dagger)\rho,\phi\right\rangle_{\Omega_2} = \lim \langle T^\sharp\rho_n,\phi\rangle_{\Omega_2} - \lim \langle T^\dagger\rho_n,\phi\rangle_{\Omega_2} = 0.
+  \end{equation}
+  Hence $T^\sharp = T^\dagger$.
+  
+  It remains to show that $T^\sharp$ is injective. Suppose $\rho \in \DD^*(\Omega_1)$ is such that $T^\sharp \rho = 0$.
   %and let $\{\rho_n\}\subset \DD(\Omega_1)$ converge to $\rho$ in $\DD^*(\Omega)$. For any $\psi \in \DD(\Omega_1)$,
-  By the inverse function theorem, ${h^{-1}}'(r) = \frac 1{h'(r)} > 0$ since $h$ is increasing.
+  By the inverse function theorem,
+  ${h^{-1}}'(r) = \frac 1{h'(r)} > 0$ since $h$ is increasing.
   So, $h' \cdot {h^{-1}}' (r) = 1$.
   %Let $\tilde h(r) = \frac 1{ {h^{-1}}'(r) }$, so $\tilde h \cdot {h^{-1}}' \equiv 1$.
-  By \Cref{lem:innerProduct}, for an aribitrary $\psi\in \DD^(\Omega_1)$,
+  By \Cref{lem:innerProduct}, for an aribitrary $\psi\in \DD(\Omega_1)$,
   \begin{equation}
     0 = \Big\langle T^\sharp \rho, (h' \cdot \psi) \circ T)\Big\rangle_{\Omega_2} = \Big\langle \rho, \psi\Big\rangle_{\Omega_1},
   \end{equation}
-  thus, $T^\sharp$ has trivial kernel and as a linear map is injective.
-
-%  Then, the product $\rho \cdot {h^{-1}}' \equiv 0$ and since ${h^{-1}}'$ has full support in $(0,\infty)$, $\rho \equiv 0$.  Invoking the density of $\DD(\Omega_1)$ from Theorem \ref{test_fun_density}, we have that $T^\sharp$ is an injection.
+  thus $\rho$ is the zero distribution.  Hence, $T^\sharp$ has trivial kernel and as a linear map is injective.
+  We have established all of the properties in \Cref{thm:pullback}.
 \end{proof}
 
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-%                                                                              % 
-%                              radially_symmetric_space                        % 
-%                                                                              % 
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-\subsection{The Space of Radially Symmetric \textcolor{red}{Functions}} \label{radially_symmetric_space}
+\subsection{Borel's theorem and a motivating example}
+\subsection{Radial symmetry for $L^2(\Omega_2)$ and $\HH_0^n(\Omega_2)$}
 
-\textcolor{red}{What follows in this section are my thoughts as formally as I can state them for defining $\KK\subset L^2(\Omega_2)$, the space of radially symmetric functions, and $\PP$ the space of their radial representations.  
-I have run into trouble showing the $\KK$ is closed in $L^2(\Omega_2)$.
-I don't intend for this to be in the paper in this form, but I am trying to present it in the form that seems most reasonable for solving the problem.
-The gist is that I now believe that an extra condition is needed on $h$ so that $\KK$ is closed, but I am not sure what it should be.
-Alternatively, maybe I should change $\KK$ or $\PP$. 
-}
-
-We will want to only consider radial representations, $\PP$, that correspond to square integrable radially symmetric functions, $\KK$.
-Therefore, a reasonable space for radial representations is $\PP = T^{\sharp-1}(L^2(\Omega_2))$. 
-If we restrict $T^{\sharp}$ to $\PP$, then the image of this map is $T^{\sharp} (T^{\sharp-1}(L^2(\Omega_2)))$, and it is a straight-forward set theory argument to show that this is precisely $\KK = T^\sharp(\DD^*(\Omega_1) \bigcap L^2(\Omega_2)$. 
-Here is the argument:
-\begin{prop}
-  Let $f:X\to Y$ with $B \subseteq Y$, then $f (f^{-1} ( B )) = f(X) \bigcap B$. 
-\end{prop}
-\begin{proof}
-Let $y \in f( f^{-1}(B))$, then there exists a $x \in f^{-1}(B)$ such that $f(x) = y$.  
-Since $x \in f^{-1}(B)$, this implies that $f(x) = y \in B$. 
-We have shown $y\in f(X)$ and $y \in B$, hence $f(f^{-1}(B)) \subseteq F(X)\bigcap B$.
-
-On the other hand, suppose $y \in f(X)$ and $y \in B$.
-Then there exists $x\in X$ such that $y = f(x) \in B$.  Hence $x \in f^{-1}(B)$.  This implies $y = f(x) \in f(f^{-1}(B)$.
-\end{proof}
-
-Both $\PP$ and $\KK$ seem to be the natural choices for these spaces.  
-Moreover, the map
-\begin{equation}
-  T^\sharp|_{\PP}:\PP \to \KK
-\end{equation}
-is a surjection.
-Since $\KK \subset L^2(\Omega)$, we can endow it with the subspace topology, and endow $\PP$ with the topology whose open sets are of the form $T^{\sharp-1}(U)$.  
-This makes $T^\sharp$ automatically continuous, and the correspondence of the open sets is given by \Cref{lem:innerProduct}
-
-I have been struggling to prove that $\KK$ is closed in $L^2(\Omega_2)$, and I believe that it might not be true in general for all increasing diffeomorphisms $h:\Omega_1 \to \Omega_1$. 
-
-One reason I believe $h$ is not restrictive enough is %that $\R = T^{\sharp-1}(L^2(\Omega_2)) \not\subseteq L^2(\Omega_1)$ for certain $h$.
-the following sketch of a construction:
-Consider the sequence $\{\rho_n\}\subset \DD(\Omega_1)$ given by the convolution
-\begin{equation}
-  \rho_n(r) = r^{-1/3}\chi_{r\ge1}(r) * \delta_n(r)
-\end{equation}
-where $\delta_n \in \DD(\Omega_1)$ is an approximate identity.
-This sequence converges to a distribution $\rho \in L^2(\Omega_1)$.
-Yet, if $h(t) = t^2$, then ${h^{-1}}'(r) = \frac 12 r^{-1/2}$, then invoking \Cref{lem:innerProduct},
-\begin{align}
-  \int_{\Omega_2} T^\sharp \rho_n \cdot \bar{T^\sharp \rho_n}\,dxdy
-  &= \Big\langle T^\sharp \rho_n, \bar{\rho_n} \circ T\Big\rangle_{\Omega_2}\\
-  &= \pi\Big\langle \rho_n, {h^{-1}}'\cdot \bar{\rho_n} \Big\rangle_{\Omega_1}\\
-  &= \pi\int_{\Omega_1} \rho_n(r)^2 {h^{-1}}'(r) dr
-%  &= \frac{\pi}{2}\int_0^\infty r^{-7/6}*\delta_n^2(r), dr\\
-\end{align}
-which defines a sequence diverging like $\int_1^\infty r^{-7/6} dr$. 
-Hence $T^\sharp$ in this case is not continuous on $L^2(\Omega_1)$.
-Observe, however, that the choice of $h(t)$ has the wrong concavity to make points more dense near the origin.  
-I think I can reconcile this with $h$ of the form $h(t) = t^{a}$ where $0<a<1/2$, or maybe even $0<a<1$, but is considering only such functions too restrictive?
-Although this doesn't say anything about whether or not $\KK$ is closed in $L^2(\Omega_2)$, it precludes the following sketch of an argument that I initially wanted to use:
-
-Ideally, I would like to have $h$ so that I can prove that $\R \subseteq L^2(\Omega_1)$ and $T|_{L^2(\Omega_1)}$ continuously maps into $L^2(\Omega_2)$ (with respect to $L^2$ in both domain and range). 
-Then, $\R = T^{\sharp-1}(L^2(\Omega_2))$ is closed in $L^2(\Omega_1)$.  
-Moreover, by the open mapping theorem [Rudin pg. 48], $T^\sharp|_{\R}$ is an open map ($\R$ is a Hilbert space, thus an $F$-space).  Since $T^\sharp|_{\R}$ is injective, it is also a closed map (Use $T^\sharp(U^c) = T^\sharp(U)^c$). Thus $\KK = T^\sharp(\R)$ is closed in $L^2(\Omega_2)$.  
-It would also be nice to show that the topology induced by $T^\sharp|_\R$ is coarser than that of $L^2(\Omega_1)$ so that convergence in the first implies convergence in the latter.
-
-I have other ideas about proving this directly by considering limit points of $\KK$, but the above approach seems nice.
-As you suspected, this is much more complicated that I initially anticipated.
-Any comments, thoughts, suggestions as always are appreciated.
-
-%, however, for $h(t) = t^2$, 
-
-%With $T^\sharp$ well defined, we make the following definition.
-%
-%\begin{defn}
-%  A distribution $f \in \DD^*(\Omega_2)$ has \emph{radial symmetry} if there exists a distribution $\rho \in \DD^*(\Omega_1)$ so that $f = T^\sharp \rho$. 
-%  We denote the space of radially symmetric distributions in $\mathscr H^m$ with $\KK^m = T^\sharp(\DD^*(\Omega_1)) \bigcap \mathscr H^m(\Omega_2)$, and reserve $\KK$ for radially symmetric distributions in $L^2(\Omega_2)$.
-%\end{defn}
-%%A natural continuation from \eqref{pullbackinnerprod} in the proof of Lemma \ref{lem:injective} gives
-%\begin{cor}
-%  $\KK^m$ is closed in $\mathscr H^m(\Omega_2)$.\label{closure}
-%\end{cor}
-%\begin{proof}
-%  Let $f_n$ be a sequence of test functions in $\KK^m$ converging to $f\in \mathscr H^m$ with respect the $\mathscr H^m$ norm. 
-%  For each $f_n$, there exists a unique $\rho_n$ so that $f_n = T^\sharp \rho_n$.  
-%  Since $f_n$ converges for $\alpha = 0$, we have that $\langle f_n, \phi\rangle$ is a Cauchy sequence for any $\phi \in \DD(\Omega_2)$, so for any $\psi \in \DD(\Omega_1)$, \eqref{pullbackinnerprod} implies
-%  \begin{align}
-%    \left\langle f_n - f_m, (1/{h^{-1}}')\cdot \psi\circ T\right\rangle = \left\langle T^\sharp (\rho_n-\rho_m) ,\, (1/{h^{-1}}') \cdot\psi \circ T\right\rangle_{\Omega_2}  
-%	&= \pi \left\langle\rho_n - \rho_m, \psi \right\rangle_{\Omega_1}. 
-%  \end{align} 
-%  %By putting conjugate bars on the second arguments, we have that $\rho_n$ is Cauchy in $L^2(\Omega_1)$, so let $\rho$ be the weak limit of $\rho_n$.
-%  Hence we can define $\langle \rho,\psi \rangle= \lim \langle \rho_n,\psi\rangle$.
-%  Continuity of $T^\sharp$, shows that $f = T^\sharp \rho$, hence $f \in T^\sharp(D^*(\Omega_1))$, and $\mathscr H^m(\Omega_2)$ closed implies $f \in \KK^m$.
-%\end{proof}
-%\begin{defn}
-%  If $\rho$ is such that $f = T^\sharp \rho$ for some $f \in \KK$, then we say $\rho$ is the \emph{radial representation} of $f$ and we denote the space $\R^m = {T^\sharp}^{-1}(\KK^m)$.
-%\end{defn}
-%%Since $\KK$ is closed, continuity of $T^\sharp$ implies $\R$ is closed.
-%%Moreover, the construction of $\rho$ in Corollary \ref{closure} shows that $\R^m \subset \mathscr H^m(\Omega_1)$.
-%%
-%%To summarize, we have established a closed subspace of radially symmetric distributions $\KK \subset L^2(\Omega_2)$ and a one-to-one correspondence with their radial representations  $\R \subset L^2(\Omega_1)$. 
-%%%In fact, using \cref{pullbackinnerprod}, we see that $\KK$ induces a structure on $\R$ by defining an inner product
-%%Moreover, $\R$ inherits structure from $\KK$ as follows
-%\begin{thm} \label{thm:isometry}
-%  The restriction of $T^\sharp$ to $\R^m$ provides an isometry between $\KK^m$ with the standard energy inner products and $\R^m$ with
-%\begin{equation}
-%  (\rho_1,\rho_2)_{\R} := \left( T^\sharp \rho_1,\, T^\sharp \rho_2 \right)_{L^2(\Omega_2)} = \pi \left( \rho_1 \cdot {h^{-1}}',\, \rho_2 \right)_{L^2(\Omega_1)}. \label{eq:isometry}
-%\end{equation}
-%%\Cref{isometry} establishes an isometry between $\KK$ and $\R$, so all subspaces of $\KK$ correspond to subspaces of $\R$.
-%%The subspace structure of $\mathscr K^m$ also induces a subspace structure on $\R^m$
-%and
-%\begin{equation}
-%  (\rho_1,\rho_2)_{\R^m} := \sum_{|\alpha|\le m} \left( \del^\alpha T^\sharp \rho_1,\, \del^\alpha T^\sharp \rho_2 \right)_{\Omega_2}.
-%\end{equation}
-%\end{thm}
-%\begin{proof}
-%\end{proof}
-%%however, explicit representations must be computed using the appropriate chain and product rules.
+\section{The PSF inverse problem}
+\subsection{The edge-blur operator for radially symmetric PSFs}
+\subsection{Variational formulation of PSF estimation}
+\subsection{Infinite dimensional Bayesian formulation for PSF estimation}
 
 \end{chapter}

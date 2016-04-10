@@ -1,4 +1,8 @@
 %   This is the file for your notations page.  Do not modify the next line.
+% Handy help for stacking words, using braces
+% $\overbrace{\hbox{Text}}^{\hbox{text above}}$
+% $\underbrace{\hbox{Text}}_{\hbox{text below}}$
+% $\stackrel{\hbox{Text above}}{\hbox{Text below}}$
 {\bf {\Large Notations}} \\
 %   Put your notations here
 
@@ -7,27 +11,33 @@
 $p \dotfill$ Point spread function\\
 $b \dotfill$ Observed data\\
 $\G \dotfill$ Forward edge-blur operator on a radial profile\\
-
+%
+%\vspace{-.5em}
 % Sets 
 {\bf {\large Sets}}\\
 $\Z$\dotfill Integers\\
 $\R$\dotfill Real numbers\\
+$\C$\dotfill Complex numbers\\
 $\R^k$  \dotfill $k$-dimensional vector space over real numbers\\
-$\rem xi$\dotfill The vector $(x_1,\dots,x_{i-1},x_{i+1},\dots,x_k)$\\
-
+%$\rem xi$\dotfill The vector $(x_1,\dots,x_{i-1},x_{i+1},\dots,x_k)$\\
+%
+%\vspace{-.5em}
 % Functional Analysis
 {\bf {\large Functional Analysis}}\\
-$\HH \dotfill$ Hilbert space\\
+$(\cdot,\cdot)$\dotfill Inner product\\
 $\|\cdot \| \dotfill$ Norm\\
-$\langle \cdot,\cdot \rangle \dotfill$ Inner product\\
-$\mathscr X^*$\dotfill Dual space of $\mathscr X$\\
+$\mathscr X^*$\dotfill Space of continuous linear functionals of $\mathscr X$\\
+$\langle \cdot,\cdot \rangle \dotfill$ Action of linear functional\\
 $\DD$\dotfill Compactly supported smooth test functions\\
 $\DD^*$\dotfill Space of distributions\\
-$\KK$\dotfill Space of radially symmetric functions\\
+$L^2$\dotfill Square integrable distributions\\
+$\HH^n \dotfill$ Sobolev space of order n\\
+$\KK$\dotfill Space of radially symmetric PSFs\\
 $\PP$\dotfill Space of radial profiles\\
 $\argmin_{x\in A} \Phi(x) \dotfill$ The $x\in A$ such that $\Phi(x)$ is minimized\\
 $\|\cdot \|_{TV} \dotfill$ Total variation norm\\
-
+%
+%\vspace{-.5em}
 % Probability
 {\bf {\large Probability}}\\
 %$\Omega \dotfill$ Set of outcomes\\
@@ -41,10 +51,4 @@ $\K \dotfill$ Transition operator\\
 $\pi(\cdot) \dotfill$ Probability density\\
 $\pi(\cdot|\cdot) \dotfill$ Conditional probability density\\
 $X\sim \pi \dotfill$ Random variable $X$ has distribution $p$ \\
-
-
-% Handy help for stacking words, using braces
-% $\overbrace{\hbox{Text}}^{\hbox{text above}}$
-% $\underbrace{\hbox{Text}}_{\hbox{text below}}$
-% $\stackrel{\hbox{Text above}}{\hbox{Text below}}$
 \pagebreak

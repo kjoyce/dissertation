@@ -2,3 +2,6 @@
 \addvspace {10\p@ }
 \addvspace {10\p@ }
 \addvspace {10\p@ }
+\addvspace {10\p@ }
+\contentsline {table}{\numberline {5.1}{\ignorespaces Statistical diagnostics for the $\lambda $ and $\delta $ chains associated with the synthetic PSF reconstruction problem. The total chain length is $M=10^4$, with a burn-in of $k_{\rm burnin} = 5\times 10^3$. The first column are the post-burn-in chain means of $\lambda $ and $\delta $. The maximum IACT of $\lambda $ and $\delta $ are used to calculate IACT and ESS. For MTC algorithm, $\delimiter "4264306 (M-k_{\rm burnin})/\tau _{\rm int}\delimiter "5265307 $ is added to \#Chol to evaluate the efficiency.}}{77}{table.5.1}
+\contentsline {table}{\numberline {5.2}{\ignorespaces Statistical diagnostics for the $\lambda $ and $\delta $ chains associated with the measured data PSF reconstruction problem. The total chain length is $M=10^4$, with a burn-in of $k_{\rm burnin} = 5\times 10^3$. The first column are the post-burn-in chain means of $\lambda $ and $\delta $. The maximum IACT of $\lambda $ and $\delta $ are used to calculate IACT and ESS. For MTC algorithm, $\delimiter "4264306 (M-k_{\rm burnin})/\tau _{\rm int}\delimiter "5265307 $ is added to \#Chol to evaluate the efficiency.}}{78}{table.5.2}
