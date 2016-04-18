@@ -2,27 +2,14 @@
 \newcommand{\Ab}{{\bf A}}
 \newcommand{\N}{\mathcal{N}}
 \begin{chapter}{Markov Chains and Modified Gibbs Sampling}\label{chapter:mcmctheory}
-\begin{com} 
-  Talk about what the novel contributions are.
-  Start with the big idea, NOT 'in this chapter we are going to...'
-  Aaron: 1. generating a statistical algorithm for PSF estimation, 2. prove invariance of partial collapse.
-  So split the chapter.
-  what is `the inverse problem' ?
-\end{com}
 
-\begin{com}
-Modeling random things means dealing with .
-  As is the case in Bayesian methods, incorporating observed data often leads to intractable densities.
-  The Markov chain and relevant ergodic theorem are introduced, then we present the Gibbs sampler.
-\end{com}
-
-Observation informed estimation within a stochastic model can be analytically intractable, especially when the model deviates from standard models for independent or systematically data.
+Observation informed estimation within a stochastic model can be analytically intractable, especially when the model deviates from standard models for independent or systematically sampled data.
 This is especially the case in many Bayesian methods, where inference is typically drawn from a posterior distribution, usually known only up to a constant of normalization.
-\emph{Monte Carlo} methods use psuedo-random simulation methods to construct a simulated sample in order to characterize and estimate statistics about the underlying intractable probability density.
+\emph{Monte Carlo} methods use pseudo-random simulation methods to construct a simulated sample in order to characterize and estimate statistics about the underlying intractable probability density.
 This chapter is devoted to introducing Monte Carlo methods that take advantage of a stochastic structure known as a Markov Chain in order to perform inference.
 In particular, we investigate modifications to the widely used Gibbs sampler, and present modifications that improve its convergence.
 The main tool for inference is the ergodic theorem for Markov Chains, which is stated along with its requisite hypotheses in \Cref{sec:mcmcTheory}.
-This development will establish an important necessary condition, the invariance of the Markov Chain which is crucial to appropriately applying ergodic based inference on the Markov Chain.
+This development will establish an important necessary condition, the invariance of the Markov Chain, which is crucial to appropriately applying ergodic based inference on the Markov Chain.
 
 We derive the standard Gibbs sampling algorithm, outlined by \citep{geman1984stochastic}, and present a modification using a technique called \emph{partial collapse}, which can motivated by several recent theoretical and practical analyses \citep{van2008partially,agapiou2014analysis,fox2015fast}.
 This chapter gives a full development from first principles, and proves the assertions of invariance stated in \citep{van2008partially}, but not explicitly shown there.
@@ -31,37 +18,55 @@ We will also briefly review standard convergence diagnostics for comparing Marko
 
 \section{Markov Chain Monte Carlo Simulation} \label{sec:mcmcTheory}
 In this section we give an overview of Markov Chain Monte Carlo (MCMC) methods for analyzing a probability distribution known up to a scaling constant.
-Statistical analysis is based on the ergodic theorem for Markov chains, which can be thought of as the analogous notion to the central limit theorem for independently sampled data. 
+Statistical analysis is based on the ergodic theorem for Markov chains, which can be thought of as analogous to the central limit theorem for independently sampled data. 
 The theory will be briefly overviewed in the next section, and complete treatments can be found in \citep{robert2013monte}.
 %In the context of PSF reconstruction, samples will be taken from the posterior $\pi(\vect x,\delta,\lambda|\vect b)$.
 Our development will lead to an algorithm based on Gibbs sampling that uses a technique referred to as partial collapse.  
 In partially collapsed Gibbs sampling, conditional densities are modified to remove problematic dependence within steps in the Gibbs sampler.
 Our use of partial collapse will be motivated by the marginal algorithm in \citep{agapiou2014analysis}, a similar infinite dimensional sampler.
 
-We've developed this process in the general setting, with potential modifications to the hierarchical model in mind.
+We've developed this process in the general setting with potential modifications to the hierarchical model in mind.
 In \citep{howard2016bayesian}, they observed potential sensitivity to the uninformative hyper-prior parameters $\alpha_\delta,\beta_\delta,\alpha_\lambda$ and $\beta_\lambda$ in a similar hierarchical Bayesian estimation problem.
 A possible extension that may alleviate the sensitivity would be to impose a prior on these parameters, forming an additional level hierarchy and the flexibility to sample each of these parameters.
-Additionally, the partially collapsed Gibbs samplers presented in \citep{van2015metropolis,van2008partially} do not argue that the resulting Markov chains remain invariant, and the following discussion fills that gap.
+Additionally, the partially collapsed Gibbs sampler presented in \citep{van2015metropolis,van2008partially} do not provide an argument that the resulting Markov chains remain invariant, and the following discussion fills that gap in the literature.
 
   \subsection{Markov Chains}
 This subsection is devoted to developing the preliminary notions of Markov Chains and the prerequisite theory for using Markov chains for Monte Carlo estimation. 
 We assume a probability (measure) space $(\Omega,\mathcal F,\mathbb P)$ where $\Omega$ is the set of outcomes, $\mathcal F$ a sigma-algebra of events from $\Omega$ and $\mathbb P$ a measure on $\mathcal F$ into $[0,1]$.
-We will be concerned with sampling a $m$ component random variable $\vect X = (X_1,\dots,X_m):\Omega \to \R^N$ so that the measure (known as its \emph{law}) induced by $\vect X$ on $\R^N$ by taking pre-images of Borel sets is absolutely continuous with respect to Lebesgue measure.
-Hence, each law corresponding to $X_i$ has a Radon-Nykodym derivative with respect to Lebesgue measure, which we refer to as its \emph{density}. 
-We denote these by $\pi_{\textsc{\bf{x}}}(\vect x) = \pi_{\textsc{\bf{x}}}(x_1,\dots,x_m)$, where $x_i \in \R^{k_i}$ such that $\sum_{i=1}^m k_i = K$ characterize the range of each component of $\vect X$.
+We will often be concerned with sampling a $m$ component (each component possibly multivariate), random variable 
+\begin{equation}
+\vect X = (X_1,\dots,X_m):\Omega \to \R^M,
+\end{equation} 
+  so that the measure $\mu_{\textsc{\bf{x}}}$ on $\R^M$ (known as its \emph{law}), induced by $\vect X$ by taking pre-images of Borel sets in $\R^M$ is absolutely continuous with respect to Lebesgue measure, which means that events corresponding to zero Lebesgue measure sets in $\R^M$ have zero probability.
+Hence, the law corresponding to $\vect X$ has a Radon-Nykodym derivative with respect to Lebesgue measure on $\R^M$, which we refer to as its \emph{density}, denoted by 
+\begin{equation}
+  \pi_{\textsc{\bf{x}}}(\vect x) = \pi_{\textsc{\bf{x}}}(x_1,\dots,x_m),
+\end{equation} where $x_i \in \R^{k_i}$ such that $\sum_{i=1}^m k_i = M$ characterize the range of each component of $\vect X$.
+Note that the support of of the density contains all sets corresponding to non-zero probability events.
+
+We will also occasionally consider random variables whose ranges are fixed, finite, and discrete sets $\{\omega_1,\dots,\omega_s\} \subset \R$ with corresponding probabilities $\{\alpha_1,\dots,\alpha_s\}$ summing to 1, i.e.,
+\begin{equation} 
+  \mathbb P( X = \omega_i ) = \alpha_i.
+\end{equation}
+In this case, the associated law is no longer absolutely continuous with respect to Lebesgue measure since finite discrete sets have zero Lebesgue measure, so $X$ does not have a real valued density function.
+However, we can use a finite linear combination of Dirac distributions translated to $\omega_i$ with coefficients $\alpha_i$ as a notion of a density where, for consistency of notation, we denote the action of the Dirac distributions with
+\begin{equation} \label{eq:diracMeasure}
+  \mathbb P( X \in A \subset \{\omega_1,\dots,\omega_s\} ) =  \int_A \left(\alpha_1 \delta_{\omega_1}+\dots+\alpha_s \delta_{\omega_s}\right) dx.
+\end{equation}
+
 When two or more of the variables $(X_1,\dots,X_m)$ are considered together, referred to as blocking, the resulting variable is given in boldface, although each component may be itself multivariate.
 For a complete development of the measure-based probabilistic formulation of random variables see \citep{durrett2010probability,billingsley2008probability}.
 When the density is clear from context, we will omit the subscript on $\pi(\vect x)$.
 For any subset $\{j_i\}_{i=1}^k \subset \{1,\dots,m\}$, let $\rem x{j_i}$ denote the vector with each of the $j_i$th components removed, then the \emph{marginal distribution} is
 \begin{equation}
-  \pi(\rem x{j_i}) \eqdef \int_{x_{j_1}}\dots\int_{x_{j_k}} \pi(x_1,\dots,x_m)dx_i,
+  \pi(\rem x{j_i}) \eqdef \int_{x_{j_1}}\dots\int_{x_{j_k}} \pi(x_1,\dots,x_m)dx_{j_k}\dots dx_{j_1},
 \end{equation}
 and the \emph{conditional distribution} is
 \begin{equation} \label{eq:conditionalDefn}
   \pi(x_{j_1},\dots,x_{j_k}|\rem x{j_i}) \eqdef \frac{\pi(\vect x)}{\pi(\rem x{j_i})}.
 \end{equation}
   
-A family of probability densities $K(\vect x,\cdot)$ is a \emph{transition kernel}, if for all $\vect x \in \R^K$, $K(\vect x,\cdot)$ defines probability measure given by 
+A family of probability densities $K(\vect x,\cdot)$ is a \emph{transition kernel}, if for all $\vect x \in \R^M$, $K(\vect x,\cdot)$ defines probability measure given by 
 \begin{equation}
   \int_A K(\vect x,\vect x') d\vect x' = \mathbb P\left( \vect X \in A \right),
 \end{equation}
@@ -70,16 +75,41 @@ For a transition kernel, the corresponding \emph{transition operator} acts on an
 \begin{equation}
   \K [\pi](\vect x') = \int K(\vect x,\vect x') \pi(\vect x)d\vect x. \label{eq:transitionKernel}
 \end{equation}
-Note that $\K$ is a linear operator $L^1(\R^K) \to L^1(\R^K)$ such that $\|\K f\|_{L^1} \le \|f\|_{L^1}$ since $K(\vect x,\cdot)$ is a probability measure, i.e., $\int |K(\vect x,\vect x')|d\vect x' = 1$.
+Note that $\K:L^1(\R^K) \to L^1(\R^K)$ is a linear operator such that $\|\K f\|_{L^1} \le \|f\|_{L^1}$ since $K(\vect x,\cdot)$ is a probability measure, i.e., $\int |K(\vect x,\vect x')|d\vect x' = 1$.
 
-A Markov chain is a stochastic process $\{\vect X^0, \vect X^1,\vect X^2,\dots,\}$ with $\vect X^k:\Omega \to \R^K$ defined on a common probability space such that for a given transition kernel $K$,
+A Markov chain is a stochastic process $\{\vect X^0, \vect X^1,\vect X^2,\dots,\}$ with $\vect X^k:\Omega \to \R^M$ defined on a common probability space such that for a given transition kernel $K$,
 \begin{equation}
   \mathbb P\left( \vect X^{k+1} \in A | \vect X^k= \vect x^k,\dots,\vect X^0=\vect x^0\right) 
     = \mathbb P\left( \vect X^{k+1} \in A | \vect X^k= \vect x^k\right) 
     = \int_A K(\vect x^k,\vect x') d\vect x'
 \end{equation}
-for all events $A$, i.e., the random variable $\vect X^{k+1}$ depends only on the previous realization $X^k=x_k$, and subsequent densities of the elements in the Markov Chain are given by the action of the transition operator.
+for all events $A$, i.e., the random variable $\vect X^{k+1}$ depends only on the previous realization $\vect X^k=\vect x^k$, and subsequent densities of the elements in the Markov Chain are given by the action of the transition operator.
 
+In order to establish intuition with many of the notions of Markov chains, we will often provide examples of them on finite discrete state Markov chains, from which many of these concepts were initially developed \citep{billingsley2008probability}.
+Suppose $X^k \in \{\omega_1,\dots,\omega_s\}$ for all $k$, then all probability densities $\K^k \pi_0$ are finite linear combinations of Dirac measures as in \eqref{eq:diracMeasure}, where the coefficients are the probabilities of transitioning to that state, i.e.,
+\begin{equation}
+  \int_A K(\omega_i,x)dx = \mathbb P( X^{k+1} \in A \subseteq \{\omega_1,\dots,\omega_n\}| X^k = \omega_{i} ) = \sum_{i=1}^n \int_A \delta_{\omega_i}k_{i,j},
+\end{equation}
+where $K(\omega_i,\omega_j) = k_{i,j}$ and $\sum_{j=1}^n k_{i,j} = 1$.
+Taking the states $\{\delta_{\omega_1},\dots,\delta_{\omega_n}\}$ as basis vectors, the probability densities form a finite dimensional vector space, and transition operators correspond to multiplication by a \emph{transition matrix} $\vect K$ with entries $k_{ij}$.
+To see this, note the action of $\K$ on a given density $\pi = \alpha_1\delta_{\omega_1} + \dots \alpha_n\delta{\omega_n}$ is
+\begin{align}
+  \K (\alpha_1\delta_{\omega_1} + \dots \alpha_n\delta{\omega_n})
+    &= \alpha_1K(\omega_1,x) + \dots \alpha_nK(\omega_n,x)\nonumber\\
+    &= [\delta_{\omega_1}\dots \delta{\omega_n}]
+    \begin{bmatrix}
+      K(\omega_1,\omega_1) & K(\omega_1,\omega_2) & \dots & K(\omega_1,\omega_n)\\
+      K(\omega_2,\omega_1) & \ddots & \dots & \vdots &\\
+      \vdots & \dots & \ddots & \vdots &\\
+      K(\omega_n,\omega_1) & K(\omega_n,\omega_2) & \dots & K(\omega_n,\omega_n)\\
+    \end{bmatrix}
+    \begin{bmatrix}
+      \alpha_1\\
+      \vdots\\
+      \alpha_n
+    \end{bmatrix}\nonumber\\
+    &= [\delta_{\omega_1}\dots \delta{\omega_n}]\vect K\vect \alpha.
+\end{align}
 Now, consider the joint density $\pi(\vect x^0,\dots,\vect x^N)$ for the truncated chain $\{\vect X^0,\dots,\vect X^N\}$ with $\pi_0(\vect x)$ the density for $\vect X_0$, then the definition in \eqref{eq:transitionKernel} implies
 \begin{align} 
   \pi(\vect x^1) 
@@ -102,13 +132,15 @@ Now, consider the joint density $\pi(\vect x^0,\dots,\vect x^N)$ for the truncat
 So, the $N$th marginal density of the Markov chain is given by the $N$th composition of the transition operator $\K$ on the initial density $\pi_0$.
 In some sense, all of the information of the Markov chain up to $\vect X^N$ is embedded in the transition operator $\K$, since each marginal density and all conditional probabilities are encoded into $K(\vect x, \vect x')$.
 Furthermore, we see that it is natural to think of a Markov chain evolving as $N$ increases, with the evolution given by successively iterating $\K$.
-With this in mind, two natural questions arise -- How does the initial state effect the chain and what is its end behavior? 
-These notions are encapsulated by \emph{irreducibly} and \emph{stationarity} respectively.
+With this in mind, two natural questions arise, ``How does the initial state effect the chain and what is its end behavior?'' 
+These notions are encapsulated by \emph{irreducibly} and \emph{stationarity}, respectively.
+
 
 For a given measure $\lambda$, a Markov chain is $\lambda$-irreducible if for every event $A$ with $\lambda(A) > 0$, there exists an $N$ such that $\int_A \K^N(\vect x,\vect x')dx'>0$ \citep{robert2013monte}. 
 This means that every event that can be measured by $\lambda$ has a positive probability of being reached by the Markov chain in a finite number of steps.
-For transition kernels of interest, each $K(\vect x,\cdot)$ is positive for the range of all $\vect X^k$, hence, every event $A$ has a positive probability for $N=1$. 
-This property is called \emph{strong irreducibility}.
+When the number of steps is 1, the chain is called \emph{strongly irreducible}, and this holds for transition kernels with full support, that is each $K(\vect x,\cdot)$ is positive for over the range of each $\vect X^k$.
+For the continuous densities of interest to us, which are derived from Gaussian and gamma distributions, 
+this condition is satisfied \citep{liu2008monte}.
 %Moreover, the Markov chains relevant to our algorithms are irreducible with respect to Lebesgue measure, and thus, are irreducible with respect to all measures absolutely continuous with respect to Lebesgue measure, and in particular, those given by probability densities.
 
 A Markov chain with transition operator $\K$ is \emph{stationary} with an \emph{invariant} density $\pi$ if 
@@ -118,35 +150,9 @@ A Markov chain with transition operator $\K$ is \emph{stationary} with an \emph{
 Note that an invariant distribution $\pi$ is a eigenvector for the transition operator $\K$ corresponding to the eigenvalue $1$.
 Since transition operators consist of probability densities, then $\int |\pi(x)| \le 1$ implies all eigenvalues are bounded in modulus by 1.
 
-As an aside and to give some intuition for the role of invariance in the ergodic theorem, consider a Markov Chain with a discrete and finite range of states.
-With this viewpoint, there is an interesting connection with the power-iteration method for finding leading order eigenvalues and corresponding eigenvectors.
-Suppose $X^k \in \{\omega_1,\dots,\omega_n\}$ for all steps $k$ in the chain, then all probability densities $\K^k \pi_0$ correspond to coefficients summing to 1 of the Dirac densities $\{\delta_{\omega_1},\dots,\delta_{\omega_n}\}$.
-The coefficients are probability of transitioning to that state, i.e.,
-\begin{equation}
-  \int_A K(\omega_i,x)dx = \mathbb P( X^{k+1} \in A \subseteq \{\omega_1,\dots,\omega_n\}| X^k = \omega_{i} ) = \sum_{i=1}^n \int_A \delta_{\omega_i}k_{i,j}
-\end{equation}
-where $K(\omega_i,\omega_j) = k_{i,j}$ and $\sum_{j=1}^n k_{i,j} = 1$.
-Taking the states $\{\delta_{\omega_1},\dots,\delta_{\omega_n}\}$ as basis vectors, the probability densities form a finite dimensional vector space, and transition operators correspond to multiplication by a \emph{transition matrix}.
-The action of $\K$ on a given density $\pi = \alpha_1\delta_{\omega_1} + \dots \alpha_n\delta{\omega_n}$ is
-\begin{align}
-  \K (\alpha_1\delta_{\omega_1} + \dots \alpha_n\delta{\omega_n})
-    &= \alpha_1K(\omega_1,x) + \dots \alpha_nK(\omega_n,x)\nonumber\\
-    &= [\delta_{\omega_1}\dots \delta{\omega_n}]
-    \begin{bmatrix}
-      K(\omega_1,\omega_1) & K(\omega_1,\omega_2) & \dots & K(\omega_1,\omega_n)\\
-      K(\omega_2,\omega_1) & \ddots & \dots & \vdots &\\
-      \vdots & \dots & \ddots & \vdots &\\
-      K(\omega_n,\omega_1) & K(\omega_n,\omega_2) & \dots & K(\omega_n,\omega_n)\\
-    \end{bmatrix}
-    \begin{bmatrix}
-      \alpha_1\\
-      \vdots\\
-      \alpha_n
-    \end{bmatrix}\nonumber\\
-    &\eqdef [\delta_{\omega_1}\dots \delta{\omega_n}]\vect K\vect \alpha.
-\end{align}
-In the power-iteration method, the sequence given by the recursive relation $\vect \alpha_k = \vect K\vect \alpha_{k-1}/\|\vect K\vect \alpha_{k-1}\|_{\R^n}$ can be shown to converge to the leading order (in modulus) eigenvector. 
-Hence, the invariant density has coefficients $\lim_{k\to \infty}\vect \alpha_k = \lim_{k\to \infty} \vect K^k \vect \alpha_0$.
+When the Markov Chain has a finite and discretely supported transition kernel, there is an interesting connection with the concept of stationary and the power-iteration method for finding leading order eigenvalues and corresponding eigenvectors.
+In the power-iteration method, the sequence given by the recursive relation $\vect \alpha^k = \vect K\vect \alpha^{k-1}/\|\vect K\vect \alpha^{k-1}\|_{\R^n}$ can be shown to converge to the leading order (in modulus) eigenvector, and when $\vect \alpha^k$ correspond to finite discrete probability densities, the normalization is not required. 
+Hence, in the discrete finite case, the invariant density has coefficients $\lim_{k\to \infty}\vect \alpha_k = \lim_{k\to \infty} \vect K^k \vect \alpha_0$.
 One of the main results of the ergodic theorem for Markov chains is to extend this notion to continuous probability densities.
 %% I should figure this out sometime
 %When the Markov chain is irreducible with respect to the invariant measure $\pi$, then this implies that the  is \emph{unique}. 
@@ -154,7 +160,8 @@ One of the main results of the ergodic theorem for Markov chains is to extend th
 %Since $\pi$ is irrecucible, 
 
 There are two last technical conditions that must be defined in order establish the hypotheses of the ergodic theorem for Markov chains, known as Harris recurrence and aperiodicity.
-To illustrate aperiodicity, assume that the Markov chain is discrete as before, then the \emph{period} of a state $\omega_i$ is the greatest common factor of the set $\{k\ge 1: K^k(\omega_i,\omega_i) > 0\}$; that is, if $\omega_i$ is $k$-periodic, then returns to state $\omega$ occur in multiples of $d$.
+To illustrate aperiodicity, we will define it first for finite discrete Markov chains.
+The \emph{period} of a state $\omega_i$ is the greatest common divisor of the set $\{k\ge 1: K^k(\omega_i,\omega_i) > 0\}$; that is, if $\omega_i$ is $d$-periodic, then returns to state $\omega$ occur in multiples of $d$.
 For example, the simple deterministic two state Markov chain associated with the transition matrix
 \begin{equation}
   \vect K = \begin{bmatrix}
@@ -162,36 +169,36 @@ For example, the simple deterministic two state Markov chain associated with the
     1 & 0
   \end{bmatrix}
 \end{equation}
-swaps between two states with probability 1 and has period 2.
+jumps between two states with probability 1 and has period 2.
 A chain is \emph{aperiodic} if each state has period 1. 
-
-The period of a Markov chain that takes values in $\R^N$ has an analogous notion on appropriate subsets of $\R^k$ (see \citep{robert2013monte}).
-Defining aperiodicity in this context precisely requires probability theory that is beyond the scope of this work, but can be thought of informally as a Markov chain whose transition kernel has orbits (with respect to iteration) that do not get trapped into a cycle regardless of the initial density $\pi_0$. 
-In the context of a Monte Carlo method, this means that it cannot completely explore the target density.
-Verifying rigorously the requirement of aperiodicity for continuous Markov chains is technical, and we cite \citep{liu2008monte} who states that transition kernels associated with Gibbs sampling and Metropolis-Hastings are aperiodic, and the algorithms presented in this work are compositions of such transitions.
+To extend this definition to continuously supported Markov chains that takes values in $\R^M$, see the analogous notion in \citep[Chapter 6.3]{robert2013monte}.
+Defining aperiodicity precisely for continuous state Markov chains requires probability theory that is beyond the scope of this work, but can be thought of informally as a Markov chain whose transition kernel has orbits (with respect to iteration) that do not get trapped into cycles and visit enough of the support of the invariant density, regardless of the initial density $\pi_0$, to asymptotically approximate $\pi$. 
+%In the context of a Monte Carlo method, this means that it cannot completely explore the support of the target density.
+Verifying rigorously the requirement of aperiodicity for continuous Markov chains is technical, and again we cite \citep{liu2008monte} who states that transition kernels associated with Gibbs sampling with Gaussian and gamma conditionals and Metropolis-Hastings with Gaussian proposals are aperiodic, and the algorithms presented in this work are compositions of such transitions.
 See \citep{robert2013monte} for the technical definition and details.
 
 The other technical condition that must be addressed to state the ergodic theorem is Harris recurrence. 
 This condition ensures that a Markov chain re-enters events often enough to ``fill-out'' $\pi$. 
-Formally, for a Borel set $A\subseteq \R^N$, the \emph{average number of passages} of $(\vect X^k)$ in $A$ is the random variable (possibly infinite valued)
+Formally, for a Borel set $A\subseteq \R^M$ and its indicator function $I_A$, the \emph{average number of passages} of $(\vect X^k)$ in $A$ is the random variable (possibly infinite valued)
 \begin{equation}
-  \eta_A\eqdef \sum_{k=1}^\infty I_A(\vect X^k)
+  \eta_A\eqdef \sum_{k=1}^\infty I_A(\vect X^k),
 \end{equation}
 and a Markov chain is \emph{Harris recurrent} if $\mathbb P(\eta_A = \infty|X_0=x) =1$ \citep{robert2013monte}. 
 Again, verifying this condition is beyond the scope of this work, and we cite \citep{liu2008monte} who ensures that transitions from Gaussian and gamma densities associated with Gibbs sampling and Metropolis-Hastings with Gaussian proposals are Harris recurrent.
 
 We now state the main theorem that allows for the end behaviour Markov chains to be used as tools for estimating statistics of a given probability distribution:
 \begin{thm} \label{thm:ergodicTheorem}
-  \citep{tierney1994markov} Suppose $\K$ defines a stationary Markov chain with invariant density $\pi$. If the chain is $\pi$-irreducible and Harris recurrent, then $\pi$ is unique and for any initial density $\pi_0$ and all $\vect x$ but a subset whose measure under $\pi$ is zero,
+  \citep{tierney1994markov} Suppose $\K$ defines a stationary Markov chain with invariant density $\pi$. If the chain is $\pi$-irreducible and Harris recurrent, then $\pi$ is unique and for any initial density $\pi_0$ and all $\vect x$ but a subset whose measure under $\pi$ is zero. Moreover,
   \begin{enumerate}[(i)]
     \item Almost surely with respect to $\pi$, for any integrable $h$ \begin{equation} \lim_{N\to \infty}\frac 1N\sum_{n=1}^N h(\vect X^n) = \int h(\vect x) \pi(\vect x) d\vect x. \label{eq:ergodicStat}\end{equation}
-    \item If in addition, the chain is aperiodic, then \begin{equation} \lim_{N\to \infty}\|\K^N\pi_0 - \pi\|_{TV} = 0. \label{eq:ergodicDist}\end{equation}
+    \item If in addition, the chain is aperiodic, then \begin{equation} \lim_{N\to \infty}\|\K^N\pi_0 - \pi\|_{TV} = 0, \label{eq:ergodicDist}\end{equation}
+    where $\|\pi\|_{TV}$ denotes the supremum of $\int_A \pi(x) dx$ over all Borel sets $A$.
   \end{enumerate}
 \end{thm}
 \Cref{eq:ergodicStat} of the ergodic theorem is analogous to the Law of Large Numbers for independent samples and allows us to use chain averages to estimate statistics about $\pi$.  
 \Cref{eq:ergodicDist} justifies using the `late stages' of the chain as approximate samples of $\pi$.
 
-The goal of MCMC methods is to simulate a Markov chain designed so that it has as its invariant density $\pi$.  
+The goal of MCMC methods is to simulate a Markov chain designed so that it has $\pi$ as its invariant density.  
 In the context of our Bayesian hierarchical model, this will be the discrete approximation to the posterior density.
 A widely used method, known as Gibbs sampling, can be easily implemented when sampling from full conditional distributions is available and is presented in the next section.
 
@@ -201,7 +208,7 @@ The origin of the Gibbs sampler is relatively recent (despite its eponymous rela
 In \citep{geman1984stochastic}, they modeled the spatial structure of pixels in an image via the Gibbs distribution which originally arose from modelling particles in a lattice system.
 They developed the following simulation algorithm for approximating the mode of the posterior of the Gibbs distribution.
 Because of its ease of implementation and ubiquitous application, the Gibbs sampler has become the workhorse of the MCMC world \citep{robert2013monte}, and arguably, its fame has overtaken that of its namesake.
-When the Gibbs sampler is applied to hierarchical Bayesian posteriors, it is sometimes referred to as the hierarchical Gibbs sampler, as is the case in this work for analyzing the PSF discrete posterior density.
+When the Gibbs sampler is applied to hierarchical Bayesian posteriors, it is sometimes referred to as the hierarchical Gibbs sampler, as is the case in this work.
 
 The following algorithm outlines Gibbs sampling for simulating the transition of a general $m$-component Markov chain:
 \begin{algorithm}
@@ -215,11 +222,11 @@ The following algorithm outlines Gibbs sampling for simulating the transition of
 \end{algorithmic}
 \end{algorithm}
 
-\Cref{alg:gibbs} simulates the outcomes from the transition kernel 
+\Cref{alg:gibbs} simulates outcomes from the transition kernel 
 \begin{equation}
   K(\vect x,\vect x') = \pi(x_m'|x_1',\dots,x_{m-1}')\dots\pi(x_2'|x_1',x_3,\dots,x_m)\pi(x_1'|x_2,\dots,x_m).
 \end{equation}
-Note that we can view the action of the transition in iterated integrations since it factors, i.e.
+Note that we can view the action of the transition in iterated integrations since subsequent conditional densities factor out of antecedent integrations, i.e.
 \begin{align}
   \K [\pi_0](\vect x') 
     &= \int K(\vect x,\vect x') \pi_0(\vect x) d\vect x \nonumber \\
@@ -232,7 +239,7 @@ Each integration in \eqref{eq:iteratedGibbsKernel} can be thought of as a compos
 \end{equation}
 then we can express $\K = \K_m\K_{m-1} \dots \K_1$.
 Note that, functionally, each operator $\K_i$ depends on $(x_1,\dots,x_{i-1},x_{i+1},\dots,x_p)$ being given, and that only after successively integrating each sub-transition is the operator uniquely defined.
-For example, $\K_1$ depends on $(x_2,\dots,x_p)$, $\K_2 K_1$ depends on $(x_3,\dots,x_m$), etc\dots until the full composition in $\K$ does not depend on $\vect x$.
+For example, $\K_1$ depends on $(x_2,\dots,x_p)$, $\K_2 \K_1$ depends on $(x_3,\dots,x_m$), etc\dots until the full composition in $\K$ does not depend on $\vect x$.
 
 In this form, it will be easy to see that the Gibbs sampler is invariant with respect to $\pi$, and the technique used in the proof by characterizing sub-transitions (alluded to in \citep{robert2013monte}, but not carried out in full detail) will be useful for designing and verifying the stationarity of algorithms that modify the Gibbs sampler in the following sections.
 
@@ -250,8 +257,8 @@ In this form, it will be easy to see that the Gibbs sampler is invariant with re
   \begin{align}
     \K_i \dots  \K_1[\pi(\vect x)](\vect x') 
       &=\int_{x_i} \pi(x_i'|x_1',\dots,x_{i-1}',x_{i+1},\dots,x_m) \pi(x_1',\dots,x_{i-1}',x_i,\dots,x_m)dx_i\nonumber\\
-      &=\int_{x_i} \frac{\pi(x_1',\dots,x_{i}',\dots,x_m) \pi(x_1',\dots,x_{i-1}',x_i,\dots,x_m)}{\pi(x_1',\dots,x_{i-1}',x_{i+1},\dots,x_m)}dx_i\nonumber\\
-      &=\pi(x_1',x_2',\dots,x_i',\dots,x_m).\label{eq:partialCompositionGibbs}
+      &=\int_{x_i} \frac{\pi(x_1',\dots,x_{i}',x_{i+1},\dots,x_m) \pi(x_1',\dots,x_{i-1}',x_i,\dots,x_m)}{\pi(x_1',\dots,x_{i-1}',x_{i+1},\dots,x_m)}dx_i\nonumber\\
+      &=\pi(x_1',x_2',\dots,x_i',x_{i+1},\dots,x_m).\label{eq:partialCompositionGibbs}
   \end{align}
   By induction, $\K [\pi(\vect x)](\vect x') = \K_m\dots \K_1 [\pi(\vect x)](\vect x') = \pi(x_1',x_2',\dots,x_m')$.
   Hence $\pi$ is invariant.
@@ -261,13 +268,13 @@ The partial composition $\K_i\dots\K_1$ is invariant with respect to $\pi(x_1,\d
 To see this, when $(x_{i+1},\dots,x_m)$ are given, then $\pi(\vect x)/\pi(x_{i+1},\dots,x_m)= \pi(x_1,\dots,x_{i}|x_{i+1},\dots,x_m)$ and since each integration does not depend on $(x_{i+1},\dots,x_m)$, by \eqref{eq:partialCompositionGibbs}
 \begin{equation} \label{eq:conditionalInvariance}
   \K_i\dots \K_1 [\pi(x_1,\dots,x_i|x_{i+1},\dots,x_m)](\vect x') 
-  = \frac{\pi(x_1',\dots,x_m')}{\pi(x_{i+1},\dots,x_m)} = \pi(x_1',\dots,x_i'|x_{i+1},\dots,x_m).
+  = \frac{\pi(x_1',\dots,x_i',x_{i+1},\dots ,x_m)}{\pi(x_{i+1},\dots,x_m)} = \pi(x_1',\dots,x_i'|x_{i+1},\dots,x_m).
 \end{equation}
 Viewing Gibbs sampling as composed conditional sub-transitions allows for the flexibility to design and analyze algorithms that modify each sub-transition step. 
 That is, if an intermediate step in the Gibbs sampler is modified, say with $\tilde K_i$, then in order to prove invariance, we need only show that $\tilde \K_i\K_{i-1}\dots\K_1$ is invariant with respect to $\pi(x_1,\dots,x_i|x_{i+1},\dots,x_m)$.
 We state this result formally:
 \begin{cor} \label{cor:conditionalTransition}
-  Suppose $\K = \K_p\dots\K_1$ is the transition operator for \Cref{alg:gibbs}, and $\tilde \K_i$ given $\rem xi$ is an operator such that $\tilde \K_i \big[\pi(x_i|\rem xi)\big] = \pi(x_1'|\rem xi)$, then $\K_m\dots\tilde \K_i\K_{i-1}\dots\K$ is invariant with respect to $\pi$.
+  Suppose $\K = \K_m\dots\K_1$ is the transition operator for \Cref{alg:gibbs}, and $\tilde \K_i$ given $\rem xi$ is an operator such that $\tilde \K_i \big[\pi(x_i|\rem xi)\big] = \pi(x_1'|\rem xi)$, then $\K_m\dots\tilde \K_i\K_{i-1}\dots\K$ is invariant with respect to $\pi$.
 \end{cor}
 \begin{proof} 
   %Decompose $\pi(\vect x) = \pi(x_1,\dots,x_{i-1}|x_i,\dots,x_m)\pi(x_{i},\dots,x_m)$, then 
@@ -284,24 +291,29 @@ We state this result formally:
 The previous result will be important for showing that embedding alternative simulation techniques (such as a Metropolis-Hastings step) will maintain invariance with respect to $\pi$.
 %Proving that the modifications retain the invariant distribution of the chain can focus on the sub-transition operator associated with the modified step and fit generally into the simple argument presented above. 
 
-In \Cref{sec:discretization}, we will define a discretization, $\vect p$, for the PSF $p$ and a corresponding discrete posterior $\pi(\vect p,\lambda,\delta|\vect b)$.
-As will be seen in following sections, the Gibbs sampler will produce good Monte Carlo estimates for $\vect p$ and the measurement noise level determined by $\lambda$. 
+In \Cref{sec:discretization}, we will define a discretization, $\vect p$, for the PSF $p$ and a corresponding three component discrete posterior density $\pi(\vect p,\lambda,\delta|\vect b)$.
+As will be seen in \Cref{chapter:computational}, the Gibbs sampler will produce good Monte Carlo estimates for $\vect p$ and  $\lambda$, a parameter determining the measurement noise level. 
 However, the $\delta$ component of the chain exhibits poor convergence, hence, the asymptotic application of the ergodic theorem for Markov chains for the joint density $\pi(\vect p,\lambda,\delta|\vect b)$ is not available.
 In fact, \citep{agapiou2014analysis} give theory showing that for general linear inverse problems, the infinite dimensional hierarchical Gibbs sampler for linear inverse problems with $\lambda$ known and a Gaussian prior whose precision operator is a power of the negative Laplacian will always exhibit degenerate convergence in $\delta$ when the discrete representation of the unknown approaches the infinite dimensional representation.
 They presented an algorithm that `marginalizes' the dependence of the unknown with $\delta$.
-This process, known as partial collapse, can be carried out in general and is presented in \citep{van2008partially}.
-In their paper, they showed various examples of partially collapsing the Gibbs sampler and how it can lead to Markov chains that no longer have $\pi$ as an invariant density.
-They also presented theory that this process improves convergence, however they did not give an explicit argument that shows that partial collapse maintains the invariant density $\pi$.
+This process, known as partial collapse, can be carried out in general and is presented in \citep{van2008partially}, but must be done with care.
+In their paper, they showed various examples of improperly partially collapsed Gibbs samplers that lead to Markov chains that are no longer invariant with respect to the target density $\pi$.
+They also presented theory that when partial collapse is possible, it improves convergence, however, they did not give an explicit argument that shows that partial collapse maintains the invariant density $\pi$.
 We outline this process for the Gibbs sampler presented above, and show explicitly that it maintains $\pi$ as an invariant density in the next section.
 
 \subsection{The partially collapsed Gibbs sampler}
 The partially collapsed Gibbs (PCG) sampler we present in this section is based on the work of \citep{van2008partially,van2015metropolis}, where they outlined how the algorithm arises naturally from trying to improve the convergence of the standard Gibbs sampler.
-In both \citep{van2008partially,van2015metropolis}, they highlight that partial collapse must be done with care, else the resulting Markov chain may no longer be invariant with respect to $\pi$, and thus statistics derived from the chain will not converge to those of the distribution of interest.
+In both \citep{van2008partially,van2015metropolis}, they highlight that partial collapse must be done prudently, else the resulting Markov chain may no longer be invariant with respect to $\pi$, and thus statistics derived from the chain will not converge to those of the distribution of interest.
 They even give some examples in the literature where partial collapse was implemented improperly and resulted in incorrectly estimated parameters.
-They carefully outline methods for ensuring that the pitfalls of improper sampling are avoided, although did not formally prove the invariance of the resulting Markov chains.
-In this section, we give novel, rigorous arguments that show the Markov chains associated with proper partial collapse are indeed invariant.
+They carefully outline methods for ensuring that the pitfalls of improper sampling are avoided, although they did not formally prove the invariance of the resulting Markov chains.
+In this section, we give rigorous novel arguments that show the Markov chains associated with proper partial collapse are indeed invariant.
 
-We modify \Cref{alg:gibbs} by simulating an additional component in $\tilde{\vect X}^k = (X_1^k,\dots,X_{m-1}^k,\tilde X_{m}^k,X_m^k)$ in \Cref{alg:conditionedGibbs} by simulating an extra $\tilde X_p$ from the joint conditional $\pi (x_{m-1},x_p|x_1^k,x_2^k,\dots,x_{p-2}^k)$ at step m-1.
+Consider modifying \Cref{alg:gibbs} by simulating an additional component  
+\begin{equation}
+  \tilde{\vect X}^k = (X_1^k,\dots,X_{m-1}^k,\tilde X_{m}^k,X_m^k)
+\end{equation}
+by simulating an extra $\tilde X_p$ from the joint conditional $\pi (x_{m-1},x_m|x_1^k,x_2^k,\dots,x_{m-2}^k)$ at step m-1.
+The resulting algorithm is described in \Cref{alg:conditionedGibbs}.
 \begin{algorithm}[h]
 \caption{$m$-Conditioned Gibbs sampler} \label{alg:conditionedGibbs}
 Given $\tilde{\vect x}^{k-1} = (x_1^{k-1},\dots,\tilde x_m^{k-1},x_m^{k-1})$, simulate 
@@ -310,7 +322,7 @@ Given $\tilde{\vect x}^{k-1} = (x_1^{k-1},\dots,\tilde x_m^{k-1},x_m^{k-1})$, si
   \text{2.~}&   X_2^{k} \sim \pi(x_2|x_1^k,x_3^{k-1},\dots,x_m^{k-1})                        & \\
   \vdots &                                                                                  & \\
   \text{m-1.~}& (X^k_{m-1},\tilde X^k_{m}) \sim \pi (x_{m-1},x_m|x_1^k,x_2^k,\dots,x_{m-2}^k)& \\
-  \text{m.~}&   X_m^{k} \sim \pi(x_p|x_1^k,x_2^{k},\dots,x_{m-1}^{k})                        & 
+  \text{m.~}&   X_m^{k} \sim \pi(x_m|x_1^k,x_2^{k},\dots,x_{m-1}^{k})                        & 
 \end{flalign*}
 %\begin{algorithmic}[0]
 %  \STATE \mbox{\hspace{9pt}1.} $X_1^{k} \sim \pi(x_1|x_2^{k-1},x_3^{k-1},\dots,x_m^{k-1})$
@@ -336,7 +348,7 @@ where the $\tilde\K_{m-1}$ is integration with respect to $(x_{m-1},\tilde x_m)$
 Note that the transition to the next state does not depend on previous values of $\tilde X_m$.
 This lack of dependence is crucial for partially collapsing components out of the sampler, else the resulting transition kernel will \emph{not} produce a Markov chain invariant with respect to $\pi$.
 \begin{prop}\label{thm:conditionedGibbsStationary}
-  The Markov chain associated with the transition kernel corresponding to \Cref{alg:conditionedGibbs} is invariant with respect to $\pi(\vect x)\pi(\tilde{x_m}|\rem xm)$.
+  The Markov chain associated with the transition kernel corresponding to \Cref{alg:conditionedGibbs} is invariant with respect to $\tilde\pi(\tilde{\vect x}) \eqdef \pi(\vect x)\pi(\tilde{x_m}|\rem xm)$.
 \end{prop}
 \begin{proof}
   Denote the transition operator associated to \Cref{alg:conditionedGibbs} as $\tilde \K$, then
@@ -356,51 +368,26 @@ This lack of dependence is crucial for partially collapsing components out of th
       &= \frac{\pi(\vect x')\pi(x_1',x_2',\dots, x_{m-1}', \tilde x_m')}{\pi(\rem xm')}\nonumber \\ 
       &= \pi(\vect x')\pi(\tilde x_m'|\rem xm').
   \end{align}
-%%%%%%%%%%%%%%%%%
-% Uncomment to show that q is different when conditioning happens at a different p
-%\begin{thm}\label{thm:conditionedGibbsStationary}
-%  The Markov chain associated with the transition kernel corresponding to \Cref{alg:conditionedGibbs} is invariant with respect to $\pi(\vect x)q(\tilde{\vect x})$ with $\int q(\tilde{\vect x})\,d\tilde x_p$.
-%\end{thm}
-%\begin{proof}
-%  Let 
-%  \begin{equation} \label{eq:auxGibbsVariable}
-%    q(x_1,\dots, x_{m-1},\tilde x_m,x_m) = 
-%      \pi(x_1,x_2,\dots x_3|x_{m-1},\tilde x_m) 
-%      \pi(x_{m-1}|x_1,\dots, x_{m-2},x_m)
-%      \pi(x_m),
-%  \end{equation} \label{eq:auxGibbsVariableInt}
-%  and observe that
-%  \begin{equation}
-%  \begin{split}
-%    \int_{\tilde{\vect x}} q(\tilde{\vect x})d\tilde{\vect x} 
-%      &=
-%  \end{split}
-%  \end{equation}
-%  Arguing as in the proof for stationarity of the Gibbs sampler, we have
-%  \begin{equation}
-%    \begin{split}
-%    \big[\K_{m-2},\dots,\K_{1} \pi(\tilde{\vect x})q(\tilde{\vect x})\big](\tilde{\vect x}') 
-%     &= \pi(x_1',x_2',\dots, x_{m-2}',x_{m-1},\tilde x_m,x_m).
-%    \end{split}
-%  \end{equation}
-%  Applying $\tilde K_{m-1}$, we have
 \end{proof}
-Note that it is essential that each sub-kernel $K_i$ does not depend on $\tilde x_m$,  else the initial integration in $\tilde x_m$ would involve products of kernels depending on $\tilde x_m$ with $\pi(\tilde x_m|\rem xm)$. %, and the sampler may no longer be invariant with respect to $\pi$.
-Also, the placement of the conditioned variable at step $m$ is crucial for the argument to work.  
+
+Note that it is essential that each sub-transition does not depend on $\tilde x_m$,  else the initial integration in $\tilde x_m$ would involve products of kernels depending on $\tilde x_m$ with $\pi(\tilde x_m|\rem xm)$. %, and the sampler may no longer be invariant with respect to $\pi$.
+In the language of \citep{van2008partially}, this would correspond to subsequently sampling the auxiliary variable, which they've shown can result in the loss of invariance.
+
+Also, the placement of the conditioned variable at the last step is crucial for the argument to work.  
 It can be shown that for a kernel with a different placement of the conditioned variable, a density of the form $\pi(\vect x)q(\tilde{\vect x})$ with $\int_{\tilde x_i} q(\tilde{\vect x})d\tilde{\vect x} = 1$ will \emph{not} be invariant.
-In practice, this has no effect on an implementations that cyclically permutes the steps in \Cref{alg:conditionedGibbs}, since the implementation can be viewed as a Markov chain with the same transition kernel, only that it has a different the initial distribution, and that at step $N$, the kernel has partially completed.
+In practice, this has no practical effect on an implementation that cyclically permutes the steps in \Cref{alg:conditionedGibbs}, since it can be viewed as a Markov chain with the same transition kernel, only that it has a different initial distribution, and that at the last step, the transition kernel has partially completed.
 
 In some sense, this algorithm is artificial, as we do not need to sample the auxiliary variable $\tilde X_m$.
-Moreover, if we integrate the invariance condition
+Moreover, if we integrate the invariance condition $\tilde \K \tilde \pi = \tilde \pi$ in $\tilde x'_m$, then
 \begin{equation} \label{eq:pcGibbsInvariance}
-  \int_{\tilde x_m'}\tilde\K [\pi(\vect x)\pi(\tilde x_m|\rem xm)](\tilde{\vect x})d\tilde x_m' = \pi(\vect x')\int_{\tilde x_m'}\pi(x_m'|\rem xm')dx_m' = \pi(\vect x'),
+  \int_{\tilde x_m'}\tilde\K[\tilde \pi(\tilde{\vect x})](\tilde{\vect x}') = 
+  \int_{\tilde x_m'}\tilde\K [\pi(\vect x)\pi(\tilde x_m|\rem xm)](\tilde{\vect x})d\tilde x_m' = \pi(\vect x')\int_{\tilde x_m'}\pi(x_m'|\rem xm')dx_m' = \pi(\vect x').
 \end{equation}
-this results in the same transition kernel as the $m$-Conditioned sampler except for at step $m-1$
+This results in the same transition kernel as the $m$-Conditioned sampler except for at step $m-1$
 \begin{equation}
   \bar K_{m-1}(\tilde{\vect x},\tilde{\vect x}') \eqdef \int_{x_m'}\pi(x_{m-1}',\tilde x_m'|x_1',x_2',\dots, x_{m-2}') = \pi(x_{m-1}'|x_1',x_2',\dots, x_{m-2}').
 \end{equation}
-By \eqref{eq:pcGibbsInvariance}, the corresponding Markov Chain is invariant with respect to $\pi$.
-The following algorithm simulates this chain:
+By \eqref{eq:pcGibbsInvariance}, the corresponding Markov Chain is invariant with respect to $\pi$, and \Cref{alg:pcgibbs} simulates this chain.
 \begin{algorithm}[h]
 \caption{$m$-Partially Collapsed Gibbs sampler} \label{alg:pcgibbs}
 Given $\tilde{\vect x}^{k-1} = (x_1^{k-1},\dots, \tilde x_m^{k-1},x_m^{k-1})$, simulate 
@@ -422,13 +409,13 @@ Hence, $X_m$ can be partially collapsed out of any number of proceeding variable
 In practice, one starts with the standard Gibbs sampler, and observes convergence of each component.
 If a component exhibits poor convergence (see \Cref{sec:evaluatingConvergence}), see if any conditioned variables can be partially collapsed.
 This choice is likely not obvious, unless guided by the specific situation (as is the case for the hierarchical Gibbs sampler for sampling $\delta$).
-If it is possible to sample the density with one of the conditioned variables collapsed out, re-order the sampler so that the collapsed component is last and each of the poorly converging variable directly follows it. 
+If it is possible to sample the density with one of the conditioned variables collapsed out, re-order the sampler so that the collapsed component is last and each of the poorly converging variable directly precedes it. 
 The theory presented in \citep{van2008partially} guarantees that the convergence of $(\vect X^k)$ will be improved.
 If some components still exhibit poor convergence, continue by removing the conditioning of one of the previous $m-1$ variables.
 See \citep{van2008partially} for examples and a further discussion of the general process of partially collapsing variables.
 
 There is one last modification to the transition kernel that will be required.
-In many cases, as will be the case of PSF reconstruction, a simulation from $\pi(x_{m-1}|x_1,\dots, x_{m-2})$ may not be directly available.
+In many cases, as will be the case for PSF reconstruction, a simulation from $\pi(x_{m-1}|x_1,\dots, x_{m-2})$ may not be directly available.
 In the standard Gibbs case, when a full conditional density is difficult to simulate, a compromise suggested first by \citep{muller1992alternatives} and outlined in \citep{robert2013monte} is the so-called `Metropolis-within-Gibbs' method.
 The idea is to replace a direct sample of the conditional density with a Metropolis-Hastings transition. 
 In the next section, we give a brief overview of the random walk Metropolis-Hastings method, and show that directly substituting a Metropolis-Hastings transition into the $m$-partially collapsed Gibbs sampler remains invariant with respect to $\pi$.
@@ -456,10 +443,10 @@ Given $X^k = x^{k}$, and proposal density such that $\rho(y|x) = \rho(x|y)$.
 \end{enumerate}
 \end{algorithm} 
 
-The simulation $Y^k\sim \rho(y|x^k)$ called the \emph{proposal} transition.
-The idea of the Metropolis-Hastings is, first generate a `proposal' from a given transition operator, $\rho(y|x)$, that describes the probability of transitioning to $y$, given your current state is $x$. 
-Then, if your guess improves how likely the transition is from the desired distribution $\pi$, then move there, otherwise stay put.
-At first glance, this algorithm might not seem useful since it requires a computation involving $\pi$, which may not be completely known, but it is because it appears as a ratio that makes the method useful -- we need only know $\pi$ up to a constant of proportionality since it cancels in the ratio.
+The simulation $Y^k\sim \rho(y|x^k)$ is called the \emph{proposal} transition.
+The idea of the Metropolis-Hastings method is first generate a `proposal' from a given transition operator, $\rho(y|x)$, that describes the probability of transitioning to $y$, given your current state is $x$. 
+Then, if your guess improves how likely the transition is from the desired distribution $\pi$, then move there, otherwise stay put \citep{calvetti2007introduction}.
+At first glance, this algorithm might not seem useful since it requires a computation involving $\pi$, which may not be completely known, but that it appears as a ratio is what makes the method useful -- we need only know $\pi$ up to a constant of proportionality since it cancels in the ratio.
 
 To see formally that \Cref{alg:metropolis} defines an invariant Markov chain for $\pi$, we will need a general result from Markov chain theory known as \emph{detailed balance}.
 \begin{thm}
@@ -477,7 +464,7 @@ To see formally that \Cref{alg:metropolis} defines an invariant Markov chain for
   since $K(x',\cdot)$ is a probability density.
 \end{proof}
 The Metropolis-Hastings kernel is designed to satisfy detailed balance and \citep{calvetti2007introduction} present the development of the Metropolis-Hastings algorithm with that perspective.
-We summarize that discussion, to give an explicit description of the transition kernel corresponding to \Cref{alg:metropolis} and show that it satisfies the detailed balance condition.
+We summarize that discussion to give an explicit description of the transition kernel corresponding to \Cref{alg:metropolis} and show that it satisfies the detailed balance condition.
 
 \begin{prop} \label{prop:metropolisInvariance}
   The Markov chain generated by \Cref{alg:metropolis} has a transition kernel that satisfies the detailed balance condition for $\pi$, hence it is invariant with respect to $\pi$.
@@ -492,18 +479,18 @@ Then, for any event $A$
     &= \mathbb P\left( Y^k \in A\text{ and } U = 1 |X^k=x^k \right) \nonumber\\
     &\quad\quad+ \mathbb P\left(x^k \in A\text{ and } U = 0| X^k=x^k \right). \label{eq:metropolisKernelProb}
 \end{align}
-The mixed continuous/discrete density for $(Y^k,U|X^k = x^k)$ satisfies $\pi(y,u|x^k) = \pi(u|y,x^k))\rho(y|x^k)$ by the definition of conditional density.  
+The mixed continuous/discrete density for $(Y^k,U|X^k = x^k)$ satisfies $\pi(y,u|x^k) = \pi(u|y,x^k)\rho(y|x^k)$ by the definition of conditional density.  
 Moreover, $\pi(u=1|y,x^k) = \alpha(x^k,y)$ and 
 \begin{equation*}
-  \pi(u=0|x^k) = \int \pi(u=0,y'|x^k)dy' = \int \pi(u=0|y',x^k)\pi(y'|x^k)dy' = \int (1-\alpha(x^k,y'))\rho(|y'-x^k)dy'.
+  \pi(u=0|x^k) = \int \pi(u=0,y'|x^k)dy' = \int \pi(u=0|y',x^k)\pi(y'|x^k)dy' = \int (1-\alpha(x^k,y'))\rho(|y'-x^k|)dy'.
 \end{equation*}
 Continuing from \eqref{eq:metropolisKernelProb},
 \begin{align}
   \mathbb P\left( X^{k+1} \in A | X^k = x^k \right)
-    &= \int_A \alpha(x^k,y)\rho(y|x^k) + I_A(x^k) \int (1 - \alpha(x^k,y'))\rho(y|x^k))dy'
+    &= \int_A \alpha(x^k,y)\rho(y|x^k)dy + I_A(x^k) \int (1 - \alpha(x^k,y'))\rho(y|x^k))dy'
 \end{align}
 where $I_A$ denotes the indicator function for the set $A$.
-Note that $I_A(x^k) = \int_A \delta_x(y)dy$, where $\delta_x$ is the Dirac probability density, so the transition kernel for \Cref{alg:metropolis} is
+Note that $I_A(x) = \int_A \delta_x(y)dy$, where $\delta_x$ is the Dirac probability density, so the transition kernel for \Cref{alg:metropolis} is
 \begin{equation} \label{eq:metropolisKernel}
   K(x,y) = \alpha(x,y)\rho(y|x) + \delta_x(y) \left(1 - \int \alpha(x,y')\rho(y'|x)dy'\right).
 \end{equation}
@@ -521,7 +508,6 @@ for all events $A$.
 Thus taking $f(x) = 1 - \int\alpha(x,y')\rho(y'|x)dy'$ proves that $K(x,y)$ satisfies the detail balance condition, and hence the Markov chain for \Cref{alg:metropolis} is invariant with respect to $\pi$.
 \end{proof}
 
-Combining \Cref{prop:metropolisInvariance} and \Cref{cor:conditionalTransition}, proves the invariance with respect to $\pi$ of \Cref{alg:MHpcgibbs}.
 \begin{algorithm}[H]
 \caption{Metropolis Hastings within $m$-Partially Collapsed Gibbs sampler} \label{alg:MHpcgibbs}
 Given $\tilde{\vect x}^{k-1} = (x_1^{k-1},\dots, \tilde x_m^{k-1},x_m^{k-1})$, simulate 
@@ -534,8 +520,14 @@ Given $\tilde{\vect x}^{k-1} = (x_1^{k-1},\dots, \tilde x_m^{k-1},x_m^{k-1})$, s
   \text{m.~}&   X_m^{k} \sim \pi(x_m|x_1^k,x_2^{k},\dots, x_{m-1}^{k})                        & 
 \end{flalign*}
 \end{algorithm} 
-One implementation question remains as to whether to iterate step m-1.~to obtain `better' simulations from $\pi(x_{m-1}|x_1^k,x_2^k,\dots, x_{m-2}^k)$. 
+One implementation question remains concerning whether to iterate step m-1.~to obtain `better' simulations from $\pi(x_{m-1}|x_1^k,x_2^k,\dots, x_{m-2}^k)$. 
 That is, we can insert any number of  Metropolis step before step m., and the resulting sampler will still be invariant by \Cref{cor:conditionalTransition}.
+That is, by \Cref{prop:metropolisInvariance} each of $n_{mh}$ Metropolis draws resulting from the sub-transition in \Cref{alg:metropolis} at state m-1.~is invariant with respect to $\pi(x_{m-1}'|x_1,x_2^k,\dots,x^k_{m-2})$, hence their composition is also invariant, thus, \Cref{cor:conditionalTransition} implies the invariance of the full transition with respect to $\pi$ of \Cref{alg:MHpcgibbs}.
+We state this formally in the following theorem.
+\begin{thm} \label{thm:pcGibbsInvariant}
+  The transition kernel associated with \Cref{alg:MHpcgibbs} where at step $m-1.$, $n_{mh}$ iterations of \Cref{alg:metropolis} are taken, generates a Markov Chain that is invariant with respect to $\pi$.
+\end{thm}
+
 When implemented in standard Gibbs sampling, \citep{robert2013monte} recommend only one simulation, but in \citep{van2015metropolis}, they recommend that iterating the Metropolis step may improve the convergence rate.
 %Extra iterations come at an extra computational cost as we will see in the following sections, and we investigate this numerically in the next chapter.
 %\begin{com}
@@ -543,14 +535,14 @@ When implemented in standard Gibbs sampling, \citep{robert2013monte} recommend o
 %  If so, then there is theory that says there is a convergence improvement (which is intuitively obvious, and in our case comes with an added computational cost).
 %  Moreover, if we add an adaptive step, is this related to the DRAM algorithm?
 %\end{com} 
-As is the case for PSF estimation, generating the proposal for \Cref{alg:metropolis} may be computationally expensive, and the improvement in convergence may not worth the computational expense since the less expensive but slower to converge scheme can be run for longer.
-These issues are problem dependent, and in \Cref{sec:evaluatingConvergence}, we will develop tools to address them explicitly for PSF estimation.
+As is the case for PSF estimation, generating the proposal for \Cref{alg:metropolis} may be computationally expensive, and the improvement in convergence may not be worth the computational expense since the less expensive but slower to converge scheme can be run for longer.
+These issues are problem dependent, and in \Cref{sec:evaluatingConvergence}, we will develop tools to address them explicitly.
 
-We now return to the problem of PSF estimation, where we will explicitly implement and describe Gibbs sampling and Metropolis Hastings within partially collapsed Gibbs sampling for PSF reconstruction.
+%We now return to the problem of PSF estimation, where we will explicitly implement and describe Gibbs sampling and Metropolis Hastings within partially collapsed Gibbs sampling for PSF reconstruction.
 
 \section{Evaluating Convergence} \label{sec:evaluatingConvergence}
 
-In these last sections, we briefly address estimators for the convergence of the MCMC algorithms before presenting the numerical results on synthetic and real data in \Cref{chapter:results}.
+In these last sections, we briefly address estimators for evaluating the convergence of the MCMC algorithms.
 As has been mentioned, convergence can be addressed theoretically by direct analysis as in \citep{agapiou2014analysis}, or by analyzing the spectrum of an operator associated to the transition operator as is done in \citep{agapiou2014analysis,van2008partially}.
 We take an empirical approach, that estimates convergence based on real and simulated data.
 
@@ -564,44 +556,43 @@ This is acutely the case for the prior parameter $\delta$ in PSF posterior estim
 Nevertheless, the ergodic theorem guarantees that a valid MCMC algorithm will produce realizations from densities that converge to the target.
 The MCMC simulations that occur from the beginning of the chain until empirical convergence is observed are called the \emph{burn-in} portion of the Markov chain, and we will briefly overview a statistical test in the next section on how to estimate it.
 
-The second practical convergence issue is related to correlation of subsequent steps of the MCMC algorithm.
+The second practical convergence issue is related to the correlation of subsequent steps of the MCMC algorithm.
 We employ a method from time-series analysis that estimates the correlation of a realized Markov chain from an MCMC algorithm.
-This will result in a parametric measurement for `how far' the simulated samples are from an ideal independent sample and how long the chain must be run in order to obtain the equivalent estimator on independently sampled data.
+This will result in a parametric measurement for `how far' the simulated samples are from an ideal independent sample and how long the chain must be run in order to obtain, in some sense, an equivalent estimator to one derived from independently sampled data.
 
 \subsection{Estimating the burn-in}
 
 One method for estimating the burn-in stage of the chain is to visually inspect the realizations of the MCMC algorithm and identify the portion of the chain that appears to settle over the support of the invariant density.
 This is somewhat subjective, and an alternative statistically motivated approach, initially suggested by \citep{geweke1991evaluating}, uses the \emph{convergence diagnostic test} to evaluate the test hypothesis that the joint mean value of the early portion of the Markov chain is equal to the joint mean value of the latter. 
 
-Formally, for a given partial Markov chain $\{X^1,\dots, X^K\}$, let $K_m$ denote the $m$th percentile of $K$, $\mu_m$ to be the mean of $\{X^1,\dots, X^{K_m}\}$ and $\mu_{m'}$ the mean of $\{X^{K_{m'}+1},\dots, X^K\}$.
+Formally, for a given partial Markov chain $\{X^1,\dots, X^N\}$, let $N_m$ denote the $m$th percentile of $N$, $\mu_m$ to be the mean of $\{X^1,\dots, X^{N_m}\}$ and $\mu_{m'}$ the mean of $\{X^{N_{m'}+1},\dots, X^N\}$.
 Following \citep{geweke1991evaluating}, we choose the $10$th and $50$th percentiles.
 Estimators for $\mu_{10}$ and $\mu_{50'}$ are
 \begin{equation}
-  \bar X_{10}=\frac{1}{K_{10}}\sum_{k=1}^{K_{10}}X^k,\quad{\rm and}\quad\bar X_{50'}=\frac{1}{K-K_{50'}}\sum_{k=K_{50}+1}^K X^k.
+  \bar X_{10}=\frac{1}{N_{10}}\sum_{k=1}^{N_{10}}X^k,\quad{\rm and}\quad\bar X_{50'}=\frac{1}{N-N_{50'}}\sum_{k=N_{50}+1}^N X^k.
 \end{equation}
-For the test $H_0:\mu_{10} = \mu_{50'}$, \citep{geweke1991evaluating} shows the corresponding convergence diagnostic test statistic 
+For the test $H_0:\mu_{10} = \mu_{50'}$, \citep{geweke1991evaluating} shows the corresponding convergence diagnostic test statistic satisfies
 \begin{equation}
 \label{Geweke}
-R_{\rm Geweke}\eqdef\frac{\bar X_{10}-\bar X_{50'}}{\sqrt{\hat S_{10}(0)/K_{10}+\hat S_{50'}(0)/K_{50}}}\stackrel{d}{\longrightarrow}\N(0,1),\quad{\rm as}\quad K\rightarrow\infty,
+R_{\rm Geweke}\eqdef\frac{\bar X_{10}-\bar X_{50'}}{\sqrt{\hat S_{10}(0)/N_{10}+\hat S_{50'}(0)/N_{50}}}\stackrel{d}{\longrightarrow}\N(0,1),\quad{\rm as}\quad N\rightarrow\infty,
 \end{equation}
-where $\hat S_{10}(0)$ and $\hat S_{50'}(0)$ denote consistent spectral density estimates for the variance of $\{X^1,\dots, X^{K_{10}}\}$ and $\{X^{K_{50}},\dots, X^K\}$, respectively. 
+where $\hat S_{10}(0)$ and $\hat S_{50'}(0)$ denote consistent spectral density estimates for the variances of $\{X^1,\dots, X^{N_{10}}\}$ and $\{X^{N_{51}},\dots, X^N\}$, respectively. 
 These can be estimated via a periodogram estimator, and in our results, we use a Danielle window of width $2\pi/(0.3p^{1/2})$ as recommended by \citep{geweke1991evaluating}.
-Note that this statistical test is only useful if the initial densities are far from the target invariant density.
 
 \subsection{Autocorrelation and essential sample size}
 
-When the burn-in has been identified, the later portion of the chain can be empirically assumed to be identically distributed by the invariant density by the ergodic theorem. 
+When the burn-in has been identified, the later portion of the chain can be empirically assumed to be identically distributed by the invariant density via the ergodic theorem. 
 However, the MCMC samples are not independent, hence standard sampling theory does not apply.
 The notion of autocorrelation from time-series analysis provides a tool for controlling for this correlation.
 The idea is to estimate how many steps are required in the Markov process to `forget' the state where you came from; specifically, to be empirically uncorrelated.
 This is referred to as the \emph{integrated autocorrelation time}.
 To develop this notion formally, we summarize the arguments in \citep{sokal1997monte}. 
-Suppose $\{X^1,X^2,\dots\}$ is a correlated, identically distributed stochastic process with individual variance $\sigma^2$, then for the estimator $\bar X_N=\frac1K\sum_{k=1}^KX^i$, the {\em Monte Carlo error} is  
+Suppose $\{X^1,X^2,\dots\}$ is a correlated, identically distributed stochastic process with individual variance $\sigma^2$, then for the estimator $\bar X_N=\frac1N\sum_{k=1}^NX^i$, the {\em Monte Carlo error} is  
 \begin{align}
-{\rm Var}(\bar X_K)
-  &=\frac{1}{K^2}\sum_{k=1}^K{\rm Var}(X^k)+\frac{1}{K^2}\sum_{k\neq l}^K {\rm Cov}(X^l,X^k)\nonumber\\
-  &=\frac{1}{K^2}\left(K\sigma^2+2K\sum_{k=1}^{K-1}\left(1-\frac{k}{K}\right){\rm Cov}(X^1,X^{1+k})\right)\nonumber\\
-  &=\frac{\sigma^2}{K}\left(1+2\sum_{k=1}^{K-1}\left(1-\frac{k}{K}\right)\frac{{\rm Cov}(X^1,X^{1+k})}{\sigma^2}\right).
+{\rm Var}(\bar X_N)
+  &=\frac{1}{N^2}\sum_{k=1}^N{\rm Var}(X^k)+\frac{1}{N^2}\sum_{k\neq l}^N {\rm Cov}(X^l,X^k)\nonumber\\
+  &=\frac{1}{N^2}\left(N\sigma^2+2N\sum_{k=1}^{N-1}\left(1-\frac{k}{N}\right){\rm Cov}(X^1,X^{1+k})\right)\nonumber\\
+  &=\frac{\sigma^2}{N}\left(1+2\sum_{k=1}^{N-1}\left(1-\frac{k}{N}\right)\frac{{\rm Cov}(X^1,X^{1+k})}{\sigma^2}\right).
 \end{align}
 Note that we've divided the Monte Carlo error into a contribution from the inherent variance of $(X^k)$ and the contribution of its correlation at step $l$ with all other steps in the chain.
 For the full stochastic sequence $\{X^1,X^2,\dots\}$, define for $k \in \Z$
@@ -609,41 +600,41 @@ For the full stochastic sequence $\{X^1,X^2,\dots\}$, define for $k \in \Z$
   \rho(k) \eqdef \frac{\mathrm{Cov}(X^1, X^{|k|})}{\sigma^2},
 \end{equation}
 which is referred to as the normalized autocorrelation function (ACF) in time-series analysis.
-Hence, the Monte Carlo error for $\{X^1,\dots,X^K\}$ when $K$ is large, is approximately 
+Hence, the Monte Carlo error for $\{X^1,\dots,X^N\}$ when $N$ is large, is approximately 
 \begin{equation} \label{eq:monteCarloError}
-{\rm Var}(\bar X) \approx \frac{\sigma^2}{K}\sum_{k=-\infty}^\infty \rho(k).
+{\rm Var}(\bar X) \approx \frac{\sigma^2}{N}\sum_{k=-\infty}^\infty \rho(k).
 \end{equation}
-Recall that when $(X^k)$ are independent, then $\sigma^2/N$ is the variance of the estimator $\bar X_N$.
-The approximation in \eqref{eq:monteCarloError} shows that asymptotically the Monte Carlo error is scaled by the factor
+When $(X^k)$ are independent, then $\sigma^2/N$ is the variance of the estimator $\bar X_N$.
+The approximation in \eqref{eq:monteCarloError} shows that, asymptotically, the Monte Carlo error is scaled by the factor
 \begin{equation}
   \tau_{\rm int}\eqdef \sum_{k=-\infty}^\infty \rho(k).
 \end{equation}
 The parameter $\tau_{\rm int}$ is referred to as the \emph{integrated auto corresponding time}.
-So, for a given $K$, the equivalent sample size for an independent sample is
+So, for a given $N$, an independent sample with equivalent sample variance has
 \begin{equation}
-  K_{\rm ESS} = K/\tau_{\rm int}.
+  N_{\rm ESS} \eqdef N/\tau_{\rm int}
 \end{equation}
-We refer to this quantity as the \emph{essential sample size} (ESS).
-Note 
+samples.
+We refer to this quantity as the \emph{essential sample size} (ESS), and we think of it as the number of effectively independent samples, and note
 \begin{equation}
-  \frac{\sigma^2}{K} \tau_{\rm int} = \frac{\sigma^2}{K_{\rm ESS}}.
+  \frac{\sigma^2}{N} \tau_{\rm int} = \frac{\sigma^2}{N_{\rm ESS}}.
 \end{equation}
 
 To estimate these parameters, \citep{sokal1997monte} gives the following unbiased estimator for the normalized autocorrelation function,
 \begin{equation}
-  \hat\tau_{\rm int}=\sum_{k=-\bar K}^{\bar K} \hat{\rho}(k),
+  \hat\tau_{\rm int}=\sum_{k=-\bar N}^{\bar N} \hat{\rho}(k),
 \end{equation}
-where $\bar K< K-1$ is some window length, and $\hat \rho(k)$ is the empirical normalized covariance estimator over that interval.
+where $\bar N< N-1$ is some window length, and $\hat \rho(k)$ is the empirical normalized covariance estimator over that interval.
 That is,
 \begin{align}
 \hat\rho(k)&\eqdef C(k)/C(0), \quad\text{where}\quad
-C(k)=\frac{1}{K-k}\sum_{i=1}^{K-k} (X_i-\bar{X_K})(X_{i+k}-\bar{X_k}).
+C(k)=\frac{1}{N-k}\sum_{i=1}^{N-k} (X_i-\bar{X_N})(X_{i+k}-\bar{X_k}).
 \end{align}
-The choice suggested by \cite{sokal1997monte} is the smallest integer such that $\bar K\geq 3 \hat\tau_{\rm int}$. 
+The choice suggested by \cite{sokal1997monte} for the window size is the smallest integer such that $\bar N\geq 3 \hat\tau_{\rm int}$. 
 Finally the ESS is estimated as
 \begin{equation}
 \label{ESS}
-\hat{K}_{\rm ESS}=K/\hat\tau_{\rm int}.
+\hat{N}_{\rm ESS}=N/\hat\tau_{\rm int}.
 \end{equation}
 
 \end{chapter}
