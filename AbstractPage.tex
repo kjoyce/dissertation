@@ -13,15 +13,32 @@ Joyce, Kevin, Doctorate of Philosophy, May 2016 \hfill Mathematics
 Point Spread Function Estimation and Uncertainty Quantification
 
 %
-Committee Chair: Johnathan Bardsley, Ph.D.    % Self Explanatory
+Committee Chairs: Johnathan Bardsley, Ph.D.~and Aaron Luttman, Ph.D.    % Self Explanatory
 %
 \setlength{\parindent}{2ex}
 %
 % Now for you abstract text:
 %
-%\indent The first half of this dissertation focuses on computational methods for solving the constrained quadratic program (QP) within the support vector machine (SVM) classifier. One of the SVM formulations requires the solution of bound and equality constrained QPs. We begin by describing an augmented Lagrangian approach which incorporates the equality constraint into the objective function, resulting in a bound constrained QP. Furthermore, all constraints may be incorporated into the objective function to yield an unconstrained quadratic program, allowing us to apply the conjugate gradient (CG) method. Lastly, we adapt the scaled gradient projection method of \cite{Zanni} to the SVM QP and compare the performance of these methods with the state-of-the-art sequential minimal optimization algorithm and M\begin{scriptsize}ATLAB\end{scriptsize}'s built in constrained QP solver, \texttt{quadprog}. The augmented Lagrangian method outperforms other state-of-the-art methods on three image test cases.
-%
-%\indent The second half of this dissertation focuses on computational methods for large-scale Kalman filtering applications. The Kalman filter (KF) is a method for solving a dynamic, coupled system of equations. While these methods require only linear algebra, standard KF is often infeasible in large-scale implementations due to the storage requirements and inverse calculations of large, dense covariance matrices. We introduce the use of the CG and Lanczos methods into various forms of the Kalman filter for low-rank approximations of the covariance matrices, with low-storage requirements. We also use CG for efficient Gaussian sampling within the ensemble Kalman filter method. The CG-based KF methods perform similarly in root-mean-square error when compared to the standard KF methods, when the standard implementations are feasible, and outperform the limited-memory Broyden-Fletcher-Goldfarb-Shanno approximation method. 
-%
-%
+
+
+\indent 
+An important component of analyzing images quantitatively is modeling image blur due to effects from the system for image capture. 
+When the effect of image blur is assumed to be translation invariant and isotropic, it can be generally modeled as convolution with a radially symmetric kernel called the point spread function (PSF).
+Standard techniques for estimating the PSF involve imaging a bright point source, but this is not always feasible (e.g.~high energy radiography).  
+This work provides a novel non-parametric approach to estimating the PSF from a calibration image of a vertical edge.
+Moreover, we take a hierarchical Bayesian approach that in addition to providing a method for estimation, also gives a quantification of uncertainty in the estimate by Markov Chain Monte Carlo (MCMC) methods.
+%This work takes a novel non-parametric approach to modeling a radially symmetric PSF, in which an estimate can be obtained from the calibration image of a vertical edge.
+
+\indent
+In the development, we employ a recently developed enhancement to Gibbs sampling, referred to as partial collapse. 
+The improved algorithm has been independently derived in several other works, however, it has been shown that partial collapse may be improperly implemented resulting in a sampling algorithm that that no longer converges to the desired posterior.
+The algorithm we present is proven to satisfy invariance with respect to the target density.
+The implementation and results are the content of a paper ``Partially Collapsed Gibbs Samplers for Linear Inverse Problems and Applications to X-ray Imaging,'' under review for a special issue of Inverse Problems.
+
+\indent
+The other component of this work is mainly theoretical and attempts to develop from first principles the requisite functional analysis to make the integration based model derived in the first chapter rigorous.
+The literature source is from functional analysis related to distribution theory for linear partial differential equations, and briefly addresses infinite dimensional probability theory for Hilbert space valued stochastic processes, a burgeoning and very active research area for the analysis of inverse problems.
+To our knowledge, this provides a new development of a notion of radial symmetry for $L^2$ based distributions.
+This work results in defining an $L^2$ complete space of radially symmetric distributions, which is an important step toward rigorously placing the PSF estimation problem in the infinite dimensional frameork and is part of ongoing work toward that end.
+
 \pagebreak

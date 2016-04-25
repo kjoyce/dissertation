@@ -18,7 +18,7 @@ We will also briefly review standard convergence diagnostics for comparing Marko
 
 \section{Markov Chain Monte Carlo Simulation} \label{sec:mcmcTheory}
 In this section we give an overview of Markov Chain Monte Carlo (MCMC) methods for analyzing a probability distribution known up to a scaling constant.
-Statistical analysis is based on the ergodic theorem for Markov chains, which can be thought of as analogous to the central limit theorem for independently sampled data. 
+Statistical analysis is based on the ergodic theorem for Markov chains, which is analogous to the central limit theorem for independently sampled data. 
 The theory will be briefly overviewed in the next section, and complete treatments can be found in \citep{robert2013monte}.
 %In the context of PSF reconstruction, samples will be taken from the posterior $\pi(\vect x,\delta,\lambda|\vect b)$.
 Our development will lead to an algorithm based on Gibbs sampling that uses a technique referred to as partial collapse.  
@@ -27,13 +27,13 @@ Our use of partial collapse will be motivated by the marginal algorithm in \cite
 
 We've developed this process in the general setting with potential modifications to the hierarchical model in mind.
 In \citep{howard2016bayesian}, they observed potential sensitivity to the uninformative hyper-prior parameters $\alpha_\delta,\beta_\delta,\alpha_\lambda$ and $\beta_\lambda$ in a similar hierarchical Bayesian estimation problem.
-A possible extension that may alleviate the sensitivity would be to impose a prior on these parameters, forming an additional level hierarchy and the flexibility to sample each of these parameters.
+A possible extension that may alleviate the sensitivity would be to impose a prior on these parameters, forming an additional level of hierarchy to allow flexibility to sample each of these parameters.
 Additionally, the partially collapsed Gibbs sampler presented in \citep{van2015metropolis,van2008partially} do not provide an argument that the resulting Markov chains remain invariant, and the following discussion fills that gap in the literature.
 
   \subsection{Markov Chains}
 This subsection is devoted to developing the preliminary notions of Markov Chains and the prerequisite theory for using Markov chains for Monte Carlo estimation. 
-We assume a probability (measure) space $(\Omega,\mathcal F,\mathbb P)$ where $\Omega$ is the set of outcomes, $\mathcal F$ a sigma-algebra of events from $\Omega$ and $\mathbb P$ a measure on $\mathcal F$ into $[0,1]$.
-We will often be concerned with sampling a $m$ component (each component possibly multivariate), random variable 
+We assume a probability (measure) space $(\Omega,\mathcal F,\mathbb P)$ where $\Omega$ is the set of outcomes, with $\mathcal F$ a sigma-algebra of events from $\Omega$ and $\mathbb P$ a measure on $\mathcal F$ into $[0,1]$.
+We will often be concerned with sampling an $m$ component (each component possibly multivariate), random variable 
 \begin{equation}
 \vect X = (X_1,\dots,X_m):\Omega \to \R^M,
 \end{equation} 
@@ -48,7 +48,7 @@ We will also occasionally consider random variables whose ranges are fixed, fini
 \begin{equation} 
   \mathbb P( X = \omega_i ) = \alpha_i.
 \end{equation}
-In this case, the associated law is no longer absolutely continuous with respect to Lebesgue measure since finite discrete sets have zero Lebesgue measure, so $X$ does not have a real valued density function.
+In this case, the associated law is no longer absolutely continuous with respect to Lebesgue measure since finite discrete sets have zero Lebesgue measure, so $\vect X$ does not have a real valued density function.
 However, we can use a finite linear combination of Dirac distributions translated to $\omega_i$ with coefficients $\alpha_i$ as a notion of a density where, for consistency of notation, we denote the action of the Dirac distributions with
 \begin{equation} \label{eq:diracMeasure}
   \mathbb P( X \in A \subset \{\omega_1,\dots,\omega_s\} ) =  \int_A \left(\alpha_1 \delta_{\omega_1}+\dots+\alpha_s \delta_{\omega_s}\right) dx.
@@ -66,7 +66,7 @@ and the \emph{conditional distribution} is
   \pi(x_{j_1},\dots,x_{j_k}|\rem x{j_i}) \eqdef \frac{\pi(\vect x)}{\pi(\rem x{j_i})}.
 \end{equation}
   
-A family of probability densities $K(\vect x,\cdot)$ is a \emph{transition kernel}, if for all $\vect x \in \R^M$, $K(\vect x,\cdot)$ defines probability measure given by 
+A family of probability densities $K(\vect x,\cdot)$ is a \emph{transition kernel}, if for all $\vect x \in \R^M$, $K(\vect x,\cdot)$, it defines a probability measure given by 
 \begin{equation}
   \int_A K(\vect x,\vect x') d\vect x' = \mathbb P\left( \vect X \in A \right),
 \end{equation}
@@ -147,7 +147,7 @@ A Markov chain with transition operator $\K$ is \emph{stationary} with an \emph{
 \begin{equation} \label{eq:stationarity}
   \K [\pi(\vect x)](\vect x') = \pi(\vect x').
 \end{equation}
-Note that an invariant distribution $\pi$ is a eigenvector for the transition operator $\K$ corresponding to the eigenvalue $1$.
+Note that an invariant distribution $\pi$ is an eigenvector for the transition operator $\K$ corresponding to the eigenvalue $1$.
 Since transition operators consist of probability densities, then $\int |\pi(x)| \le 1$ implies all eigenvalues are bounded in modulus by 1.
 
 When the Markov Chain has a finite and discretely supported transition kernel, there is an interesting connection with the concept of stationary and the power-iteration method for finding leading order eigenvalues and corresponding eigenvectors.
@@ -178,7 +178,7 @@ Verifying rigorously the requirement of aperiodicity for continuous Markov chain
 See \citep{robert2013monte} for the technical definition and details.
 
 The other technical condition that must be addressed to state the ergodic theorem is Harris recurrence. 
-This condition ensures that a Markov chain re-enters events often enough to ``fill-out'' $\pi$. 
+This condition ensures that a Markov chain re-enters events often enough to `fill-out' $\pi$. 
 Formally, for a Borel set $A\subseteq \R^M$ and its indicator function $I_A$, the \emph{average number of passages} of $(\vect X^k)$ in $A$ is the random variable (possibly infinite valued)
 \begin{equation}
   \eta_A\eqdef \sum_{k=1}^\infty I_A(\vect X^k),
@@ -198,7 +198,7 @@ We now state the main theorem that allows for the end behaviour Markov chains to
 \Cref{eq:ergodicStat} of the ergodic theorem is analogous to the Law of Large Numbers for independent samples and allows us to use chain averages to estimate statistics about $\pi$.  
 \Cref{eq:ergodicDist} justifies using the `late stages' of the chain as approximate samples of $\pi$.
 
-The goal of MCMC methods is to simulate a Markov chain designed so that it has $\pi$ as its invariant density.  
+The goal of MCMC methods is to simulate a Markov chain \emph{designed} so that it has $\pi$ as its invariant density.  
 In the context of our Bayesian hierarchical model, this will be the discrete approximation to the posterior density.
 A widely used method, known as Gibbs sampling, can be easily implemented when sampling from full conditional distributions is available and is presented in the next section.
 
@@ -423,7 +423,7 @@ In the next section, we give a brief overview of the random walk Metropolis-Hast
 \subsection{Metropolis-Hastings within partially collapsed Gibbs}
 The Metropolis-Hastings algorithm \citep{metropolis1953equation} has been studied extensively as an MCMC method, and over the last half-century, has been generalized and adapted to encompass a large class of MCMC algorithms for simulating samples for a large class of problems. 
 In fact, Gibbs sampling can be viewed as successive Metropolis-Hastings transitions \citep{robert2013monte}.
-We will focus on Metropolis-Hastings algorithms with proposals and how they can be incorporated into the partially collapsed Gibbs sampler.
+We will focus on Metropolis-Hastings algorithms with symmetric proposals and how they can be incorporated into the partially collapsed Gibbs sampler.
 Again, see one of the books \citep{calvetti2007introduction,liu2008monte,robert2013monte} and references there for a complete description of the Metropolis-Hastings algorithm.
 
 Consider the following algorithm for simulating a transition for a univariate Markov chain $(X^1,X^2\dots)$:
@@ -444,7 +444,7 @@ Given $X^k = x^{k}$, and proposal density such that $\rho(y|x) = \rho(x|y)$.
 \end{algorithm} 
 
 The simulation $Y^k\sim \rho(y|x^k)$ is called the \emph{proposal} transition.
-The idea of the Metropolis-Hastings method is first generate a `proposal' from a given transition operator, $\rho(y|x)$, that describes the probability of transitioning to $y$, given your current state is $x$. 
+The idea of the Metropolis-Hastings method is: first generate a `proposal' from a given transition operator, $\rho(y|x)$, that describes the probability of transitioning to $y$, given your current state is $x$. 
 Then, if your guess improves how likely the transition is from the desired distribution $\pi$, then move there, otherwise stay put \citep{calvetti2007introduction}.
 At first glance, this algorithm might not seem useful since it requires a computation involving $\pi$, which may not be completely known, but that it appears as a ratio is what makes the method useful -- we need only know $\pi$ up to a constant of proportionality since it cancels in the ratio.
 
@@ -521,7 +521,7 @@ Given $\tilde{\vect x}^{k-1} = (x_1^{k-1},\dots, \tilde x_m^{k-1},x_m^{k-1})$, s
 \end{flalign*}
 \end{algorithm} 
 One implementation question remains concerning whether to iterate step m-1.~to obtain `better' simulations from $\pi(x_{m-1}|x_1^k,x_2^k,\dots, x_{m-2}^k)$. 
-That is, we can insert any number of  Metropolis step before step m., and the resulting sampler will still be invariant by \Cref{cor:conditionalTransition}.
+That is, we can insert any number of  Metropolis steps before step m., and the resulting sampler will still be invariant by \Cref{cor:conditionalTransition}.
 That is, by \Cref{prop:metropolisInvariance} each of $n_{mh}$ Metropolis draws resulting from the sub-transition in \Cref{alg:metropolis} at state m-1.~is invariant with respect to $\pi(x_{m-1}'|x_1,x_2^k,\dots,x^k_{m-2})$, hence their composition is also invariant, thus, \Cref{cor:conditionalTransition} implies the invariance of the full transition with respect to $\pi$ of \Cref{alg:MHpcgibbs}.
 We state this formally in the following theorem.
 \begin{thm} \label{thm:pcGibbsInvariant}
@@ -604,7 +604,7 @@ Hence, the Monte Carlo error for $\{X^1,\dots,X^N\}$ when $N$ is large, is appro
 \begin{equation} \label{eq:monteCarloError}
 {\rm Var}(\bar X) \approx \frac{\sigma^2}{N}\sum_{k=-\infty}^\infty \rho(k).
 \end{equation}
-When $(X^k)$ are independent, then $\sigma^2/N$ is the variance of the estimator $\bar X_N$.
+When $(X^k)$ are independent, $\sigma^2/N$ is the variance of the estimator $\bar X_N$.
 The approximation in \eqref{eq:monteCarloError} shows that, asymptotically, the Monte Carlo error is scaled by the factor
 \begin{equation}
   \tau_{\rm int}\eqdef \sum_{k=-\infty}^\infty \rho(k).

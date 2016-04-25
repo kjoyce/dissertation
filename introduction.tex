@@ -2,62 +2,76 @@
 \begin{chapter}{Images and Blur}\label{chapter:introduction}
   \section{Introduction}
   In addition to being a rich source of artistic and creative value, images (or more precisely, visual data from projections of light) are an important source of scientific information.
-  Even the word `observation' generally connotes the visual perception, and its use as a catch-all for the measured verification of a hypothesis exemplifies the central role of vision in science.
-  Many important scientific results have used visual data to discover and explain natural phenomena; for example, visual observations such as the color and shape of various plant organs in Gregor Mendel's famous experiments on hybridized peas formed the primary source of data for developing his famous model for genetic inheritance \citep{magner2002}.
-  Arthur Eddington's famous 1919 image of the gravitationally lensed path of a comet during a solar eclipse \citep{eddington1920} provided the first experimental evidence supporting Albert Einstein's general theory of relativity.
+  Even the word `observation' generally connotes visual perception, and its use as a catch-all for the measured verification of a hypothesis exemplifies the central role of vision in science.
+  Many important scientific results have used visual data to discover and explain natural phenomena; for example, visual observations such as the color and shape of various plant organs in Gregor Mendel's experiments on hybridized peas formed the primary source of data for developing his model for genetic inheritance \citep{magner2002}.
+  Arthur Eddington's 1919 image of the gravitationally lensed path of a comet during a solar eclipse provided the first experimental evidence supporting Albert Einstein's general theory of relativity \citep{eddington1920}.
 %  The richness of the raw data content in an image and our human propensity to digest visual information -- the focus of our mind's eye, so to say -- make visual data in images a compelling source of scientific evidence and information.
   In these cases, only the \emph{qualitative} components of the visual response and their relationship to the experiment were relevant.
-  With the advent of the camera, photosensitive chemistry, and later digital imaging technology, high-fidelity recording of visual observations became possible, allowing the potential to \emph{quantitatively} analyze visual information.
-  The ever-progressing technology in optical science and engineering are rapidly increasing the amount of data that can be measured in an image; yet, the extreme quantity and spatial organization that comes with high resolution data makes a rigorous quantitative analysis quite challenging.
+  With the advent of the camera, photosensitive chemistry, and later digital imaging technology, high-fidelity recording of visual observations as data became possible, allowing the potential to \emph{quantitatively} analyze visual information.
+  Digital images when viewed quantitatively, can be described as the response of the incidence of light, and the subsequent exchange of energy, on a grid of regularly spaced grid elements, which we refer to as pixels.
+  The ever-progressing technology in optical science and engineering are rapidly increasing the amount of data that can be measured in an image.
+  Images are quickly becoming a source of `big data' in which new methods are rapidly being developed to extract information from this rich data source.
+  Yet, there is a dichotomy between the amount of information available in image data and the complexity of how to quantitatively analyze it.
+That is, despite having a large volume of data to extract information, their spatial nature makes measurements at each pixel highly dependent on measurements of adjacent pixels, and an objective extraction of information taking this structure into account is not obvious.
+  A quantitative analysis of the image cannot assume that measured values are independent, because it is precisely this lack of independence that makes an image interesting -- independent image data is white noise (perhaps more appropriately, `gray noise') -- from which one can only infer the average of the measured pixels.
 
-  Images, when viewed quantitatively, can be described as the response of the incidence of light, and the subsequent exchange of energy, on a grid of regularly spaced grid elements, which we refer to as pixels.
-  %In our application, the grid elements are square.
-  The domain of interest for imaging systems can vary greatly in both spatial dimension and the spectrum of light captured. 
-  The energy response of light is spectrum dependent, and typically is analyzed at a few fixed bands of frequency.
-%  The raw volume of recorded data is usually very large.
+  In addition to the difficulties related to spatial dependence and high resolution, the structure of the data may have more components than spatial aspects since light is measured on a spectrum.
+  That is, the energy response of light is not univariate since it is frequency dependent, and in many cases, is measured at several fixed bands of frequency.
   For example, astronomical images captured by the interstellar robotic probes Voyagers I and II measured 5 bands in the visible spectrum on a pixel grid with dimension $800 \times 800$ \citep{voyager}.
-  In medical imaging, computed tomography (CT) is an imaging process where a series of axial measurements of attenuation of electromagnetic radiation are used to reconstruct a cross-section of a scanned object \citep{epstein2008}.
-  Data are collected at the fixed frequency of the radiation and indexed in a non-Cartesian parameterization.
-  The primary focus of this work are pulsed X-ray measurements, referred to as a radiographs, which are used as an experimental diagnostic of high-energy physics experiments.  
-  In this case, X-rays are pulsed through an experiment, then the attenuated X-rays excite a crystal that responds by luminescing visible light at an intensity related to the energy of the attenuated wave-front.  
-  The light is then measured on a high resolution array (on the order of $1000\times1000$ or more) of charge coupled devices (CCD) calibrated to count photons at a specified spectral band.
+  In medical imaging, computed tomography (CT) is an imaging process where a series of axial measurements of attenuated electromagnetic radiation are used to reconstruct a cross-section of a scanned object, and the geometry of the measurement system is a primary source of complexity for quantitative analysis since data are organized in a non-Cartesian parameterization \citep{epstein2008}.
+  The primary focus of this work is analyzing pulsed X-ray measurements, referred to as a radiographs, which are used as an experimental diagnostic of high-energy physics experiments.  
+  Ultimately, analysis of the image is used to inform physical properties of the scene of interest, yet this measurement is indirect in several ways. 
+  For example, in several high-energy radiographic imaging systems, collimated X-rays are pulsed through an experiment, then, the attenuated X-rays excite a crystal that responds by luminescing visible light at an intensity related to the energy of the attenuated wave-front.  
+  The light is then focused and measured on a high resolution array (on the order of $1000\times1000$ or more) of charge coupled devices (CCD) calibrated to count photons at a specified spectral band.
+  Each of these examples highlights the potential depth and complexity of modeling image capture, and models must be sufficiently flexible in order to be realistic and reliable.
+  Our approach will be to remove the constraints of a parametric form for describing the process of image blur so that we have more flexibility in capturing the effects of aggregate complexity, as well as allowing data to better characterize the form of the model. 
 
-There is a dichotomy between the amount of information available in image data and the complexity of how to quantitatively analyze it.
-That is, despite having a large volume of data to extract information, their spatial nature make measurements at each pixel highly dependent on measurements of adjacent pixels, making an objective extraction of information quite difficult.
-  A quantitative analysis of the image cannot assume that measured values are independent, because it is precisely this lack of independence that makes an image interesting -- independent image data is white noise (perhaps more appropriately, `gray noise') from which one can only infer the average of the measured pixels.
-  %A quantitative analysis of image data must take into account pixel-to-pixel dependence.
-  %That is, the measured values at one pixel depends heavily on adjacent or neighboring pixels, thus, one expects the measured data to be highly correlated.
+A classical approach to quantitative image analysis is via a field of applied mathematics known as signals processing.
+A general treatment is to model image capture as the response to a system where an ideal image or signal is filtered by some process forward modeled by the physics of the system and stochastic measurement effects. %, then the filtered observed data is observed.
+The ideal image is then estimated indirectly by `reversing' the forward filter. 
+When this process is modeled as an operator between function spaces, tools from functional analysis can be used to `solve' the system.
+See one of the books \citep{vogel2002,epstein2008} for an in depth discussion and broad set of examples.
 
-The classical approach to quantitative image analysis is via a field of applied mathematics known as signals processing.
-The general treatment is to model the image or signal as a function being filtered by some process modeled by the physics of the system, then observing the response to the system.
-Tools from functional analysis are then used to solve this system, given the filtered data.
-See one of the books \citep{vogel2002,epstein2008}.
-
-Relatively recently, techniques and ideas from formal data science have been applied to the problem of quantitatively analyzing images.
-From a statistical point of view, an image is modeled as a random field, and its correlation structure is the primary focus of study.
+Relatively recently, techniques and ideas from formal data science have been used to not only model the measurement as stochastic, but also the unknown ideal image. 
+Bayesian techniques provide a natural way to incorporate prior knowledge as well as uncertainty in that knowledge.
+Formally, an image is modeled as a random field, and its correlation structure is the primary focus of study.
 Under the assumptions of a Gaussian Markov random field, the correlation and mean completely describe the stochastic properties of the image \citep{rue2005gaussian}.
 The books \citep{cressie1993statistics,rue2005gaussian} provide an excellent overview of the history and current methods for statistical methods for spatial data.
-%  The relatively recent date of this publication (in mathematical terms) coupled with the prevalence of image data prior to this, hints that the requisite tools for a rigorous statistical analysis require modern mathematical theory and state of the art computation.
-The field of spatial statistics has had much development over the past half-century and has inspired a wealth of theory and computational tools, but is far from complete.
-Moreover, a broad field of scientific disciplines have considered image data, or more generally spatially correlated data, in one way or another; fields such as astronomy, astrophysics, biology, medicine, geology, computer science, and nuclear physics to name a few.
-%  Each have a unique perspective on the problem, and a vast literature on the subject has accumulated.
+The field of spatial statistics, and more broadly random fields,  has had much development over the past half-century and has inspired a wealth of theory and computational tools, but is far from complete.
+Moreover, more than applied mathematicians and statisticians have studied images quantitatively.
+  A broad field of scientific disciplines has considered image-like data in one way or another; fields such as astronomy, astrophysics, biology, medicine, geology, computer science, and nuclear physics to name a few.
+Each have a unique perspective on the problem, and a vast literature on the subject has accumulated.
 Although much work has been done, it is still a very active research area and is far from the level of consensus and understanding that analysis of independently sampled data has achieved. 
-The aim of this work is to develop and adapt current models and methods for estimation and quantifying uncertainty to a small component of image analysis related specifically to the system for capturing images.
-Understanding this component is an important preliminary step to developing methods for quantitatively analyzing the images themselves.
+The aim of this work is to develop and adapt current models and methods for estimation and quantifying uncertainty to the specific component of image analysis related to blur introduced by the system for capturing images.
+Understanding this is an important component to the development and analysis of methods for quantitatively analyzing the images themselves.
 
 \subsection{Organization}
-The following sections the modeling of image blur via the point spread function, the primary quantity of interest in this work.
-We will introduce several mathematical forms  (e.g.~by changing variables) of the model for the blurring of an opaque edge that do not change the physical assumptions of the model.
-Each of these different mathematical formulations provide insight into the point spread estimation problem, e.g.~one formulation shows that a blurred edge is sufficient for estimation, and another is useful for seeing that the problem is ill-posed.  
+This dissertation consists of four, more or less, independent chapters that address novel contributions to aspects of modelling and estimating the point spread function for an imaging system that exhibits translation invariant and radially symmetric blur.
 
-  In the next chapter, we will derive the necessary theory and technical definitions so that the problem is well-defined on a Hilbert space.
-  %Primarily, we will develop the theoretical framework of how inference can be carried out on the radial profile of the PSF, when prior assumptions are placed on the PSF itself.
+The remaining sections of this chapter provide the general background for modeling image blur, and introduces how blurred images can be modeled with integral convolution with a point spread function (PSF).
+We develop a flexible non-parametric model for image blur that allows for estimation of the .
+The main goal of this work will be to estimate this quantity in a rigorous way that also incorporates uncertainties of the estimate.
+The model we develop is completely novel, and the development is substantially more general than other parametrically dependent methods currently used.
+The modeling perspective will provide several mathematical forms (e.g.~by changing variables) for describing the blurring of an opaque edge, with each providing a different insight into the process.
+ We emphasize that each of these forms do not change the physical assumptions of the model, and are used to prove and understand various aspects of the underlying, intrinsic operation. 
+Moreover, each of these different mathematical formulations provide several methods for analysis, e.g.~one formulation shows that a blurred edge is sufficient for estimation, and another is useful for seeing that the problem is ill-posed.  
+In this process, we will also show connections with other operator based models of active interest; specifically, the Radon and Abel transform.
+
+  In the next chapter, we will derive the necessary theory and technical definitions to formally define the operator between separable Hilbert spaces.
+  Again, this development will take several perspectives, but not change the fundamental action.
+  The analysis provides a fundamental notion of the interaction of radially symmetric objects with non-radially symmetric objects.
   \Cref{chapter:theoretical} will be mainly theoretical, but the explicit forms for the discrete model of the forward operator and prior information are motivated and derived there.
-  This chapter will use tools from the theory of distributions for partial differential equations (PDEs), to develop a novel notion of symmetry corresponding to $L^2$ spaces in $\R^2$. 
-  We take a Bayesian approach to estimation and uncertainty quantification, and \Cref{chapter:mcmcTheory} will lay out prerequisite Markov Chain theory and general algorithms used in this work.
-  This chapter provides a novel argument that verifies an important property for the application of a newly developed enhancements to the Gibbs sampler.
-  \Cref{chapter:computational} then develops these notions needed specifically to carry out the estimation on a computer, and carries out the program of estimation and uncertainty quantification on synthetically derived and on real radiographic data.
-  There, we will also deal with how to discretely represent each of the necessary components in the estimation problem.
+  This chapter will use tools from the theory of distributions for partial differential equations (PDEs) to develop a novel notion of symmetry that retains the powerful structure of a complete inner product space. 
+
+  For estimation, we take a Bayesian approach which will allow for uncertainty quantification of the estimate, and \Cref{chapter:mcmctheory} will lay out prerequisite Markov Chain theory and the general algorithms based on it that are used in this work.
+  We derive and describe from first principles a recently developed enhancement to Gibbs sampling, that has has been independently derived and studied in several other works \citep{van2008partially,agapiou2014analysis}.
+  Although stated without proof in \citep{van2008partially}, we provide a novel argument from first principles to prove an essential condition that has been overlooked in the literature for the invariance and ergodicity of the algorithm.
+%  This chapter provides a novel argument that verifies an important property for the application of a newly developed enhancements to the Gibbs sampler.
+  The algorithms presented in this chapter can be generally applied to statistical inference problems where simulating samples from a complicated density are required, and are not specific to PSF reconstruction.
+
+  \Cref{chapter:computational} further develops these notions in order to carry out PSF estimation on a computer, and gives detailed descriptions of the algorithms and associated probability densities so that they can easily be adapted for a standard scientific or statistical software suite. 
+  We will also deal with how to discretely represent each of the necessary components in the estimation problem.
+  Finally we present results from an implementation of the methods using the \textsc{Matlab} computing software library on synthetically derived and measured radiographic data.
   The measured data are from a high-energy X-ray imaging system at the U.S.~Department of Energy's Nevada National Security Site.
   We will end with a discussion of conclusions and possible future work.
 
@@ -71,12 +85,12 @@ Each of these different mathematical formulations provide insight into the point
   b(x,y) = \iint_{\R^2} k(x,y;s,t) f(s,t)\,dsdt,
 \end{equation}
   where $b(x,y)$ represents the intensity of the blurred image at $(x,y)$; $f(s,t)$ represents the intensity of the ideal un-blurred image at $(s,t)$; and $k$ is the kernel of the filter, which characterizes the blurring process.
-  For purpose of modeling, we assume that each function is sufficiently regular so that each integral and change of variable can be interpreted as in the Riemann sense.
+  For the purpose of modeling, we assume that each function is sufficiently regular so that each integral and change of variable can be interpreted in the Riemann sense.
 
-  Informally, the effect of blur can be viewed point-wise by observing the system response of a ``point-source'' at $(\bar x,\bar y)$, %(formally, take $f = \delta_{\bar x,\bar y}$, Dirac's delta translated to $(\bar x,\bar y)$) 
+  Informally, the effect of blur can be viewed point-wise by observing the system response of a `point-source' at $(\bar x,\bar y)$, %(formally, take $f = \delta_{\bar x,\bar y}$, Dirac's delta translated to $(\bar x,\bar y)$) 
   then $b(x,y) = k(x,y;\bar x,\bar y)$ represents the ``spread'' at the point source.
   The function $k$ is referred to as the \emph{point spread function} (PSF) of the system at $(\bar x,\bar y)$.
-  When the effect of blurring does not depend on the location of this point, that is, translating the ideal image $f$ by $(\bar x, \bar y)$ results in the blurred image $b$ also translated by $(\bar x,\bar y)$, we say that the blur is \emph{spatially invariant}. 
+  When the effect of blurring does not depend on the location of this point, that is, translating the ideal image $f$ by $(\bar x, \bar y)$ results in the blurred image $b$ also being translated by $(\bar x,\bar y)$, we say that the blur is \emph{spatially invariant}. 
   This means
 \begin{align} 
   b(x-\bar x,y-\bar y) 
@@ -95,14 +109,14 @@ Each of these different mathematical formulations provide insight into the point
 \begin{align} 
  k(x,y;\bar x,\bar y) = k(x-\bar x,y-\bar y;0,0).
 \end{align}
-Hence, the PSF in the blurring operation, is independent of translation by $(\bar x,\bar y)$.
+Hence, the PSF in the blurring operation is independent of translation by $(\bar x,\bar y)$.
   Let us denote $k(x,y;\bar x,\bar y) = k(x-\bar x,y-\bar y)$, then the linear filter in \eqref{eq:generalFilterForm} reduces to   
 \begin{equation}\label{eq:deconvolutionProblem}
   b(x,y) = \iint_{\R^2} k(x-s,y-t) f(s,t)\,dsdt.
 \end{equation}
   Equation \eqref{eq:deconvolutionProblem} is called the \emph{convolution} of $f$ by $k$.
-  In fact, any translation invariant linear filters described as an operator between $L^p$ can be expressed through convolution with some generalized function $k$ \citep{grafakos2014}.
-  In any case, when blur is assumed to be spatial invariant, it results in solving the convolution equation \eqref{eq:deconvolutionProblem}.
+  In fact, any translation invariant linear filter described as an operator between $L^p$ spaces can be expressed through convolution with some generalized function $k$ \citep{grafakos2014}.
+  In any case, when blur is assumed to be spatially invariant, it results in solving the convolution equation \eqref{eq:deconvolutionProblem}.
   Mathematical methods that estimate $f$ given $b$ and $k$ are referred to as \emph{deconvolution} techniques.
 
   Note that a change of variables by $s'=x-s$ and $t'=y-t$ results in a convolution of $k$ by $f$, which is to say that convolution, as an operation, is symmetric.
@@ -139,9 +153,9 @@ Hence, the PSF in the blurring operation, is independent of translation by $(\ba
   \begin{equation}
     \int_{-\infty}^{\infty} te^{-t^2 - s^2}dt = 0
   \end{equation}
-  for all $s$ since the integrand is odd in $t$, and given any solution $k$, $k(s,t)+te^{-t^2 - s^2}$.
+  for all $s$ since the integrand is odd in $t$, and given any solution $k$, $k(s,t)+te^{-t^2 - s^2}$ also satisfies \eqref{eq:psfForwardModelDeterministic}.
   Observe that these PSFs are not radially symmetric.
-  It will be seen in the next section that the assumption of radial symmetry on $k$ is sufficient for a well-defined solution to \eqref{eq:psfForwardModelDeterministic}.
+  It will be seen in the next section that the assumption of radial symmetry on $k$ is sufficient for a unique solution to \eqref{eq:psfForwardModelDeterministic}.
 %In summary, we've assumed that the effect of blur is modelled by a spatially invariant linear filter with a radially symmetric kernel, and \eqref{eq:psfForwardModelDeterministic} describes the blurring of a calibration object whose profile is an edge.
   Solving the integral equation in \eqref{eq:psfForwardModelDeterministic} is the primary focus of this work.
 %The form of \eqref{eq:psfForwardModelDeterministic} is not immediately useful for analyzing the problem, and in the next sections, we will transform variables in \eqref{eq:psfForwardModelDeterministic} in two different ways that will show that the PSF estimation problem fits within the broad category of mathematical study known as \emph{inverse problems}.
@@ -244,21 +258,22 @@ Hence, the PSF in the blurring operation, is independent of translation by $(\ba
   
 \section{The Abel transform and a deterministic solution}
 
-  This section is devoted to explicitly deriving a solution to \eqref{eq:psfForwardModelDeterministic}, showing that radial symmetry is sufficient to guarantee a unique solution.
+  This section is devoted to explicitly deriving a solution to \eqref{eq:psfForwardModelDeterministic} and showing that radial symmetry is sufficient to guarantee a unique solution.
+  This deterministic method offers useful insight into the problem, but will prove to be inadequate for practically obtaining estimates when the data is subject to measurement error.
 %  This will lay out an solution to \eqref{eq:psfForwardModelDeterministic}. 
-  However, the suggested method will be problematic as will be seen in the following section.
+%  However, the suggested method will be problematic as will be seen in the following section.
 
 %  A large part of designing a system for imaging is to minimize the effect of blur.
   Often, limitations due to physical laws put a lower bound on the measurement precision so that even an optimal design cannot ignore the effect of blur.
   Although arbitrary resolution may be impossible, it is often of interest to design a system that does not introduce error that is biased.
-  A system that is not biased with respect to spatial orientation is said to exhibit \emph{isotropic blur}, so that, in the convolution model, the PSF is radial symmetric.
+  A system that is not biased with respect to spatial orientation is said to exhibit \emph{isotropic blur}, so that, in the convolution model, the PSF is radially symmetric.
   In fact, many parametrically modeled PSFs assume radially symmetry \citep{doering1992,jain1989,kundur1996blind,watson1993}.  
 
-  When one assumes that the PSF of their system is a radially symmetric continuous function on $\R^2$, then it has a unique representation on $\R$; i.e., for $k:\R^2 \to R$, there exists a function $p:[0,\infty)\to \R$ so that $k(s,t) = p\left(\sqrt{s^2 + t^2}\right)$.  
+  When one assumes that the PSF of their system is a radially symmetric continuous function on $\R^2$, then it has a unique representation on $\R$; i.e., for $k:\R^2 \to \R$, there exists a function $p:[0,\infty)\to \R$ so that $k(s,t) = p\left(\sqrt{s^2 + t^2}\right)$.  
   The function $p$ is referred to as the radial profile of $k$.
   Define
   \begin{equation} \label{eq:abelTransform}
-    \ell(s) \eqdef \int_{-\infty}^\infty p\left(\sqrt{s^2 + t^2}\right)\,dt.
+    \ell(s) \eqdef \int_{-\infty}^\infty p\left(\sqrt{s^2 + t^2}\right)\,dt,
   \end{equation}
   which is integration along a line perpendicular to the edge $E$, and its form is commonly encountered in other imaging applications with radial geometry, such as tomographic imaging science.
   The transformation that takes $p$ to $\ell$ is known as the \emph{Abel transform}, and for its study in imaging science, see \citep{bracewell,epstein2008,knill93}.
@@ -282,7 +297,7 @@ Hence, the PSF in the blurring operation, is independent of translation by $(\ba
       &= \tilde b(-x).
   \end{align}
   Hence $\tilde b(x)$ is odd and has reflection symmetry about the origin, hence, $b(x)$ has reflection symmetry about $(0,b(0))$.
-  This means that data defined on either $x\in(-\infty,0]$ or $x\in[0,\infty)$ should be sufficient for estimating $p$, since the other half is determined by symmetry.
+  This means that data defined on either $x\in(-\infty,0]$ or $x\in[0,\infty)$ is sufficient for estimating $p$, since the other half is determined by symmetry.
   This observation will be important in the next section.
 
 %  The collection of line integrals parametrized by their angle of incidence is called the Radon transform of $k$, and when $k$ is radially symmetric, the transform is completely determined by a single projection.
@@ -334,7 +349,7 @@ Hence, the PSF in the blurring operation, is independent of translation by $(\ba
   which proves the identity in \eqref{eq:inverseAbel}.
 \end{proof}
   
-  With this result, $p$ can be recovered from $b$ in \eqref{eq:abelForward} as follows; given $b(x)$, the fundamental theorem of calculus gives $\ell(x) + \lim_{x'\to\-\infty}\ell(x')$ by differentiating $b(x)$.
+  With this result, $p$ can be recovered from $b$ in \eqref{eq:abelForward} as follows: given $b(x)$, the fundamental theorem of calculus gives $\ell(x) + \lim_{x'\to\-\infty}\ell(x')$ by differentiating $b(x)$.
   Since $\lim_{r\to\infty}tp(t) = 0$, symmetry and the change of variables in \eqref{eq:abelForward2} implies $\lim_{x'\to-\infty}\ell(x') = 0$. 
   Then, applying the inversion formula in \eqref{eq:inverseAbel} to $b'(x)$ gives the radial profile $p(r)$.
   That is,
@@ -343,7 +358,7 @@ Hence, the PSF in the blurring operation, is independent of translation by $(\ba
   \end{equation}
   Hence, the assumption of radial symmetry sufficiently constrains the problem to uniquely determine the PSF from an edge calibration object illustrated in \Cref{fig:edgeData}.
 
-  In theory, we have outlined a solution to the problem, but there is one more component to the model that has not been addressed -- random effects due to measurement error -- for which a direct application of outlined method on measured data will fail spectacularly, due to the estimation problem being ill-posed which we address in the next section.
+  In theory, we have outlined a solution to the problem, but there is one more component to the model that has not been addressed -- random effects due to measurement error -- for which a direct application of the outlined method on measured data will fail spectacularly, due to the estimation problem being ill-posed, which we address in the next section.
 
 \section{PSF reconstruction as an ill-posed inverse problem}
   
@@ -410,21 +425,22 @@ where
   Finally, recall that the graph of $b(x)$ exhibits reflection symmetry about $(0,b(0))$.
   So, $b(x)$ defined on either $(-\infty,0]$ or $[0,\infty)$ completely determines $p$.
 
-  The discussion thus far has been somewhat informal, as we have assumed all functions are continuous and have not defined a space for the PSF, the domain of the forward operator denoted $\PP$, or the ambient space for the data, the codomain, so we have not formally defined the forward operator of the model.
-  Defining these spaces rigorously is the main focus of \Cref{chapter:theoretical} and it will be shown that both of these spaces separable Hilbert spaces, and that the data are a subspace of $L^2((-\infty,0])$.
-   Hence, let $\G: \PP \to L^2((-\infty,0])$ be the operator acts by the integral equation in \eqref{eq:radialForwardModelDeterministic}, i.e., 
+  The discussion thus far has been somewhat informal, as we have assumed that all functions are continuous and have not defined a space for the PSF, the domain of the forward operator denoted $\PP$, or the ambient space for the data, the codomain of the forward operator. %, so we have not formally defined the forward operator of the model.
+  Defining these spaces rigorously is the main focus of \Cref{chapter:theoretical}, and it will be shown that both of these spaces are separable Hilbert spaces and, in particular, that the data are a subspace of $L^2((-\infty,0])$.
+   For now, let $\G: \PP \to L^2((-\infty,0])$ be given and that the action of the operator is consistent with the integral equation in \eqref{eq:radialForwardModelDeterministic}, i.e., 
   \begin{equation}
     [\G p](x) = \int_0^\infty p(r) g(x,r) r dr.
   \end{equation}
   The operator $\G$ is a compact Hilbert-Schmidt operator since $g$ is continuous.
   Moreover, $\G$ is an injective operator since we showed that $b = \G p$ has an explicit solution. 
   The spectral theorem for such operators implies that $\G$ has a countable spectrum which has zero as a limit point, and hence, its inverse $\G^{-1}$ is unbounded. %, which results in an ill-posed problem. 
-  See one of many texts on functional analysis \citep{bachman1966,rudin1991} and \citep{tikhonov1963,vogel2002,morozov1993} for this treatment of ill-posed problems.
-  Each of these statements will be shown rigorously in \Cref{chapter:theoretical}.
+  See one of many texts on functional analysis such as \citep{bachman1966,rudin1991} for the spectral theorem regarding Hilbert-Schmidt operators, and \citep{tikhonov1963,vogel2002,morozov1993} for its role in inverse problems.
+%  Each of these statements will be shown rigorously in \Cref{chapter:theoretical}.
 
   Solving ill-posed inverse problems requires prior assumptions about $p$ that regularize the unbounded inverse.
-  Recall that the original formulation of the problem is cast in terms of deconvolution, and much of the literature of inverse problems is devoted to this subject and this work draws heavily from techniques for that purpose. 
-  We will utilize a Bayesian approach to analyzing inverse problem, since in addition to estimating $k$, these techniques provide uncertainties in the resulting estimate and can be quantified by analyzing the so-called posterior distribution.
+  Recall that the original formulation of the problem is cast in terms of deconvolution, and much of the literature of inverse problems is devoted to this subject. 
+  This work draws heavily from techniques for that purpose, but has many nuanced differences that make the analysis challenging, yet also novel and interesting.
+  We will utilize a Bayesian approach to analyzing the inverse problem, since in addition to estimating $k$, these techniques provide uncertainties in the resulting estimate and can be quantified by analyzing the so-called posterior distribution.
   These methods have been the subject of much recent research (see the books \citep{calvetti2007introduction,kaipo2005,stuart2010}), and the problem of PSF reconstruction fits neatly into that framework once the space $\PP$ and the forward operator have been well-defined, which we address in the next chapter.
 
 \end{chapter}

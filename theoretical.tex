@@ -3,12 +3,12 @@
 \begin{chapter}{Radial Symmetry for Sobolev Spaces}\label{chapter:theoretical}
 
 The domain and geometry of an image and a point spread function are inherently two-dimensional. 
-While the assumption of radial symmetry reduces the representation dimension, the geometry of the problem is still two-dimensional and must be translated to the appropriate space of radial representations. 
-Moreover, how regularity assumptions like square summability of derivatives of the PSF translates to its radial representation does not have an obvious resolution, if we allow generalised functions and derivatives.
-The goal of this chapter is rigorously address these issues by developing the necessary mathematical tools to encapsulate prior notions of regularity and radial symmetry within the structure of separable Hilbert spaces.
-This is done within the theory of distributions, developed initially for the analysis of linear partial differential equations (PDEs). 
-This framework provides the necessary notions to encapsulate radial symmetry and sufficient regularization via generalization of differential operators and function composition -- all within the rich structure of a separable Hilbert space.
-Hence, the PSF estimation problem is readily applicable to the wide set of tools for analyzing inverse problems that require this notion.
+While the assumption of radial symmetry reduces the representation dimension, the geometry of the problem is still two-dimensional and must be appropriately translated to the radial representations. 
+The question of how regularity assumptions like square summability of derivatives translates to a radial representation does not have an obvious resolution if we allow generalised functions and generalized derivatives.
+The goal of this chapter is rigorously address these issues by developing the necessary mathematical tools to encapsulate prior notions of regularity and radial symmetry within the structure of separable Hilbert spaces and concretely establish how that affects a radial representation.
+The development is done within the theory of distributions, developed initially for the analysis of linear partial differential equations (PDEs). 
+This framework provides sufficient generality to encapsulate radial symmetry and sufficient regularization via generalization of differential operators and function composition, all within the rich structure of a separable Hilbert space.
+Hence, tools for analyzing inverse problems that require radial symmetry are readily applicable to the PSF estimation problem.
 
 \section{Distribution spaces}
 In this section we establish the preliminary definitions and main results from distribution theory.
@@ -23,7 +23,7 @@ Endow $\DD(\Omega)$ with the topology such that convergence of the sequence $(\p
   \sup_{m\ge n} \left|\del^\alpha (\phi_n-\phi_m)\right|\to 0, \label{eq:testFunctionContinuity}
 \end{equation} 
 for any multi-index such that $|\alpha|\le k$.
-That is,  $\alpha$ is a $k$-tuple of non-negative integers $(\alpha_1\dots \alpha_k)$, such that $\sum \alpha_i \le k$ and $\del^\alpha = \prod \left(\frac{\del}{\del x_i}\right)^{\alpha_i}$.
+That is,  $\alpha$ is a $k$-tuple of non-negative integers $(\alpha_1,\dots, \alpha_k)$, such that $\sum \alpha_i \le k$ and $\del^\alpha = \prod \left(\frac{\del}{\del x_i}\right)^{\alpha_i}$.
 In distribution theory, these are called \emph{test functions} on $\Omega$.
 The space of continuous linear functionals, denoted $D^*(\Omega)$, are the \emph{distributions} on $\Omega$.
 We adopt the notation $\langle f, \phi\rangle$ for the action of a linear functional $f$ on $\phi \in \DD(\Omega)$ and freely use the natural inclusion of functions $g \to \tilde g \in \DD^*(\Omega)$ by $\langle \tilde g, \phi \rangle = \int g\, \phi\,dx$ when the integration exists and omit the tilde notation distinguishing $g$ and $\tilde g$ as the representation should be clear from context. 
@@ -48,7 +48,7 @@ The next result, sometimes referred to as localization, establishes a dense embe
 \end{thm}
 
 These results allow for operators defined on $\DD(\Omega)$ to be extended in a continuous way to $\DD^*(\Omega)$ so long as one can define an adjoint operation with respect to the bilinear form $\langle \cdot,\cdot \rangle$.
-Moreover, if the operation is well-defined on test functions, then uniqueness follows from \Cref{thm:localization}.
+Moreover, if the operation is well-defined on test functions, then uniqueness of the extension follows from \Cref{thm:localization}.
 The classical example of this process is extending the differential operator $\frac{\del}{\del x_i}:\DD^*(\Omega) \to \DD^*(\Omega)$. 
 First, for test functions observe that integrating by parts and using the compactness of the support of $\psi$ yields
 \begin{equation}
@@ -73,17 +73,19 @@ Since the operator $\del^\alpha:\DD^*(\Omega)\to\DD^*(\Omega)$ is expressed as a
   = \langle \del^{\alpha}f, \phi\rangle.
 \end{align}
 
-This approach serves as a template for how we will extend the radial change of variables in expressed on continuous functions in \Cref{chapter:introduction} to the larger space of distributions.
+The idea of expressing an operation adjointly on test functions, serves as the model for extending radial symmetry to distributions. 
+That is, the radial change of variables introduced in \Cref{chapter:introduction} can be `moved' to test functions in an analgous way to express function composition on distributions.
+Before this argument is undertaken, we first show how $L^2$ functions can be thought of as distributions, and how regularity can be imposed through generalized derivatives with so-called Sobolev spaces.
 
 \subsection{$L^2$ as a subspace of distributions}
 
-Hilbert spaces provide the rich structure of an inner product and are sufficiently complete to guarantee that sequences that converge with respect to the induced topology of that inner product.
+Hilbert spaces provide the rich structure of a complete inner product to guarantee that converging sequences represent elements of the space.
 Moreover, a Hilbert space is, in many cases, a prerequisite for employing variational or infinite dimensional probabilistic Bayesian methods.
-This development will show how the space of square integrable functions $L^2$ and their generalized derivatives can be defined within the space of distributions, which is prerequisite to defining the Hilbert space for radial profiles and also provides valuable insights in how they will be constructed.
-The development follows \citep{richtmyer1978principles}, for which we need only the notion the $L^2$ inner product, as opposed to the more common Fourier based approaches which can be found in \citep{rudin1991,hormander1983}.
+This development will show how the space of square integrable functions $L^2$ and their generalized derivatives can be defined within the space of distributions, which is necessarily for defining the Hilbert space for radial profiles and also provides valuable insights in how they will be constructed.
+The development follows \citep{richtmyer1978principles,griffel2002}, for which we need only the notion the $L^2$ inner product, as opposed to the more common Fourier based approaches which can be found in \citep{rudin1991,hormander1983,strichartz2000}.
 Our development also provides several details that are omitted in \citep{richtmyer1978principles}. 
 
-We define the $L^2$ inner-product for test functions as the bilinear form $(\cdot,\cdot)_{L^2(\Omega)}:\DD(\Omega)\times\DD(\Omega) \to \C$ by 
+We define the $L^2$ inner-product for test functions as the sesquilinear form $(\cdot,\cdot)_{L^2(\Omega)}:\DD(\Omega)\times\DD(\Omega) \to \C$ by 
 \begin{equation} \label{eq:l2innerProduct}
   (\phi,\psi)_{L^2(\Omega)} \eqdef \int_{\Omega} \phi(x)\bar{\psi(x)}\,dx,
 \end{equation}
@@ -91,8 +93,8 @@ with the induced norm
 \begin{equation} \label{eq:l2norm}
   \|\phi\|^2_{L^2(\Omega)} \eqdef (\phi,\phi)_{L^2(\Omega)}.
 \end{equation}
-The linearity of \eqref{eq:l2innerProduct} is inherited by the linearity of integration, and positivity follows from the positivity of $\phi(x)\bar{\phi(x)} = |\phi(x)|^2$. 
-For definiteness, note that if $\phi = 0$ then $\|\phi\|_{L^2(\Omega)} = 0$, and only if $\phi = 0$, otherwise, continuity of $\phi$ implies a neighborhood where $|\phi(x)| > 0$ which gives $\|\phi\|_{L^2(\Omega)} > 0$.
+The linearity of the first component (and anti-linearity of the second) in \eqref{eq:l2innerProduct} are given by the linearity of integration, and positivity follows from the positivity of $\phi(x)\bar{\phi(x)} = |\phi(x)|^2$. 
+For definiteness, note that if $\phi = 0$ then $\|\phi\|_{L^2(\Omega)} = 0$, and only if $\phi = 0$, otherwise, continuity of $\phi$ implies that there exists a neighborhood where $|\phi(x)| > 0$, which gives $\|\phi\|_{L^2(\Omega)} > 0$.
 Since \eqref{eq:l2innerProduct} defines an inner-product, the triangle inequality of the norm follows from the Cauchy-Schwarz-Bunyakovsky inner product inequality $|(\phi,\psi)|\le \|\phi\|\|\psi\|$; i.e.,
 \begin{align}
   \|\phi + \psi\|_{L^2(\Omega)}^2 
@@ -127,6 +129,7 @@ These distributions are well defined in the following sense:
 \begin{prop} \label{prop:cauchyCorrespondence}
   Sequences $(\phi_n)$ and $(\phi_n')$ determine the same distribution if and only if they are equivalent.
 \end{prop}
+\begin{com}
 \begin{proof}
   Suppose $(\phi_n)$ and $(\phi_n')$ are equivalent Cauchy sequences for $f$ and $f'$ respectively.
   Arguing similarly to \eqref{eq:cauchySchwarz},
@@ -150,17 +153,16 @@ These distributions are well defined in the following sense:
   \end{equation}
   Using Cauchy-Schwarz-Bunyakovsky,
   \begin{align}
-    \|\xi_n\|_{L^2(\Omega)}^2 
-      &= |(\xi_n,\xi_n)_{L^2(\Omega)}| \nonumber\\
-      &= |(\xi_n,\xi_n - \xi_{n_0})_{L^2(\Omega)}| \nonumber\\
-      &\le \|\xi_n\|_{L^2(\Omega)}\|\xi_n-\xi_{n_0}\|_{L^2(\Omega)}
+    \|\xi_n\|_{L^2(\Omega)}^2 &= |(\xi_n,\xi_n)_{L^2(\Omega)}| = |(\xi_n,\xi_n - \xi_{n_0})_{L^2(\Omega)}| \le \|\xi_n\|_{L^2(\Omega)}\|\xi_n-\xi_{n_0}\|_{L^2(\Omega)}.
   \end{align}
-  we have that for all $\|\xi_n\|_{L^2(\Omega)} \not= 0$
+  Hence, we have that for all $\|\xi_n\|_{L^2(\Omega)} \not= 0$ and $n \ge n_0$
   \begin{equation}
-    \|\xi_n\|_{L^2(\Omega)} \le \|\xi_n - \xi_{n_0}\|_{L^2(\Omega)} < \eps
+    \|\xi_n\|_{L^2(\Omega)} \le \|\xi_n - \xi_{n_0}\|_{L^2(\Omega)} < \eps.
   \end{equation}
-  for all $n \ge n_0$, hence $\|\xi_n\|_{L^2(\Omega)} \to 0$ which implies $\phi_n$ and $\phi_n'$ are equivalent Cauchy sequences.
+  Thus, $\|\xi_n\|_{L^2(\Omega)} \to 0$ which implies $\phi_n$ and $\phi_n'$ are equivalent Cauchy sequences.
 \end{proof}
+\end{com}
+The proof can be found in \citep{richtmyer1978principles}, and follows from several straight-forward applications of the Cauchy-Schwarz-Bunyakovsky inequality.
 
 It can be readily shown that \eqref{eq:cauchyEquivalence} defines an equivalence relation on Cauchy sequences for which vector addition and scalar multiplication are well-defined, hence, the equivalence classes of Cauchy sequences correspond uniquely to a linear subspace of $\DD^*(\Omega)$.
 
@@ -169,6 +171,7 @@ We can now extend the inner product to elements in $L^2(\Omega)$ in the followin
   (f,g)_{L^2(\Omega)} \eqdef \lim_{n\to\infty} (\phi_n,\psi_n)_{L^2(\Omega)}
 \end{equation}
 where $(\phi_n)$ and $(\psi_n)$ are Cauchy sequences corresponding to $f$ and $g$ respectively.
+The following proposition is not proved in \citep{richtmyer1978principles}, so we provide a short proof.
 \begin{prop}
   The limit in \eqref{eq:l2innerProductFull} exists and is well-defined for equivalent Cauchy sequences. 
   Moreover, $\lim_{n\to\infty} \langle f,\bar{\psi_n}\rangle _{L^2(\Omega)} = (f,g)_{L^2(\Omega)}$.
@@ -182,9 +185,9 @@ Now observe,
     &= (\phi_n,\psi_n-\psi_k)_{L^2(\Omega)} -(\phi_n-\phi_k,\psi_k)_{L^2(\Omega)}| \nonumber\\
     &\le \|\phi_n\|_{L^2(\Omega)}\|\psi_n-\psi_k\|_{L^2(\Omega)} + \|\phi_n - \phi_k\|_{L^2(\Omega)}\|\psi_k\|_{L^2(\Omega)} \nonumber\\
     &\le \|\phi_n\|_{L^2(\Omega)}\|\psi_n-\psi_k\|_{L^2(\Omega)} \nonumber\\
-    &\quad\quad+ \|\phi_n - \phi_k\|_{L^2(\Omega)}\big(\|\psi_k - \psi_n\|_{L^2(\Omega)} + \|\psi_n\|_{L^2(\Omega)}\big)
+    &\quad\quad+ \|\phi_n - \phi_k\|_{L^2(\Omega)}\big(\|\psi_k - \psi_n\|_{L^2(\Omega)} + \|\psi_n\|_{L^2(\Omega)}\big).
 \end{align}
-and taking $\sup_{k\ge n}$ then limiting in $n$ on the right hand side of the inequality results in 0 since $(\|\phi_n\|)$ and $(\|\psi_n\|$ have finite limits.
+  Since the $\lim \sup_{k\ge n}$ on the right hand side of the inequality results in 0 (since $(\|\phi_n\|)$ and $(\|\psi_n\|$ have finite limits) the convergence of the left hand side follows.
 Thus, $(\phi_n,\psi_n)$ is a Cauchy sequence in $\C$, and hence, has a finite limit.
 
 Let $\eps > 0$ be given. 
@@ -202,6 +205,7 @@ Taking limits on both sides gives
 since $\eps>0$ is arbitrary.
 
 Finally, to show that the inner product is well-defined, suppose $(\phi_n')$ and $(\psi_n')$ are equivalent Cauchy sequences to $(\phi_n)$ and $(\psi_n)$ respectively.
+Then
 \begin{align}
 %  |(f,g) - (f',g')| \lim_{n\to\infty}
 %  |(\phi_n,\psi_n)_{L^2(\Omega)} - (\phi_n',\psi_n')_{L^2(\Omega)}|
@@ -225,7 +229,7 @@ The space $L^2(\Omega)$ is complete complete with respect to the inner product d
 %\end{proof}
 See \citep{richtmyer1978principles} for the proof, which follows a standard diagonalization argument. %similar to the Arzela-Ascoli theorem.
 We remark that there is a correspondence with the standard notion of $L^2(\Omega)$ with respect to Lebesgue measure and this development.
-The basis of correspondence comes from the result that a simple function can be arbitrarily approximated with a sequence of test functions in the standard $L^2(\Omega)$ sense with Lebesgue measure. 
+The basis of the correspondence comes from the result that a simple function can be arbitrarily approximated with a sequence of test functions in the standard $L^2(\Omega)$ sense with Lebesgue measure. 
 See \citep{hormander1983} for a rigorous development of this correspondence.
 %\begin{com}
 %  Use the hard work in \Cref{thm:density} maybe.
@@ -269,7 +273,7 @@ We denote the corresponding norm $\|f\|_{\Omega,n}$.
 The proof is by induction on the order of $|\alpha|$, where the base case is the completeness of $L^2(\Omega)$.
 To see the inductive step, note
 \begin{equation}
-  (f,g)_{\Omega,1} = (f,g)_{L^2(\Omega)} + \sum_{i=1}^k \left( \frac{\del}{\del x_i} f, \frac{\del}{\del x_i} g\right)_{L^2(\Omega)}
+  (f,g)_{\Omega,1} = (f,g)_{L^2(\Omega)} + \sum_{i=1}^k \left( \frac{\del}{\del x_i} f, \frac{\del}{\del x_i} g\right)_{L^2(\Omega)}.
 \end{equation}
  Let $(f_n) \subseteq \HH^1$ be Cauchy with respect to the corresponding norm. 
 Since $\| f_n \|_{L^2(\Omega)} \le \|f_n\|_{\Omega,1}$, there exists a function $f \in L^2(\Omega)$ such that $(f_n)$ converges to $f$ in $L^2(\Omega)$ by completeness there.
@@ -304,34 +308,12 @@ and
   \|\nabla f\|^2_{L^2(\Omega)} = \sum_{i=1}^k\left\| \frac{\del}{\del x_i}f\right\|^2_{L^2(\Omega)}.
 \end{equation}
 
-We now state a version of the Sobolev embedding theorem that shows how higher order Sobolev spaces enforce regularity in terms of spaces of continuous functions, whose proof can be found in \citep{strichartz2003guide}.
-\begin{thm} \label{thm:sobolevInequality}
-  For $\Omega \subseteq \R^N$, suppose $\left\|\del^\alpha f\right\|_{L^2(\Omega)}$ is finite for all $\alpha$ such that $|\alpha| <n$ for $n$ equal to the smallest integer greater than $n/2$ (so $n=\frac{N+1}2$ if $N$ is odd and $n=\frac{N+2}2$ if $N$ is even). Then $f$ corresponds to integration against a continuous and bounded function with
-  \begin{equation} \label{eq:sobolevInequality}
-    \| f \|_\infty \le c \sum_{0\le |\alpha| \le n}\|\del^\alpha f\|_{L^2(\Omega)}.
-  \end{equation}
-  More generally, if  $\|\del^\alpha f\|_{L^2(\Omega)}$ is finite for all $\alpha$ such that $|\alpha| < n + k$, then there is a continuous embedding of $\HH^n$ into $C^k(\Omega)$.
-\end{thm}
-
-In particular, we will be concerned primarily with the case when $\Omega = \R^2,N=2$, and thus $n=2$, hence \eqref{eq:sobolevInequality} reduces to
-\begin{equation}
-  \sum_{0\le |\alpha| \le 2}\|\del^\alpha f\|_{L^2(\Omega)} = \|f\|_{L^2(\Omega)} + \|\nabla f\|_{L^2(\Omega)}+ \|\nabla^2 f\|_{L^2(\Omega)} %= \sum_{j=1}^2\sum_{i=1}^2\left\| \frac{\del}{\del x_i}\frac{\del}{\del x_j}f\right\|^2_{L^2(\Omega)}.
-\end{equation}
-This norm corresponds to PSFs with second order negative Laplacian, or biharmonic, regularization, and \Cref{thm:sobolevInequality} implies that these distributions are bounded continuous functions.
-This is formally stated in the following corollary
-
-\begin{cor}
-  For $\Omega \subseteq \R^2$, suppose $\|\nabla^2 f\|_{L^2(\Omega)} < \infty$ then $f$ is continuous and bounded with  
-  \begin{equation}
-    \| f \|_\infty \le c\left(\|f\|_{L^2(\Omega)} + \| \nabla f\|_{L^2(\Omega)}+ \| \nabla^2 f\|_{L^2(\Omega)}\right).
-  \end{equation}
-\end{cor}
-
 \section{Radial symmetry}
-Symmetry is established by casting it in terms of a many-to-one smooth map $T$ that is constant on circles of a fixed radius.  
+Symmetry is established by casting it as precomposition with a many-to-one smooth map $T$ that is constant on circles of a fixed radius.  
 If $f$ is a function on $\R^2$ and there exists a function $p$ so that $f(x,y) = p(\sqrt{x^2 + y^2})$, then observe that $f$ has the common notion of radial symmetry with a radial profile $p$.
-This notion is easily adapted to distributions by developing the corresponding linear pullback operator to $T^\sharp$ that maps $p$ to $f$ by precomposition by $T(x,y)$ on sequences of test functions converging to $p$.
-A pullback is the analogous notion of composition for distributions, and the idea of the construction is extend the range of $T$ to a bijection similar to the polar coordinates map and use it to perform an integral change of variables to `move' the composition to a test functions.
+This notion is easily adapted to distributions by developing a notion of composition with $T$ on using a so-called linear pullback operator to $T^\sharp$.
+That is, $T^\sharp$ maps $p$ to $f$ by precomposition by $T(x,y)$ on sequences of test functions converging to $p$.
+A pullback is the analogous notion of composition for distributions, and the idea of the construction is to extend the range of $T$ to a bijection similar to the polar coordinates map and use it to perform an integral change of variables to `move' the composition to a test functions.
 For topological reasons, the bijection will only be with a dense subset of $\R^2$.
 %Because the set will be dense in a straight forward way, we will be able to extend the pullback using ideas similar to extending applying boundary conditions to PDEs.
 
@@ -359,12 +341,10 @@ In order to establish the operator on distributions, we first observe its adjoin
   Observe that each $T_{ij}$ is a diffeomorphism onto $R = \left\{(r,t): 0 < t < \sqrt{h^{-1}(r)}\right\} = \left\{(r,t): 0 < t < r^{\frac{1}{2a}}\right\}$ with inverse 
   \begin{align}
     T_{ij}^{-1}(r,t) 
-      &= \Big((-1)^i\sqrt{h^{-1}(r) - t^2}, (-1)^jt\Big),\nonumber\\
-      &= \Big((-1)^i\sqrt{r^{\frac 1a} - t^2}, (-1)^jt\Big),\\
+      &= \Big((-1)^i\sqrt{h^{-1}(r) - t^2}, (-1)^jt\Big) = \Big((-1)^i\sqrt{r^{\frac 1a} - t^2}, (-1)^jt\Big),\\
     \intertext{ and }
     \left|dT_{ij}^{-1}(r,t)\right| 
-      &= \frac12 \frac{\del}{\del r}[h^{-1}(r)]\left(h^{-1}(r) - t^2\right)^{-1/2}\nonumber \\
-      &= \frac{1}{2a} r^{\frac 1a-1}\left(r^{\frac 1a} - t^2\right)^{-1/2}, \label{eq:determinant}
+      &= \frac12 \frac{\del}{\del r}[h^{-1}(r)]\left(h^{-1}(r) - t^2\right)^{-1/2} = \frac{1}{2a} r^{\frac 1a-1}\left(r^{\frac 1a} - t^2\right)^{-1/2}, \label{eq:determinant}
   \end{align}
   which is positive and smooth for all $(r,t)\in \Omega_2$.
   Furthermore, note that 
@@ -422,10 +402,10 @@ Then, by \eqref{eq:psiPhiDef}, $\sup |T_\sharp\phi_n| \to 0$, and thus $\langle 
   \end{equation}
 
 %As a corollary to this result, we can establish the existence in the statement of \Cref{thm:pullback}. That is, define $T^\sharp:\DD^*(\Omega_1) \to \DD^*(\Omega_2)$ by 
-Loosely speaking, the pullback by $T$ represents a change of variables from $(x,y)$ to $(r,v)$ by expanding the domain of $T$ to an invertible $T_{ij}(x,y)$ with the choice of $T_{ij}$ is somewhat arbitrary.  
+Loosely speaking, the pullback by $T$ represents a change of variables from $(x,y)$ to $(r,v)$ by expanding the domain of $T$ to an invertible $T_{ij}(x,y)$ with the choice of $T_{ij}$ is arbitrary.  
 Observe that for a fixed $\tilde r = r^{1/(2a)}$, the image of $T_{ij}^{-1}(r,v)$ is a quarter circle of radius $\tilde r$ in the quadrant determined by $i,j$.
 Another valid choice of $T_{ij}$, which is similar to a polar-coordinates transformation, would be $(T(x,y), \mathrm{Arg}(x,y))$, but the calculations in this case are somewhat more tedious.
-We will show that $T^\sharp$ unique with respect to this choice, and it will allow us to freely choose any other change of variables such that $T \circ T_{ij}(r,v) = r$, and the analysis on $T$ will still be valid.
+We will show that $T^\sharp$ is unique with respect to this choice, and it will allow us to freely choose any other change of variables such that $T \circ T_{ij}(r,v) = r$, and the analysis on $T$ will still be valid.
 %Our choice was such that the analysis is straight-forward, although we will make use of the polar-coordinate variable transformation later to define the forward operator on linear representations.
 We remark that the existence and continuity of a more generally defined pullback operator can be carried for any smooth $T$ and is outlined in \citep{hormander1983}.
 However, in this case, because of the specific form of $T$ under consideration, the induced pullback $T^\sharp$ is injective. 
@@ -433,9 +413,9 @@ This will be a consequence of the next lemma.
 \begin{lem} \label{lem:innerProduct}
   For all $p\in\DD^*(\Omega_1)$ and $\omega \in \DD(\Omega_1)$, then 
   \begin{equation}
-    \langle T^\sharp p , \omega \circ T \rangle_{\Omega_2} = \langle p,S(\omega)\rangle_{\Omega_1}.
+    \langle T^\sharp p , \omega \circ T \rangle_{\Omega_2} = \langle p,S(\omega)\rangle_{\Omega_1},
   \end{equation}
-  where $S(\omega)$ is the shift operator by $S(\omega) = \omega\cdot\pi {h^{-1}}'$, the derivative of the inverse of $h$ in \Cref{thm:pullback}. 
+  where $S(\omega)$ is the shift operator defined by $S(\omega) = \omega\cdot\pi {h^{-1}}'$, the derivative of the inverse of $h$ in \Cref{thm:pullback}. 
   When $h(r) = r^{1/2}$, then ${h^{-1}}'(r) = 2\pi r$.
 \end{lem}
 \begin{proof}
@@ -458,9 +438,7 @@ This will be a consequence of the next lemma.
 Recall that the action of $T^\sharp$ on test functions was the standard notion of composition with $T$, so the operator $T_{\sharp}T^\sharp :\DD(\Omega_1)\to \DD(\Omega_1)$ acts on $\rho$ as a distribution by
 \begin{align}
   \left\langle T_{\sharp} T^\sharp \rho, \omega \right \rangle_{\Omega_1} 
-  &= \left\langle T^\sharp \rho, T^{\sharp} \omega \right \rangle_{\Omega_2} \nonumber \\
-  &= \pi \int_0^\infty \rho_n(r) T^{\sharp}\omega(r)\,{h^{-1}}'(r) dr \nonumber\\
-  &= \left\langle S(\rho), \omega \right \rangle_{\Omega_1}
+  &= \left\langle T^\sharp \rho, T^{\sharp} \omega \right \rangle_{\Omega_2} = \pi \int_0^\infty \rho_n(r) T^{\sharp}\omega(r)\,{h^{-1}}'(r) dr = \left\langle S(\rho), \omega \right \rangle_{\Omega_1}.
 \end{align}
 
 Since the shifting function is positive, we have that the operator $T_\sharp T^{\sharp}$ is invertible, and in particular we have the following corollary:
@@ -468,9 +446,9 @@ Since the shifting function is positive, we have that the operator $T_\sharp T^{
   The operator $T_{\sharp}:\DD(\Omega_2)\to\DD(\Omega_1)$ is a surjection.
 \end{cor}
 
-Having established the hard work of the previous lemmas, we can now show:
+Having established the previous lemmas, we can now show:
 \begin{thm} \label{thm:pullback}
-  The pullback by $T$ on $D^*(\Omega_1)$ is a linear operator $T^\sharp:\DD^*(\Omega_1) \to \DD^*(\Omega_2)$ that is injective, continuous, and unique in the sense that $\langle T^\dagger \rho ,\phi\rangle = \langle \rho \circ T,\phi\rangle$ for all $\phi \in \DD(\Omega_2)$ and $\rho \in \DD(\Omega_1)$ implies $T^\dagger = T^\sharp$ in distribution.
+  The pullback by $T$ on $\DD^*(\Omega_1)$ is a linear operator $T^\sharp:\DD^*(\Omega_1) \to \DD^*(\Omega_2)$ that is injective, continuous, and unique in the sense that $\langle T^\dagger \rho ,\phi\rangle = \langle \rho \circ T,\phi\rangle$ for all $\phi \in \DD(\Omega_2)$ and $\rho \in \DD(\Omega_1)$ implies $T^\dagger = T^\sharp$ in the sense of evaluation on distributions.
 
 \end{thm}
 \begin{proof}
@@ -501,14 +479,13 @@ Having established the hard work of the previous lemmas, we can now show:
 \end{com}
 
 Using the development in the last section, we can define what it means for a distribution to be radially symmetric. 
-That is, for $\Omega_2 = \R^2\setminus \{x =0\text{ or }y=0\},\Omega_1 = (0,\infty)$, and $T:\Omega_2 \to \Omega_1$, henceforth we will consider only $T(x,y) = \sqrt{x^2 + y^2}$ (that is, $h(r) = r^{1/2}$). 
-
+As before, let $\Omega_2 = \R^2\setminus \{x =0\text{ or }y=0\},\Omega_1 = (0,\infty)$, and $T:\Omega_2 \to \Omega_1$, henceforth we will consider only $T(x,y) = \sqrt{x^2 + y^2}$ (that is, $h(r) = r^{1/2}$). 
 A distribution $f \in \DD^*(\Omega_2)$ is \emph{radially symmetric} if $f = T^\sharp p$ for some distribution $p \in \DD^*(\Omega_1)$.
 We call $p$ the radial profile of $f$, and the results of the last section establish that the correspondence with $p$ is well-defined.
-Care must be taken in order to develop radial symmetry that is compatible with the topology of $L^2$.
-That is, if $f \in L^2(\Omega_2)$, it is not necessarily the case that the corresponding radial profile $p \in L^2(\Omega_1)$.
+Care must be taken in order to develop radial symmetry that is compatible with the topology of $L^2$,
+as it is not necessarily the case that the corresponding radial profile $p \in L^2(\Omega_1)$ even if $f \in L^2(\Omega_2)$.
 To demonstrate this, we must first establish a result that allows us to explicitly construct Cauchy sequences of test functions from continuous square integrable functions.
-The construction of test functions is slightly different than the standard development used to prove \Cref{thm:localization} in \citep{hormander1983,richtmyer1978principles}, in that it will allow us avoid convolving over a singularity and to easily express the $L^2$ norm in terms of the $L^2$ norms of the elements of the Cauchy sequence.
+The construction of test functions is slightly different than the standard development used to prove \Cref{thm:localization} in \citep{hormander1983,richtmyer1978principles}, in that it will allow us avoid convolving over a singularity.% and to easily express the $L^2$ norm in terms of the $L^2$ norms of the elements of the Cauchy sequence.
 
 The following result was established by \citep{seeley1964extension} for functions defined on $\R^k$, and we state a form on $\R$, whose proof can be found in \citep{strichartz2000}.
 \begin{thm} \label{thm:extension}
@@ -529,23 +506,21 @@ With this powerful extension theorem, we can easily construct sequences of test 
 %Two important concepts, 
 We will use this to construct an important example that will guide the construction of the space of radially symmetric functions and their profiles.
 
-Consider the sequence of functions with $\rho_n:\Omega_1 \to \R$ and $\rho_n(r) = r^{-1/2}$ for $r\in [1/n,1]$ that are smoothly extended such that $\rho_n \in \DD(\Omega_1)$ by \Cref{thm:extension}.
+Consider the sequence of functions $\rho_n:\Omega_1 \to \R$ defined by $\rho_n(r) = r^{-1/2}$ for $r\in [1/n,1]$ and are smoothly extended  by \Cref{thm:extension} such that $\rho_n \in \DD(\Omega_1)$.
 Since $\rho_n$ is compactly supported on $\Omega_1 = (0,\infty)$, there exists $\delta>0$ and a sequence $(k_n)$ such that $0<k_n<1/n$ with $\supp \rho_n \subseteq \left[k_n,1+\delta\right]$.
 \begin{com}
 Without loss of generality, choose $k_n$ so that $(k_n)^{-1/2} > \supp \rho_n$.
 \end{com}
-The limit of this sequence defines a distribution, since for a given $\omega \in \DD(\Omega_1)$, let $N>0$ such that $\frac 1N < \inf \supp (\omega)$ and $M = \sup r^{-1/2}\omega(r)$. 
-Then $\|\rho_n \omega \|_{\infty}$ is bounded by $M$ for $n\ge N$, hence $|\lim_{n\to\infty} \langle \rho_n,\omega\rangle| < \infty$.
+The limit of this sequence defines a distribution, since for a given $\omega \in \DD(\Omega_1)$, let $N>0$ such that $\frac 1N < \inf \big(\supp (\omega)\big)$ and $M = \sup \{r>0:r^{-1/2}\omega(r)\}$. 
+Then $\|\rho_n \omega \|_{\infty}$ is bounded by $M$ for $n\ge N$, hence $\displaystyle{\left|\lim_{n\to\infty} \langle \rho_n,\omega\rangle\right| < \infty}$.
 
 Now, observe that
 \begin{align}
   \|\rho_n\|_{L^2(\Omega_1)}^2 
-    &= \int_{k_n}^{1+\delta} \rho_n(r)^2\,dr \nonumber\\
-    &\ge \int_{1/n}^1 r^{-1}\,dr \nonumber\\
-    &= \ln n 
+    &= \int_{k_n}^{1+\delta} \rho_n(r)^2\,dr \ge \int_{1/n}^1 r^{-1}\,dr = \ln n 
 \end{align}
 so, $\rho_n$ cannot define a Cauchy sequence in $L^2(\Omega_1)$.
-On the other hand, the sequence $(T^\sharp \rho_n) \subset \DD(\Omega_2)$ also has a corresponding distribution in $\DD^*(\Omega_2)$ since
+On the other hand, the Cauchy sequence $(T^\sharp \rho_n) \subset \DD(\Omega_2)$ corresponds to a distribution in $\DD^*(\Omega_2)$ by
 \begin{equation} \label{eq:cx2dform}
   \lim_{n\to\infty}\left\langle T^\sharp \rho_n,\psi \right\rangle_{\Omega_2} 
   = \lim_{n\to\infty}\left\langle \rho_n,T_\sharp \psi \right\rangle_{\Omega_1}.
@@ -568,7 +543,7 @@ since $\rho_1$ is smooth and compactly supported.
 
 We have shown that $T^\sharp$ is not a closed map with respect to the $L^2$ topologies, or equivalently, that ${T^\sharp}^{-1}$ is unbounded with respect to the $L^2$ topologies.
 This means that the closure of $T^\sharp \DD(\Omega_1)$ with respect to the $L^2(\Omega_2)$ inner product is not equal to the image of the closure of $\DD(\Omega_1)$ with respect to $L^2(\Omega_1)$ under $T^\sharp$. 
-This lack of agreement is not too concerning, as we can alleviate the issue in in the same way that it was dealt with in the case of the Sobolev space construction.
+This lack of agreement is not too concerning, as we can alleviate the issue in the same way that it was dealt with in the case of the Sobolev space construction.
 That is, we let the topology of radial profiles be inherited by enforcing $L^2(\Omega_2)$ convergence of the two-dimensional PSF through the linear map $T^\sharp$.
 This is carried out in detail in the next section.
 
@@ -604,7 +579,7 @@ Unfortunately $n^{-2}/k_n$ cannot be bounded since we have no control over $k_n$
 As previously mentioned, the structure of the space of radial profiles will be induced by imposing structure on their images under $T^\sharp$.
 As before, we denote $\Omega_1 = (0,\infty)$ and $\Omega_2 = \R^2\setminus\{x=0\text{ or }y=0\}$.  
 We also fix $T(x,y) = \sqrt{x^2+y^2}$, and remark that the arguments can be modified in a straight forward was so that they apply to $T(x,y) = (x^2 + y^2)^a$. 
-Let $k\in \KK^0 \subset \DD^*(\Omega_2)$, the space of \emph{$L^2(\Omega)$ radially symmetric distributions}, if there exists a sequence $(\rho_n) \subset \DD(\Omega_1)$, so that $(T^\sharp \rho_n)$ is Cauchy with respect to $L^2(\Omega_2)$ and
+Define $k\in \KK^0 \subset \DD^*(\Omega_2)$, the space of \emph{$L^2(\Omega)$ radially symmetric distributions}, if there exists a sequence $(\rho_n) \subset \DD(\Omega_1)$, so that $(T^\sharp \rho_n)$ is Cauchy with respect to $L^2(\Omega_2)$ and
 \begin{equation} \label{eq:cauchySequenceCorrespondence}
   \Big\langle k,\phi\Big\rangle_{\Omega_2} = \lim_{n\to\infty}\left\langle T^\sharp \rho_n, \phi\right\rangle_{\Omega_2} = \lim_{n\to\infty}\Big\langle \rho_n, T_\sharp \phi\Big\rangle_{\Omega_1}.
 \end{equation}
@@ -615,10 +590,11 @@ Moreover, the completion results in a radially symmetric distribution.
 \end{prop}
 \begin{proof}
   Let $\rho_n \in \DD(\Omega_1)$ so that $(T^\sharp \rho_n)$ is Cauchy with respect to $L^2(\Omega_2)$.
-  We must show that there exists $p \in D^*(\Omega)$ such that
+  We must show that there exists $p \in \DD^*(\Omega)$ such that
   \begin{equation}
-    \lim_{n\to\infty} \left\langle T^\sharp \rho_n,\psi\right\rangle_{\Omega_2} = \left\langle T^\sharp p,\psi \right\rangle_{\Omega_2}.
+    \lim_{n\to\infty} \left\langle T^\sharp \rho_n,\psi\right\rangle_{\Omega_2} = \left\langle T^\sharp p,\psi \right\rangle_{\Omega_2}
   \end{equation}
+  for all $\psi \in \DD(\Omega_2)$.
   Since the limit
   \begin{equation}
     \lim_{n\to\infty} \left\langle T^\sharp \rho_n, \psi \right\rangle_{\Omega_2}
@@ -633,7 +609,7 @@ Moreover, the completion results in a radially symmetric distribution.
 Now, the space of radial profiles corresponding to radially symmetric $L^2(\Omega_2)$ distributions is $\PP^0 = \{p \in \DD^*(\Omega_1): T^\sharp p \in \KK^0\}$.
 This induces the following regularity 
 \begin{prop} \label{prop:radialL2}
-  If $p \in \PP^0$ then the shift by $\langle S_{1/2}(p),\omega\rangle_{\Omega_1} = \left\langle p, \sqrt{2\pi r}\cdot \omega\right\rangle_{\Omega_1}$ is such that $S_{1/2}(p) \in L^2(\Omega_1)$.
+  If $p \in \PP^0$ then the shift operator defined by $\langle S_{1/2}(p),\omega\rangle_{\Omega_1} \eqdef \left\langle p, \sqrt{2\pi r}\cdot \omega\right\rangle_{\Omega_1}$ is such that $S_{1/2}(p) \in L^2(\Omega_1)$.
 \end{prop}
 \begin{proof}
   We will construct a sequence of test functions $(\rho_n) \subset \DD(\Omega_1)$ that converges in $L^2(\Omega_1)$ to $p$.
@@ -655,9 +631,7 @@ Hence $\left(S_{1/2}(\rho_n)\right)$ inherits the Cauchy criterion from $(T^\sha
 That is,
 \begin{align}
   \Big\langle g,\omega\Big\rangle_{\Omega_1} 
-    &= \lim_{n\to \infty} \Big\langle S_{1/2}(\rho_n),\omega\Big\rangle_{\Omega_1}\nonumber \\
-    &= \lim_{n\to \infty} \int_{\Omega_1} \rho_n(r),\sqrt{2\pi r}\cdot \omega(r)dr \nonumber\\
-    &= \Big\langle S_{1/2}(p),\omega\Big\rangle_{\Omega_1}.
+    &= \lim_{n\to \infty} \Big\langle S_{1/2}(\rho_n),\omega\Big\rangle_{\Omega_1} = \lim_{n\to \infty} \int_{\Omega_1} \rho_n(r),\sqrt{2\pi r}\cdot \omega(r)dr = \Big\langle S_{1/2}(p),\omega\Big\rangle_{\Omega_1}.
 \end{align}
 \end{proof}
 In fact, the computation in \eqref{eq:isometry} gives precisely the method for translating the structure of $L^2(\Omega)$ onto $\PP^0$.
@@ -667,22 +641,22 @@ In fact, the computation in \eqref{eq:isometry} gives precisely the method for t
 \end{thm}
 \begin{proof}
   Note that ${T^\sharp}^{-1}\KK^0 = \PP^0$ by definition, hence restricting $T^\sharp: \PP^0 \to \KK^0$ is a surjection, and by \Cref{thm:pullback} a bijection.
-  Moreover, for any $p \in \PP^0$, let $(\rho_n)$ be the corresponding Cauchy sequence, then the same calculation as \eqref{eq:isometry} yields 
+  Moreover, for any $p \in \PP^0$, let $(\rho_n)$ be a corresponding Cauchy sequence, then the same calculation as \eqref{eq:isometry} yields 
   \begin{equation}
     \|p\|_{T(\Omega_1)}^2 = \lim_{n\to\infty} \|(S_{1/2}(\rho_n)\|^2_{L^2(\Omega_1)} = \lim_{n\to\infty} \|T^\sharp \rho_n \|^2_{L^2(\Omega_2)},
   \end{equation}
-  Thus, $T^\sharp$ is an isometry, and since $\KK^0$ is the completion of $T^\sharp \DD(\Omega_1)$ with respect to $\| \cdot \|_{L^2(\Omega_2)}$, it must be that $\PP^0$ is the completion of $\DD(\Omega_1)$ with respect to $\|\cdot \|_{T(\Omega)}$.
+  Thus, $T^\sharp$ restricted to $\PP^0$ into $\KK^0$ is an isometry, and since $\KK^0$ is the completion of $T^\sharp \DD(\Omega_1)$ with respect to $\| \cdot \|_{L^2(\Omega_2)}$, it must be that $\PP^0$ is the completion of $\DD(\Omega_1)$ with respect to $\|\cdot \|_{T(\Omega)}$.
 \end{proof}
 
 A straightforward modification of the exact same construction by replacing $L^2(\Omega_2)$ with $\HH^n(\Omega_2)$ gives rise to radial profiles with regularity that is inherited from $\HH^n(\Omega_2)$.
-That is, $k \in\KK^1 \subset D^*(\Omega_2)$ provided there exists a sequence $(\rho_n) \subset \DD(\Omega_1)$, so that $(T^\sharp \rho_n)$ is Cauchy with respect to the Sobolev inner product $( \cdot, \cdot )_{\Omega_2,1}$ and corresponds with $k$ as in \eqref{eq:cauchySequenceCorrespondence}.
+That is, $k \in\KK^1 \subset \DD^*(\Omega_2)$ provided there exists a sequence $(\rho_n) \subset \DD(\Omega_1)$, so that $(T^\sharp \rho_n)$ is Cauchy with respect to the Sobolev inner product $( \cdot, \cdot )_{\Omega_2,1}$ and corresponds with $k$ as in \eqref{eq:cauchySequenceCorrespondence}.
 %\begin{equation}
 %  \Big\langle k,\phi\Big\rangle_{\Omega_2} = \lim_{n\to\infty}\left\langle T^\sharp \rho_n, \phi\right\rangle_{\Omega_2} = \lim_{n\to\infty}\Big\langle \rho_n, T_\sharp \phi\Big\rangle_{\Omega_1}.
 %\end{equation}
 Note that $\KK^1 \subseteq \KK^0 \subseteq T^\sharp\DD^*(\Omega_1)$.
 The following proposition results from the multi-dimensional chain rule and links the Sobolev inner products to the $L^2(\Omega)$ norms.
 \begin{prop} \label{prop:gradChainRule}
-  If $\rho,\omega \in \DD(\Omega_1)$, then $(\nabla T^\sharp \rho, \nabla T^\sharp \omega)_{L^2(\Omega_2)} = (\del \rho,\del \omega)_{T(\Omega_1)}$
+  If $\rho,\omega \in \DD(\Omega_1)$, then $(\nabla T^\sharp \rho, \nabla T^\sharp \omega)_{L^2(\Omega_2)} = (\del \rho,\del \omega)_{T(\Omega_1)}$.
 \end{prop}
 \begin{proof}
 First, note that the chain rule for partial derivatives gives the shift $\del_x T^\sharp \rho = \del_x (\rho\circ T) = \rho'\circ T \cdot T_x$, where $T_x = x(x^2 + y^2)^{-1/2} = x/T(x,y)$.
@@ -694,90 +668,221 @@ Using these facts, consider the following computation,
   &= \Big(T^\sharp(\del\rho), T^\sharp( \del\omega)  \cdot T_x^2\Big)_{L^2(\Omega)} + \Big(T^\sharp(\del\rho), T^\sharp( \del\omega)  \cdot T_x^2\Big)_{L^2(\Omega_2)} \nonumber\\
   &= \Big(T^\sharp(\del\rho), T^\sharp( \del\omega)  \cdot T^\sharp Id_{\Omega_1}\Big)_{L^2(\Omega_2)} \nonumber\\
   &= \Big(T^\sharp(\del\rho), T^\sharp( \del\omega) \Big)_{L^2(\Omega_2)} \nonumber\\
-  &= \Big(\del\rho, \del\omega \Big)_{T(\Omega_1)} \nonumber\\
+  &= \Big(\del\rho, \del\omega \Big)_{T(\Omega_1)}.
 \end{align}
 \end{proof}
-We remark that this computation can be modified slightly to accommodate the more general from of $T(x,y) = (x^2+y^2)^a$, and instead of a shift by $T^\sharp Id_{\Omega_1}$, the shift is $T^\sharp 4a^2(r^{2-1/a})$. 
+We remark that this computation can be modified slightly to accommodate the more general form of $T(x,y) = (x^2+y^2)^a$, and instead of a shift by $T^\sharp Id_{\Omega_1}$, the shift is $T^\sharp 4a^2(r^{2-1/a})$. 
 
-Now, let $\PP^1 = \{p \in \DD^*(\Omega_1): T^\sharp p \in \KK^1\}$, and by the preceding result \Cref{prop:gradChainRule} and \Cref{prop:radialL2}, the induced Sobolev norm is
+Now, let $\PP^n = \{p \in \DD^*(\Omega_1): T^\sharp p \in \KK^n\}$, and by inductively applying the preceding result in \Cref{prop:gradChainRule}, and \Cref{prop:radialL2}, the induced Sobolev semi-norm is
 \begin{equation}
-  (p,q)_{T(\Omega),1} \eqdef \lim_{n\to \infty} (\nabla T^\sharp \rho_n, \nabla T^\sharp \omega_n)_{L^2(\Omega_2)} = \lim_{n\to \infty} (\del \rho_n,\del \omega_n)_{T(\Omega_1)}
+  (p,q)_{T(\Omega),n} \eqdef \lim_{m\to \infty} \sum_{k=0}^n(\nabla^k T^\sharp \rho_m, \nabla^k T^\sharp \omega_n)_{L^2(\Omega_2)} = \lim_{m\to \infty} \sum_{k=0}^n(\del^k \rho_m,\del^k \omega_m)_{T(\Omega_1)},
 \end{equation}
 where $(\rho_n)$ and $(\omega_n)$ are the corresponding Cauchy sequence to $p$ and $q$ respectively.
 
-The imposition of Sobolev regularity will also give us more, in that we will be able to extend the domain for the test functions of the radial profile to $\bar\Omega_1 = [0,\infty)$.
-The idea will be analogous to defining a Sobolev space with a boundary condition.
+%The imposition of Sobolev regularity will also give us more, in that we will be able to extend the domain for the test functions of the radial profile to $\bar\Omega_1 = [0,\infty)$.
+%The idea will be analogous to defining a Sobolev space with a boundary condition.
 
-\subsection{Mollifiers, boundary conditions, and $\HH_c^n(\R^2)$}
+\begin{com}
+\subsection{Mollifiers, cut-offs, and boundary conditions}
 
-Recall that due to topological considerations, we were forced to define the space for PSFs to be based on the open set $\Omega_2 = \R\setminus \{x=0\text{ or }y=0\}$. 
-We can, a priori to radial symmetry, impose regularity on all of $\R^2$, which can be effected by imposing appropriate boundary conditions.
-To carry this out rigorously, we will need one of the tools used to prove the localization theorem, known as mollification or smoothing.
+Recall that due to topological considerations, we were forced to define the domain of the test functions for the PSFs to be based on the open set $\Omega_2 = \R\setminus \{x=0\text{ or }y=0\}$. 
+This restriction was a technical necessity for the construction of the radial profile, however, the natural domain for the PSF is all of $\R^2$.
+That the elements of $\KK \subset \DD^*(\Omega_2)$ that correspond to functions are not defined on the rays along the coordinate axes might seem unrealistic, but since they are radially symmetric, we really are only lacking information at the origin.
+The radially symmetric $L^2$ distributions constructed in the previous sections allow large growth near the origin, and we will need to restrict them so that the forward operator is well defined.
 
-A family of convolution operators $\{J_\delta\}_{\delta>0}$, is a \emph{mollifier} with \emph{approximate identity} $\phi_\delta \in \DD(\R^k)$ satisfying $\int_{\R^k} \phi_\delta(x)dx = 1$, for all $\delta$, $\phi_\delta(x) \ge 0$, and $\sup_{|x|\ge\eps}|\phi_\delta(x)|\to0$ as $\delta\to 0$ for all $\eps >0$, and
+In some sense, the restriction of the test functions in this way, will allow even regularized distributions to have too much growth near zero.
+This can be addressed by imposing regularity on the boundary of $\Omega_2$. 
+
+To carry this out rigorously, we will need some of the tools used to prove the localization theorem, which we develop based on the extension result stated in \Cref{thm:extension}.
+
+A family of convolution operators $\{J_\delta\}_{\delta>0}$ is a \emph{mollifier} with \emph{approximate identity} $\phi_\delta \in \DD(\Omega)$ satisfying $\int_{\R^k} \phi_\delta(x)dx = 1$, for all $\delta$, $\phi_\delta(x) \ge 0$, and $\sup_{|x|\ge\eps}|\phi_\delta(x)|\to0$ as $\delta\to 0$ for all $\eps >0$, when
 \begin{equation} \label{eq:distributionConvolution}
-  [J_\delta f](x) \eqdef \langle f, \tau_{-x}\phi_\delta\rangle.
+  [J_\delta f](x) \eqdef \langle f, \tau_{-x}\phi_\delta\rangle,
 \end{equation}
 where $\tau_{-x}$ is the pullback of translation by $-x$, i.e., $\tau_{-x}\phi_\delta(y) = \phi_\delta(y-x)$.
 Equation \eqref{eq:distributionConvolution} is called the \emph{distributional convolution} of $f$ with $\phi_\delta$.
 
-The following theorem justifies the `smoothing' property of molifiers.
+The following theorem justifies the `smoothing' property of mollifiers.
 \begin{thm}
-  The mollification operator on $\DD^*(\R^k)$ results in a smooth function, that is $J_\delta:\DD^*(\R^k) \to C^\infty(\R^k)$.
+  For an open set $\Omega \subseteq \R^k$, the mollification operator on $\DD^*(\Omega)$ results in a smooth function, that is $J_\delta:\DD^*(\Omega) \to C^\infty(\R^k)$.
   Moreover, the mollification commutes with the differential operator, i.e., $J_\delta \del^{\alpha} f = \del^{\alpha} J_\delta f$. 
 \end{thm}
 This follows from a more general result in \Citep[Theorem 2.1.3]{hormander1983}, and an intuitive discussion of its relationship to proving the Fourier inversion formula can be found in \Citep[6.7]{strichartz2003guide}.
-\begin{com}
-  It would be nice to do this proof.
-  Maybe if a reviewer asks me to, but it really doesn't offer an insights on the new material.
-\end{com}
 
-For our development, we will only need molifiers on either $\R$ or $\R^2$ and can explicitely construct them using \Cref{thm:extension}. 
+For our development, we will only need a mollifier defined on either $\Omega_1 \subseteq \R$ or $\Omega_2 \subseteq \R^2$ and can explicitly construct them using \Cref{thm:extension}. 
 That is, let $\omega \in \DD(\R)$ be given by extending then normalizing the indicator function $I_{[-1/2,1/2]}$ with \Cref{thm:extension} to $\omega\in \DD((-1,1)) \subset \DD(\R)$ with $\int \omega(x) dx = 1$. 
-Let $\omega_{\delta}(x) = \delta^{-1}\omega(\delta^{-1}x)$ (if necessary, the extension can be squared to ensure the non-negativity condition). 
+Let $\omega_{\delta}(x) = \delta^{-1}\omega(\delta^{-1}x) \in \DD( (-\delta,\delta) ) \subset \DD(\R)$ (the extension can be squared to ensure the non-negativity condition). 
 Since $\omega_\delta$ is compactly supported in $(-1,1)$, 
 \begin{equation}
   \lim_{\delta\to 0} \sup\supp \omega_\delta = \lim_{\delta\to 0} \inf \supp \omega_\delta = 0
 \end{equation}
 implies for a given $\eps >0$, $\supp \omega_\delta \subset (-\eps,\eps)$ for sufficiently small $\delta$, hence $\sup_{|x|\ge \eps}\omega_\delta(x) = 0$.
+Finally, since $\tau_\delta\omega_\delta$ is compactly supported on $(-\delta,\delta)$, the translation $\tau_\delta\omega_\delta \in \DD(\Omega_1)$.
+This defines an explicit mollifier $J_\delta:\DD^*(\Omega) \to C^\infty(\R)$.
 
+The test function $T_\sharp \omega_\delta \in \DD$
+%The mollifier will allow us to give a notion of embedding $\DD^*(\Omega)$ into $\DD^*(\R^2)$ when $\Omega \subset \R^2$. 
+%That is, a test function $\phi \in \DD(\Omega)$ can be extended to a function on $\R^2$ (and hence a distribution) by setting $\phi(x) = 0$ when $x \not\in \Omega$, then the convolution $\phi_\delta * \phi \in \DD(\R^2)$ since the result is smooth and the support is $\supp \phi + \supp \phi_\delta$.
+%So, we can define $J_\delta:\DD^*(\Omega) \to C^\infty(\R^2)$ as before
+%\begin{equation}
+%  [J_\delta f](x) = \left\langle f, \phi_\delta \right\rangle_{\Omega}
+%\end{equation}
 
-Note that $\omega_\delta\circ T \in \DD(\R^2)$, since the composition is smooth and $\supp \omega_\delta \circ T = T^{-1}(\supp\omega_\delta)$ is compact since $T(x,y) = \sqrt{x^2 + y^2}$ is smooth. 
-Arguing as before, we can normalize $\omega_\delta\circ T$, to construct a mollifier $J_\delta:\DD^*(\R^2)\to C^\infty(\R^2)$.
-
-Now, recall Green's formula for $\phi,\psi \in \DD(\R^2)$ and an open connected region $\Omega$ with boundary $\del \Omega$ 
+suppose $f \in \DD^*(\Omega)$, then it has a natural extension to $\DD^*(\R^2)$ by
+%$\tilde f = \lim_{\delta \to 0} J_\delta f$. 
+%The limit is in the distributional evaluation sense, that is
 \begin{equation}
-  \left(\nabla \phi, \nabla \psi\right)_{L^2(\Omega)} = \int_{\Omega} \nabla \phi(x,y) \nabla\bar\psi(x,y)dxdy
+  \left\langle \tilde f, \psi \right\rangle_{\R^2} = \lim{\delta \to 0} \left\langle \right\rangle
 \end{equation}
-That is, let $\KK_c^1 = \{k\in \KK^0:  \}$
-%To carry this out formally, let Note that the closure $\bar \Omega_2 = \R^2$.
-
-\section{The PSF inverse problem}
-\subsection{The edge-blur operator for radially symmetric PSFs}
-\begin{prop}
-  There exists $f \in L^2(\Omega)$ such that its edge-convolution results in $b\not\in L^2((-\infty,0))$.
-\end{prop}
-Let $f(s,t) = \left((s^2 + t^2)^{1/2}\right)^{-3/4}$ when $(s^2+t^2)^{-1/2} \le 1$, and $0$ otherwise. 
-Observe first that $f \in L^2(\Omega_2)$ since 
-\begin{align}
-  \iint_{\Omega_2} f(s,t)^2\,dsdt
-    &= \int_{-\infty}^\infty\int_{-\infty}^\infty \left((s^2+t^2)^{1/2}\right)^{-3/2}  I_{|(s,t)|\le 1}(s,t)\,dsdt \\
-    &= \int_0^{2\pi}\int_0^1 r^{-3/2} \,rdrd\theta \\
-    &= 2\pi\int_0^1 r^{-1/2} drd\theta \\
-    &= \left. 4\pi r^{1/2}\right|_0^1  \\
-    &= 4\pi. 
-\end{align}
-Note that if $p(r) = r^{-3/4} \chi_{r\le 1}(r)$, then $T^\# p = f$.
-
-On the other hand, the following argument shows that mapping $f$ through the forward operator results in a function that is \emph{not} in $L^2((-\infty,0))$.
-Recall that 
-\begin{align}
-  \iint_{\Omega_2} f(s,t) \chi_{E}(x-s)dtds
-    &= \int_0^\infty r p(r)g(x,r)\,dr\\
-    &\eqdef [\mathcal Gp](x).
-\end{align}
-where
+We are justified in taking this limit since
 \begin{equation}
+  \lim_{\delta\to 0} \left\langle f, \tau_{-x}\phi_\delta \right\rangle
+\end{equation}
+exists by the continuity of $f$.
+Moreover, the result is a distribution since
+\
+Note that the resulting distribution may no longer correspond to a smooth function.
+
+The next necessary notion will be another family of operators, $\{L_R\}_{R>0}$, called \emph{cut-offs}, which give distributions a notion of compact support.
+Let $\phi$ be a smooth extension of $I_{[-1,1]}$ in $\DD((-2,2)) \subset \DD(\R)$ according to \Cref{thm:extension} with $\phi_M(x) = M^{-1}\phi(M^{-1}x)$ and the action of $L_M$ is the distribution that acts by
+\begin{equation} \label{eq:greensFormula}
+  \langle L_M p, \omega\rangle \eqdef \langle p, \phi_M(x)\omega(x)\rangle.
+\end{equation}
+A distribution $p$ \emph{vanishes} on a set $\Omega$ if $\langle p,\phi\rangle = 0$ for all test functions $\phi$ with $\supp \phi \subseteq \Omega$ and the \emph{distributional support} of $p\in \DD^*(\Omega)$ is the complement of the set of points on which $p$ vanishes.
+With this definition, we see that the support of $L_M p$ is contained in $[-2M,2M]$ and that $\lim_{M\to\infty} L_M p = p$ in $\DD^*(\R^2)$.
+
+The next result is a restatement of the localization theorem \Cref{thm:localization}
+
+Finally, recall Green's formula for $u,v \in \DD(\R^2)$ and an open connected region $\Omega$ with boundary $\del \Omega$ parametrized by $\gamma$ states
+\begin{equation}
+  \left(\nabla u, \nabla v\right)_{L^2(\Omega)} %= \int_{\Omega} \nabla \phi(x,y) \nabla\bar\psi(x,y)dxdy
+    = \int_{\del \Omega} \nabla u \cdot \vect n \bar{v} d\gamma - \left(\nabla^2 u, v \right)_{L^2(\Omega)} 
+\end{equation}
+
+
+%These three tools will allow us $\KK^2$ to a space $\KK_0^2$  \subseteq \H^2(\R^2). 
+
+where $\vect n$ is the unit normal vector to $\del\Omega$ oriented according to $\gamma$.
+These two tools will allow us to extend $\KK^2$ to $\KK^2_0$ 
+Moreover, by the Sobolev inequality (\Cref{thm:sobolevInequality}), $k$ corresponds to integration against a continuous function that is bounded on $\Omega_2$.
+
+For $k \in \KK^2 \subseteq \HH^2(\Omega_2)$, we have by the previous discussion that $k_\delta \eqdef J_\delta k \in C^{\infty}(\R^2)$ 
+%and $k_\delta \eqdef L_{\delta^{-1}} J_\delta k \in \DD(\R^2)$
+with $\lim_{\delta\to0}\|\nabla^j k_\delta \|_{L^2(\Omega_2)} = \|\nabla^j k\|_{L^2(\Omega_2)}$ for $0\le j\le 2$ and $\lim_{\delta \to 0} k_\delta = k$ in distribution.
+
+
+For a fixed $R>0$, let $\Omega_R = \Omega_2 \bigcap C_R$, where $C_R$ is the open circle of radius $R$ centered at $(0,0)$ in $\R^2$ and $\gamma_R$ be a curve that parametrizes the boundary of $\Omega_R$ by path-summing each boundary of $\Omega_{ij} \bigcap C_R$. 
+For example, $\gamma_R$ traces $\Omega_{ij}\bigcap C_R$ by starting at $(0,0)$, then goes to $(0,R)$, then goes along the quarter-circular arc in the first quadrant to $(R,0)$, then goes back to $(0,0)$. 
+
+%Now, Let $(\omega_n) \subset \DD(\Omega_1)$ so that $(T^\sharp \omega_n)$ is the Cauchy sequence with respect to $\HH^2(\Omega_2)$ that corresponds to $k$. 
+%Without loss of generality, we can take $(\omega_n) \subset \DD(C_n)$ by applying a cut-off to $\omega_n$.
+%Now applying \eqref{eq:greensFormula} to $J_\delta T^\sharp \omega_n \in \DD(C_n) \subseteq \DD(\R^2)$ with $\Omega_n$ and $\gamma_n$ results in 
+%\begin{align}
+%  \left(\nabla J_\delta T^\sharp \omega_n, \nabla J_\delta T^\sharp \omega_n\right)_{L^2(\R^2)} &+ \left(\nabla^2 J_\delta T^\sharp \omega_n, J_\delta T^\sharp \omega_n\right)_{L^2(\R^2)} \nonumber\\
+%  &\quad\quad= \int_{\del \Omega} \nabla T^\sharp \omega_n \cdot \vect n T^\sharp \omega_n \bar k_\delta d\gamma  \nonumber \\
+%%  &\quad\quad= (T_x + T_y)(\del \omega) k_\delta(0) +\int_{C_R}
+%\end{align}
+%
+%Now applying \eqref{eq:greensFormula} to $J_\delta T^\sharp \omega_n \in \DD(C_n) \subseteq \DD(\R^2)$ and $k_\delta$ with $\Omega_R$ and $\gamma_R$ results in 
+%\begin{align}
+%  \left(\nabla J_\delta T^\sharp \omega_n, \nabla k_\delta \right)_{L^2(\R^2)} &+ \left(\nabla^2 J_\delta T^\sharp \omega_n, k_\delta \right)_{L^2(\R^2)} \nonumber\\
+%  &\quad\quad= \int_{\del \Omega} \nabla T^\sharp \omega \cdot \vect n \bar k_\delta d\gamma  \nonumber \\
+%  &\quad\quad= (T_x + T_y)(\del \omega) k_\delta(0) 
+%\end{align}
+%
+%\begin{align}
+%  \left(\nabla J_\delta T^\sharp \omega_n, \nabla J_\delta T^\sharp \omega_n\right)_{L^2(\R^2)} + \left(\nabla^2 J_\delta T^\sharp \omega_n, J_\delta T^\sharp \omega_n\right)_{L^2(\R^2)} 
+%  &= \int_{\del \Omega} \nabla T^\sharp \omega_n \cdot \vect n T^\sharp \bar\omega_n d\gamma  \nonumber \\
+%%  &\quad\quad= (T_x + T_y)(\del \omega) k_\delta(0) +\int_{C_R}
+%\end{align}
+
+Now applying \eqref{eq:greensFormula} to $k_\delta$ with $\Omega_n$ and $\gamma_n$ results in 
+\begin{align}
+  \left(\nabla k_\delta, \nabla k_\delta \right)_{L^2(\R^2)} + \left(\nabla^2 k_\delta, k_\delta \right)_{L^2(\R^2)}
+  &= \int_{\del \Omega_R} \nabla k_\delta \cdot \vect n \bar k_\delta d\gamma  \nonumber \\ 
+%  &= \int (\del_x + \del_y) |k_\delta(x,y)|^2 + \int_{C_R} \nabla k_\delta \cdot \vect n \bar k_\delta d\gamma
+  \label{eq:greensBoundary}
+\end{align}
+%since the path components along the axes cancel and $T^\sharp \omega$ is compactly supported on $\DD(C_R)$.
+
+Now, Let $(\omega_n) \subset \DD(\Omega_1)$ so that $(T^\sharp \omega_n)$ is the Cauchy sequence with respect to $\HH^2(\Omega_2)$ that corresponds to $k$. 
+Without loss of generality, we can take $(\omega_n) \subset \DD(C_n)$ by applying a cut-off to $\omega_n$.
+Equation \eqref{eq:greensFormula} with $J_\delta T^\sharp \omega_n \in \DD(C_n) \subseteq \DD(\R^2)$ with $\Omega_n$ and $\gamma_n$ results in 
+%Hence, the right hand side of \eqref{eq:greensBoundary} 
+\begin{align} \label{eq:greensBoundary2}
+  \left(\nabla J_\delta T^\sharp \omega_n, \nabla J_\delta T^\sharp \omega_n\right)_{L^2(\R^2)} + \left(\nabla^2 J_\delta T^\sharp \omega_n, J_\delta T^\sharp \omega_n\right)_{L^2(\R^2)} 
+  =\int_{\del \Omega_R} \nabla T^\sharp \omega_n \cdot \vect n T^\sharp \bar\omega_n d\gamma 
+\end{align}
+
+\begin{claim} \label{claim:pspace}
+  If $k \in \KK^2 \subseteq \HH^2(\Omega_2)$, then $k$ is equal in distribution to a bounded continuous function and \eqref{eq:greensBoundary} and \eqref{eq:greensBoundary2} imply that $k$ continuously extends to $\R^2$. 
+  Moreover, this implies that corresponding radial profile $p \in \PP^2$ has $S_{1/2}(p) \in \HH^2(\Omega_2)$, hence  is a bounded continuous function on $\Omega_1$, and \eqref{eq:greensBoundary} and $p$ can be continuously to $\bar \Omega_1 = [0,\infty)$.
+\end{claim}
+\end{com}
+
+\section{The PSF inverse problem} 
+%The theory of the previous sections can now be used to rigorously develop the inverse problem introduced at the end of \Cref{chapter:introduction}.
+%We will first show that the action of the forward operator defined for $\KK \eqdef \KK^n$ and $\PP \eqdef \PP^n$, is well-defined and maps into $L^2((-\infty,0])$ for $n>2$. 
+%Moreover, we will establish that the operator is of the Hilbert-Schmidt class, and thus, compact.
+%This will make rigorous the argument that the problem is ill-posed at the end of \Cref{chapter:introduction}.
+
+The ultimate goal of this theory will be to rigorously develop the inverse problem introduced at the end of \Cref{chapter:introduction}.
+The development so far has defined the space of radial representations on distributions only on $\Omega_1 = (0,\infty)$.
+A complete description of the space will require that we have some notion of the distributions $p$ on the boundary, i.e. if $p$ has a representation as a locally integrable function, what is $p(0)$ and $\displaystyle{\lim_{r\to\infty}p(r)}$?
+The theory to rigorously develop this is ongoing, however, we will state results that will provide insight on how to proceed.
+
+\subsection{The Sobolev embedding theorem and extending to $\PP^n([0,\infty))$}
+
+We now state a version of the Sobolev embedding theorem that shows how higher order Sobolev spaces enforce regularity in terms of spaces of continuous functions, whose proof can be found in \citep{strichartz2003guide}.
+\begin{thm} \label{thm:sobolevInequality}
+  Suppose $\left\|\del^\alpha f\right\|_{L^2(\R^N)}$ is finite whenever all $\alpha$ such that $|\alpha| <n$ where $n$ is equal to the smallest integer greater than $n/2$ (so $n=\frac{N+1}2$ if $N$ is odd and $n=\frac{N+2}2$ if $N$ is even). Then $f$ corresponds to integration against a continuous and bounded function with
+  \begin{equation} \label{eq:sobolevInequality}
+    \| f \|_\infty \le c \sum_{0\le |\alpha| \le n}\|\del^\alpha f\|_{L^2(\R^N)}.
+  \end{equation}
+  More generally, if  $\|\del^\alpha f\|_{L^2(\R^N)}$ is finite for all $\alpha$ such that $|\alpha| < n + k$, then there is a continuous embedding of $\HH^n(\R^N)$ into $C^k(\R^N)$.
+\end{thm}
+
+In particular, we will be concerned primarily with the case when $N=2$ and $n=2$, from which \eqref{eq:sobolevInequality} reduces to
+\begin{equation}
+  \sum_{0\le |\alpha| \le 2}\|\del^\alpha f\|_{L^2(\R^N)} = \|f\|_{L^2(\R^N)} + \|\nabla f\|_{L^2(\R^N)}+ \|\nabla^2 f\|_{L^2(\R^N)}. %= \sum_{j=1}^2\sum_{i=1}^2\left\| \frac{\del}{\del x_i}\frac{\del}{\del x_j}f\right\|^2_{L^2(\R^N)}.
+\end{equation}
+This norm corresponds to PSFs with second order negative Laplacian, or biharmonic, regularization, and \Cref{thm:sobolevInequality} implies that these distributions are bounded continuous functions.
+This is formally stated in the following corollary
+
+\begin{cor} \label{cor:sobolev}
+  For $\R^N \subseteq \R^2$, suppose $\|\nabla^2 f\|_{L^2(\R^N)} < \infty$ then $f$ is continuous and bounded with  
+  \begin{equation}
+    \| f \|_\infty \le c\left(\|f\|_{L^2(\R^N)} + \| \nabla f\|_{L^2(\R^N)}+ \| \nabla^2 f\|_{L^2(\R^N)}\right)
+  \end{equation}
+  for some real $c$.
+\end{cor}
+
+This theorem is not directly applicable since it is only stated for domains $\Omega = \R^k$.
+Yet, if we can appropriately extend $k \in \KK^n \subset \DD^*(\Omega_2)$ to a distribution on $\DD(\R^2)$, then \Cref{cor:sobolev} implies that the extension corresponds to integration with a bounded continuous function.
+Providing this extension rigorously has proven to be a delicate matter, and the work is ongoing.
+In order to proceed, we state the following unproven claim,
+
+\begin{claim} \label{claim:pspace}
+  If $k \in \KK^2 \subseteq \HH^2(\Omega_2)$, then $k$ is equal in distribution to a bounded continuous function and $k$ continuously extends to $\R^2$. 
+  Moreover, this implies that corresponding radial profile $p \in \PP^2$ has $S_{1/2}(p) \in \HH^2(\Omega_2)$, hence is equal in distribution to a bounded continuous function on $\Omega_1$ and $p$ can be continuously to $\bar \Omega_1 = [0,\infty)$.
+\end{claim}
+
+\begin{com}
+\subsection{The edge-blur operator for radially symmetric PSFs}
+Let us return to the forward model of edge blur introduced in \Cref{chapter:introduction}.
+The goal of this section is to express the integral operators in \eqref{eq:psfForwardModelDeterministic2D} and \eqref{eq:radialForwardModelDeterministic} on the distributional spaces defined in the previous sections.
+
+Recall that the action of the forward model operator on a radially symmetric PSF $k$ is
+\begin{equation} \label{eq:naiveFoperator}
+  [\F k](x) = \iint_{\R^2} k(s,t) f_{E}(x-s) dsdt
+\end{equation}
+where $f_{E}$ is the indicator function $f_E(x-s)$, and $k$ is the bounded and continuous representation given by \Cref{claim:pspace}.
+The action on radial profiles was given by a change of variables
+\begin{equation}\label{eq:naiveGoperator}
+    [\mathcal Gp](x) = \int_0^\infty p g_x r\,dr
+\end{equation}
+where $g_x(r)$ is given by
+\begin{equation} 
   g(x,r) = \begin{cases}
     0 &\text{ if } x < - r\\
     2(\pi - \acos(x/r)) &\text{ if } |x| < r\\
@@ -785,9 +890,31 @@ where
   \end{cases}.
   \label{g_form}
 \end{equation}
-We proceed by finding a lower bound for $[\mathcal Gp](x)$ when $x < 0$. 
-A typical graph of $g(x,r)$ for a fixed $x<0$ is 
+Both $f_{E,x}$ can $g_x$ be thought of as distributions, however, since $k$ and $p$ are not test functions, the integrations in \eqref{eq:naiveFoperator} and \eqref{eq:naiveGoperator} cannot be thought of as test function evaluations.
+Since 
+Yet, the restrictions 
 
+
+\begin{prop}
+  The operators $\F:\KK \to L^2((-\infty,0])$ and $\G:\PP \to L^2((-\infty,0])$ are well defined and coincide when $k = T^\sharp p$.
+\end{prop}
+By \Cref{claim:pspace}, let $p$ be such that $[S_{1/2}p](r) = \sqrt{r}p(r)$ is bounded and continuous on $(0,\infty)$.
+Then, $\lim_{r\to \infty} \sqrt{r}p(r) = 0$, hence, $P(x) \eqdef -\int_{|x|}^\infty [S_{1/2}p] dr$ is an indefinite integral that is more regular than $S_{1/2}(p)$.
+\begin{claim}
+  $P(x)$ is bounded continuous and $\|\del^2 P\|_{L^2}^2$ implies $x^3 P(x) \to 0$
+\end{claim}
+%Since $p$ continuously extends to $0$, $p(r)$ is also bounded.
+%Hence, 
+%\begin{align}
+%  \|S_{1/2} p\|^2 
+%    &= \int_0^\infty \bar {p(r)} p(r) r\,dr \nonumber\\
+%    &\le \|p\|_{\infty} \int_0^\infty p(r) r\,dr. \label{eq:shiftBound}
+%\end{align}
+%Since $\langle P, \omega\rangle = \langle P, \del \int \omega\rangle = -\langle S_{1/2}(p), \int \omega\rangle$, 
+Note that  $g(x,r) < \pi$ for $x < 0$. 
+A typical graph of $g(x,r)$ for a fixed $x<0$ is given in \Cref{fig:gfunctionBound} 
+
+\begin{figure}[h]
 \begin{tikzpicture}[
 declare function={g(\x,\r) = 2*(pi - pi/180*acos(-\x/\r));}
 ]
@@ -799,34 +926,65 @@ declare function={g(\x,\r) = 2*(pi - pi/180*acos(-\x/\r));}
   \foreach \y in {1,2,3} 
     \draw (-.1,\y) node[left]{\y}-- (.1,\y);
 
-  \draw (2,0) -- (9,{g(2,9)}) -- (9,0) node[below]{$R$};
-  \draw[dotted] (0,{g(2,9)}) node[left]{$g(x,R)$} -- (9,{g(2,9)});
+%  \draw (2,0) -- (9,{g(2,9)}) -- (9,0) node[below]{$R$};
+  \draw (9,{g(2,9)}) -- (9,0) node[below]{$R$};
+  \draw[dotted] (0,{g(2,9)}) node[above right]{$g(x,R)$} -- (9,{g(2,9)});
 \end{tikzpicture}
-
-Since $g(x,r)$ is concave down, when $R>1$ then 
+  \caption{A typical graph of $g(x,r)$ for $x<0$.} \label{fig:gfunctionBound}
+\end{figure}
+Since $g(x,r)$ is increasing,  
 \begin{align}
-  \int_0^R r p(r)g(x,r)\,dr
-    &\ge \frac 12 g(x,R)\int_{|x|}^1  p(r)r\,dr \\
-    &= \frac 12 g(x,R)\int_{|x|}^1 r^{-3/4}r\,dr \\
-    &= \frac 12 g(x,R)\int_{|x|}^1 r^{1/4}\,dr \\
-    &= \frac 12 g(x,R)\left. \frac 45r^{5/4}\right|_{|x|}^1\,dr \\
-    &=\frac 25 g(x,R)(1 - |x|^{5/4}).
+  \left|\int_0^R p(r)g(x,r)r \,dr\right|
+    &\le |g(x,R)|\left|\int_{|x|}^R  p(r)r\,dr\right| 
+%    &= g(x,R) \int_{|x|}^R [S_{1/2}p](r) r^{1/2}\,dr
+%    &\le g(x,R) \|S_{1/2}p\|_{L^2} \|
+%    &\le g(x,R)\int_{|x|}^R  S_{1/2}(p)^2 \,dr 
 \end{align}
-Taking limits as $R\to\infty$ on both sides for $x<0$,
-\begin{align}
-[\mathcal G p](x) \ge \frac{2\pi}5 (1 - |x|^{5/4}).
-\end{align}
-Hence, despite starting with a radially symmetric $L^2$ f, the forward edge blur need not be even integrable!
-See the following figures for Matlab plots of the situation:
-
-\begin{com}
-  Finally, define the forward operator domain on the radial profiles with the left boundary condition.
-  Show that this makes the output square integrable, and hence a subspace $L^2)$.
-\end{com}
+\begin{claim}
+  The indefinite integral of $Q(x) = -\int_{x}^\infty p(r) r$ is an $L^2([0,\infty))$ function.
+\end{claim}
+%Taking limits as $R\to\infty$ on both sides for 
+%\begin{equation}
+%  \int_0^\infty p(r) g(x,r)rdr \le \pi P(x){\|p\|_{\infty}}.
+%\end{equation}
 
 \subsection{Variational formulation of PSF estimation}
+In this subsection, we focus on the spaces $\KK\subseteq L^2(\R^2)$ and $\PP$ and show that for a radial representation $p \in \PP$ is equivalent bounding the functional $(p,\L p)_{T(\Omega_1)}$ for an appropriate trace class operator $\L:\PP \to \PP$.
+
+\begin{claim}
+  The radial Laplacian $\L:\PP \to \PP$ acting by
+  \begin{equation}
+    \L p = S_{r}^{-1} \cdot \del \big( S_r  \del p\big)
+  \end{equation}
+  is trace class.
+\end{claim}
+
+\begin{claim}
+  The functional $\Phi(p) = (p,p)_{T(\Omega_1)} + \sum_{i=1}^n(p,\L^i p)_{T(\Omega_1)}$ is bounded if and only if $p \in \PP^n$.
+\end{claim}
+
 \subsection{Infinite dimensional Bayesian formulation for PSF estimation} \label{sec:infiniteBayesian}
 
+Stochastic modeling in infinite dimensions provides a very general modeling framework, and much work has been done to relate these models to variational methods when the associated probability distributions are assumed to be Gaussian \citep{stuart2010,agapiou2013aspects,lehtinen1989linear,pytev86,vogel84stochastic}.
+Developing the complete theory for our problem is beyond the scope of this work, but this short discussion shows how these methods can be applied to the problem of PSF estimation.
+In particular we use the framework outlined in \citep{agapiou2013aspects,lehtinen1989linear}, which allows for measurements to be subject to a white noise process on a Hilbert space, and since we showed that $\L^n$ is a trace class operator, the resulting posterior measure will be given by a Gaussian measure, and the well-established analysis framework of \citep{stuart2010,agapiou2013aspects} applies.
+
+Let $\delta$ and $\lambda$ be positive real parameters that control the magnitude of the covariance of the prior uncertainty and white noise signal respectively.
+Following the development in \citep{daprato2006}, since $\L$ is trace class, it is a valid precision operator to define a Gaussian prior for $p$ a $\PP^0$-valued random variable. 
+Let $b \in L^2( (-\infty,0] )$ be such that $\G p - b$ is a white noise process on $L^2( (-\infty, 0] )$ as in \citep{lehtinen1989linear}, which according to \citep{agapiou2013aspects}, can be thought of as a Gaussian random variable on $L^2( (-\infty,0] )$ with the non-trace-class covariance operator $I:L^2( (-\infty,0] )\to L^2( (-\infty,0] )$, the identity there.
+
+The development in \citep{lehtinen1989linear} gives the appropriate theory to define a posterior which is given by a Gaussian measure with mean
+\begin{equation}
+  (\lambda \G^* \G + \delta \L)^{-1} \G^* b
+\end{equation}
+and trace class covariance operator
+\begin{equation}
+  (\lambda \G^*\G + \delta \L)^{-1}.
+\end{equation}
+Deriving the forms of the mean and covariance are analogous to the argument for completing the square on the discrete posterior approximation computation carried out in \Cref{subsec:discretePosteriorDerivation}.
+\end{com}
+
+\begin{com}
 We also showed that $\L^n$ was trace class for all $n$ in $\HH_1$. %, which allowed for a well-defined posterior probability measure for $p$.
 In \Cref{sec:infiniteBayesian}, we modeled the problem with the infinite dimensional Bayesian perspective where $p$ modeled apriori as a Gaussian random variable on the Hilbert space of radial profiles $\PP$ with covariance operator $\L^{-1}$, and the forward operator mapped into discrete data space $\R^m$. 
 Imposing independent Gaussian noise on the data space, led to posterior measure which was shown to have the Radon-Nykodym derivative with respect to the prior
@@ -841,5 +999,6 @@ When the measurements $b$ are subjected to a white noise process on $L^2(\R)$,
 %\end{equation}
 where $\Phi(p;b,\lambda,\delta)$ is unique up to scaling by a factor dependent only on $\vect b$.
 We called this the infinite dimensional posterior for $p$ given $\vect b$.
+\end{com}
 
 \end{chapter}

@@ -33,7 +33,7 @@ From there, the discrete posterior distribution can be expressed in terms of con
 
 Transitioning from the model on the continuum to a discrete representation is a delicate process for which error is introduced at many levels.  
 For example, we do not even have full access to all of $\R$, since a computer must represent a real number with a floating-point approximation corresponding to a binary integer from a finite set (although, this error is not addressed in this work). 
-This approximation provides a good analogy for how we will use smooth functions as a approximations for $p$ and $b$.
+This approximation provides a good analogy for how we will use smooth functions as approximations for $p$ and $b$.
 The formal notions of $p$ and $b$ are as functionals that act on compactly supported smooth functions, which have many levels of abstraction beyond a point-wise definition, and we will attempt to briefly address the approximation at each of these levels.
 
 \subsection{Discretization methods}
@@ -54,7 +54,7 @@ However, proceeding with this method requires estimation of roots, as well as ev
 %In what follows, we define the discrete representations $\vect m$ and $\vect b$ as well as the corresponding operator approximations and address the error at each level.
 
 We assume that the domain of $b$ is scaled so that data are collected on equally spaced points in $x_i \in [-1,1]$, with $x_i = \frac iN$ for $-N\le i\le N$.
-Let $\vect b \in \R^{2N + 1}$ with entries $b_i \eqdef b(x_i)$ and $h\eqdef \frac 1N$, this enforces an assumption that the data has an odd number of points with $b(0)$ corresponding to the $N$th element of $\vect b$. 
+Let $\vect b \in \R^{2N + 1}$ with entries $b_i \eqdef b(x_i)$ and $h\eqdef \frac 1N$, this enforces an assumption that the data have an odd number of points with $b(0)$ corresponding to the $N$th element of $\vect b$. 
 Note that the point-symmetry of the operator implies that for $N$ point estimates of $p$, a full line-out of data will have $2N + 1$ points (the extra estimate is for $b(0)$).
 In what follows, we define $\acos(t)$ on all of $\R$ by taking the convention that $\acos(t) = 0$ if $|t| > 1$.
 \Cref{fig:radialForwardKernel} is useful for visualizing the following arguments.
@@ -74,13 +74,13 @@ For a fixed  $x_i<0$, we have
 As in \citep{bardsley2012mcmc}, we discretize the integral using midpoint quadrature which guarantees a second-order integration method.
 Because the upper bound in \eqref{eq:radialForwardNegative} depends on $x_i$, $\{r_j\}$ are placed at midpoints of $\{|x_i|\}$, hence, $r_j \eqdef j-\frac h2$ for $j=1,\dots N$. 
 
-When $x_i \le 0$, then $i \le 0$, and using $\acos(t) = 0$ for $t<-1$
+When $x_i \le 0$, then $i \le 0$, and using $\acos(t) = 0$ for $t<-1$,
 \begin{align}
   [\G p](x_i) 
     &\approx \sum_{j=1}^{|i|} p(r_j)2(\pi - \acos(x_i/r_j)) r_jh \nonumber\\
     &= \sum_{j=1}^{N} p(r_j)2(\pi - \acos(x_i/r_j)) r_jh. \label{eq:radialForwardApproxPositive}
 \end{align}
-When $x_i > 0$, then $i \ge 0$ and using $\acos(t) = 0$ for $t>1$ 
+When $x_i > 0$, then $i \ge 0$ and using $\acos(t) = 0$ for $t>1$,
 \begin{align}
   [\G p](x_i) 
     &= 2\pi \int_0^{x_i} p(r)\,rdr + \int_{x_i}^\infty p(r)2(\pi - \acos(x_i/r))\,rdr\nonumber \\
@@ -88,7 +88,7 @@ When $x_i > 0$, then $i \ge 0$ and using $\acos(t) = 0$ for $t>1$
     &\approx \sum_{j=1}^{N} p(r_j)2(\pi - \acos(x_i/r_j)) r_jh. \label{eq:radialForwardApproxNegative}
 \end{align}
 
-Now, let $\vect p$ be the $N\times 1$ column vector with entries $\vect p_j = p(r_j)$ 
+Now, let $\vect p$ be the $N\times 1$ column vector with entries $\vect p_j = p(r_j)$,
 %and $\vect b$ be the $2N+1\times 1$ vector with entries $\vect b_i = [\G p](x_i)$, 
 then using \eqref{eq:radialForwardApproxPositive} and \eqref{eq:radialForwardApproxNegative}, if we define the matrix $\vect G$ with entries $\vect G_{ij} \eqdef 2(\pi - \acos(x_i/r_j)) r_j h$, the quadrature approximation can be expressed by the matrix-vector multiplication $\vect G \vect p$.
 Finally, we use $\|f\|_{L^2(\R)} \approx h\|\vect f\|_{\R^{2N+1}}$ to approximate the $L^2$ norm of $f$, where elements of $\vect f$ are point-wise evaluations of the continuous approximation to $f$.
@@ -174,7 +174,7 @@ Since $\lambda$ and $\delta$ will be stochastically modeled and estimated from t
 \begin{equation} \label{discreteRegularizingFunctional}
   F(\vect p; \vect b,\lambda,\delta) \eqdef \frac 12\left(\lambda \|\vect G\vect p - \vect b\|_{\R^{2N+1}}^2 + \delta \langle \vect p, \vect L \vect p\rangle_{\R^N}\right).
 \end{equation}
-\subsection{The discrete hierarchical posterior distribution}
+\subsection{The discrete hierarchical posterior distribution} \label{subsec:discretePosteriorDerivation}
 
 As in \citep{bardsley2012mcmc}, we employ a hierarchical model for $\lambda$ and $\delta$ that employ independent prior distributions that form a natural conjugacy so that the resulting full conditional densities will be known to a proportionality constant.
 In deriving this density, we will use a technique sometimes referred to as `completing the square,' which in addition to showing that the posterior density for $\vect p$ is Gaussian, will allow us to marginalize the full conditional densities of the parameters $\lambda$ and $\delta$.
@@ -195,7 +195,7 @@ and
   \pi(\vect p | \vect b,\lambda, \delta) \propto \exp\Big(-F(\vect p;\vect b,\lambda,\delta) \Big).
 \end{equation}
 Taking the Bayesian perspective, the unknown parameters $\lambda$ and $\delta$ are modelled as independent prior random quantities.
-We assume a hierarchical structure so that the prior $\vect p|\delta,\lambda$ is independent of the noise parameter $\lambda$ (given $\delta$) and that the measurement likelihood $\vect b|\vect b,\lambda,\delta$ is independent of the prior parameter $\delta$ (given $\vect b$) and $\lambda$, i.e.
+We assume a hierarchical structure so that the prior $\vect p|\delta,\lambda$ is independent of the noise parameter $\lambda$ (given $\delta$) and that the measurement likelihood $\vect b|\vect b,\lambda,\delta$ is independent of the prior parameter $\delta$ (given $\vect b$ and $\lambda$) , i.e.
 \begin{align}
   \pi(\vect p|\lambda,\delta) &= \pi(\vect p|\delta) \\
 \text{ and } \pi(\vect b|\vect p,\lambda,\delta) &= \pi(\vect b|\vect p,\lambda).
@@ -206,16 +206,16 @@ This convenience motivates the choice of prior distributions for $\lambda$ and $
 Assuming $\lambda$ and $\delta$ are independent gamma-distributed random variables, they have probability density functions 
 \begin{align} 
                 \pi(\lambda) &\propto \lambda^{\alpha -1}\,\exp(-\beta\lambda)\label{eq:deltaPrior}\\
-\quad\text{ and }\pi(\delta) &\propto \delta^{\alpha-1}\,\exp(-\beta\delta), \label{eq:lambdaPrior}
+\quad\text{ and }\pi(\delta) &\propto \delta^{\alpha-1}\,\exp(-\beta\delta), \label{eq:lambdaPrior}.
 \end{align}
-as recommended by \citep{higdon2006primer}, we use parameter values $\alpha = 1$ and $\beta =  10^{-4}$ which provide a large prior variance ($10^8$) for $\lambda$ and $\delta$. 
+As recommended by \citep{higdon2006primer}, we use parameter values $\alpha = 1$ and $\beta =  10^{-4}$ which provide a large prior variance ($10^8$) for $\lambda$ and $\delta$. 
 Now, applying Bayes' theorem and the definition of conditional probability, the \emph{joint posterior density} is
 \begin{align}
-\pi(\vect p,\lambda,\delta|\vect b) 
-&= \frac{\pi(\vect b|\vect p,\lambda,\delta) \pi(\vect p,\lambda,\delta)}{\pi(\vect b)} \nonumber \\
-&= \frac{\pi(\vect b|\vect p,\lambda,\delta) \pi(\vect p| \delta,\lambda) \pi(\lambda,\delta)}{\pi(\vect b)} \nonumber \\
-&= \frac{\pi(\vect b|\vect p,\lambda) \pi(\vect p| \delta) \pi(\lambda)\pi(\delta)}{\pi(\vect b)} \nonumber \\
-&\propto \lambda^{(2N+1)/2+\alpha-1}\delta^{N/2+\alpha-1} \exp\left(-\frac{\lambda}{2}\|\vect{Gp} - \vect b\|^2 - \frac{\delta}{2}\langle \vect p, \vect L \vect p\rangle - \beta\lambda - \beta\delta \right). \label{eq:jointPosteriorDensity}
+  \pi(\vect p,\lambda,\delta|\vect b) 
+    &= \frac{\pi(\vect b|\vect p,\lambda,\delta) \pi(\vect p,\lambda,\delta)}{\pi(\vect b)} \nonumber \\
+    &= \frac{\pi(\vect b|\vect p,\lambda,\delta) \pi(\vect p| \delta,\lambda) \pi(\lambda,\delta)}{\pi(\vect b)} \nonumber \\
+    &= \frac{\pi(\vect b|\vect p,\lambda) \pi(\vect p| \delta) \pi(\lambda)\pi(\delta)}{\pi(\vect b)} \nonumber \\
+    &\propto \lambda^{(2N+1)/2+\alpha-1}\delta^{N/2+\alpha-1} \exp\left(-\frac{\lambda}{2}\|\vect{Gp} - \vect b\|^2 - \frac{\delta}{2}\langle \vect p, \vect L \vect p\rangle - \beta\lambda - \beta\delta \right). \label{eq:jointPosteriorDensity}
 \end{align}
 Our primary goal for estimation and uncertainty quantification of $\vect p$ will be drawing inference from \eqref{eq:jointPosteriorDensity}.
 As previously remarked, all priors are in the exponential family, hence there is a natural expression for each full conditional density that is also in the exponential family.
@@ -287,11 +287,11 @@ Hence, for $U\sim \mathrm{U([0,1])}$, the variable $X = F^{-1}(U)$ has
   &= F(x).
 \end{align}
 So, to simulate $X$, one generates a pseudo-random number $u$ from $[0,1]$ (see \citep{knuthart1981}), then $F^{-1}(u)$ serves as simulation for $X$.
-In practice, this method is usually analytically difficult, but the idea behind most algorithms is similar -- generate a pseudo-random number then transform it in some way so that the resulting random variable has the desired density.
+In practice, this method is usually analytically difficult, but the idea behind most algorithms is similar: generate a pseudo-random number then transform it in some way so that the resulting random variable has the desired density.
 For many common distributions these algorithms are implemented efficiently in many statistical and mathematical computing packages, and we assume for the following algorithms that they are available.
 In particular, we assume that simulations from a uniform density $U([0,1])$, a gamma distribution $\Gamma(\alpha,\beta)$ for given shape and rate parameters $\alpha$ and $\beta$, and a standard Gaussian $\N(0,1)$ can each be computed.
 
-\subsection{Gibbs sampling the PSF posterior} \label{subsec:gibs}
+\subsection{Gibbs sampling the PSF posterior} \label{subsec:gibbs}
 
 Here, we describe how to explicitly obtain simulations from the full conditional densities $\pi(\lambda|\vect b,\vect p,\delta)$, $\pi(\lambda|\vect b,\vect p,\delta)$, and $\pi(\vect p|\vect b,\lambda,\delta)$.
 The equations in \eqref{eq:lambdaDeltaConditional} imply that both $\pi(\lambda|\vect b,\vect p,\delta)$, $\pi(\delta|\vect b,\vect p,\lambda)$ are gamma-distributed as
@@ -304,7 +304,7 @@ respectively, of which simulations are assumed to be available.
 
 For simulating from $\pi(\vect p|\vect b, \lambda,\delta)$, let $\vect z$ be a vector whose entries are $N$ independent simulations from $\N(0,1)$. 
 Hence, $\vect z$ is a simulation of a multivariate Gaussian $\N(\vect 0,\vect I_{N\times N})$.
-Recall that for $\vect z \sim \N(\vect 0,\vect I)$, the linear transformation $w = m + Bz$ results in $\vect m + \vect B \vect z \sim \N(\vect m, \vect B\vect B^T)$, so in order to sample a Gaussian random variable with given precision, we will need to factor its inverse.
+Recall that for $\vect z \sim \N(\vect 0,\vect I)$, the linear transformation $\vect w = \vect m + \vect B\vect z$ results in $\vect m + \vect B \vect z \sim \N(\vect m, \vect B\vect B^T)$, so in order to sample a Gaussian random variable with given precision, we will need to factor its inverse.
 An important feature of positive definite matrices, $\vect A$, is that they have an eigenvalue decomposition of the form $\vect U \vect\Lambda \vect U^*$ (here $^*$ denotes the conjugate transpose since columns of $\vect U$ may be complex valued), where the columns $\vect U^*$ are mutually orthonormal and that $\vect \Lambda$ is a diagonal matrix of positive eigenvalues.
 Therefore, there exists a matrix $\vect M =  \vect \Lambda^{-1/2} \vect U^*$, such that $\vect M^*\vect M = \vect A^{-1}$, where the $-1/2$ power is computed on the diagonal entries of $\vect \Lambda$.
 Hence, the linear transformation $\vect M^* \vect z \sim \N(0,\vect A^{-1})$.  
@@ -315,7 +315,7 @@ For $\vect J_{\lambda,\delta}$, define the Cholesky factors
 \begin{equation} \label{eq:choleskyJ}
   \vect R_{\lambda,\delta}^T\vect R_{\lambda,\delta} \eqdef \vect J_{\lambda,\delta}.
 \end{equation}
-With $\vect R_{\lambda,\delta}$ in hand, it serves two purposes -- first we can solve $\vect J_{\lambda,\delta} \vect m_{\lambda,\delta} = \vect R_{\lambda,\delta}^T\vect R_{\lambda,\delta} \vect m_{\lambda,\delta} = \vect G^T \vect b$ efficiently by forward-substitution then by backward-substitution, both in $O(N^2)$ flops; second, the computation $\vect m_{\lambda,\delta} + \vect R_{\lambda,\delta}^{-1} \vect z$ by forward-substitution, transforms $\vect z$ into a simulation from $\pi(\vect p | \vect b,\lambda,\delta)$,
+With $\vect R_{\lambda,\delta}$ in hand, it serves two purposes: first, we can solve $\vect J_{\lambda,\delta} \vect m_{\lambda,\delta} = \vect R_{\lambda,\delta}^T\vect R_{\lambda,\delta} \vect m_{\lambda,\delta} = \vect G^T \vect b$ efficiently by forward-substitution then by backward-substitution, both in $O(N^2)$ flops; second, the computation $\vect m_{\lambda,\delta} + \vect R_{\lambda,\delta}^{-1} \vect z$ by forward-substitution, transforms $\vect z$ into a simulation from $\pi(\vect p | \vect b,\lambda,\delta)$,
 %Finally, $\vect m_{\lambda,\delta} + \vect R_{\lambda,\delta}^{-1}\vect z \sim \N( m_{\lambda,\delta} , \vect J_{\lambda,\delta}^{-1})$ 
 since $(\vect R_{\lambda,\delta}^T \vect R_{\lambda,\delta})^{-1} =\vect R_{\lambda,\delta}^{-1} {\vect R_{\lambda,\delta}^T}^{-1}$.
 
@@ -431,12 +431,12 @@ It is common to tune this parameter so that the long-run proportion of acceptanc
 An alternative is to use previous values to inform $\gamma$.
 The resulting stochastic process is no longer a Markov chain, but \citep{haario2001adaptive} have shown that the stochastic process $\{X^1,X^2,\dots\}$ resulting from a Metropolis-Hastings algorithm using the empirical covariance estimate of the previous $k$ realizations as the proposal variance at step $k$ enjoys a similar ergodic result as \Cref{thm:ergodicTheorem}.
 The theory is not directly applicable, since we sample jointly $\{(\lambda^k,\delta^k,\vect p^k)\}$, and obtaining covariance estimate of the joint variable is computationally unfeasible. 
-A feasible computation for $\gamma^k$ is the marginal variance for $\delta$, would be to add to \Cref{alg:PSFpcgibbs}
+A feasible computation for $\gamma^k$ is the marginal variance for $\delta$ would be to add to \Cref{alg:PSFpcgibbs}
 \begin{equation}
   4.~\text{ Set }\gamma^2 = \frac 1{k} \sum_{i=1}^{k+1} (\delta^i - \bar{\vect\delta_k})^2
 \end{equation}
 where $\bar{\vect\delta_k}$ is the sample mean for $\{\delta^1,\dots,\delta^k\}$.
-Although we do not directly have an ergodic theorem for this stochastic process, it exhibits similar convergence statistics in the numerical examples presented in \Cref{chapter:results} as the algorithm with a tuned $\gamma^2$, with much less 'tuning-effort.'
+Although we do not directly have an ergodic theorem for this stochastic process, it exhibits similar convergence statistics in the numerical examples presented in \Cref{chapter:results} with much less 'tuning-effort' as the algorithm with a tuned $\gamma^2$.
 From a practical standpoint, one could use the adaptive estimate of $\gamma^k$, then when the chain has stabilized, fix $\gamma$ to appeal to \Cref{thm:ergodicTheorem} for statistic estimation.
 
 
@@ -547,7 +547,7 @@ The computed mean of the posterior density is shown in \Cref{fig:syntheticPsfRec
 The true solution is also shown on the left, showing the accuracy of the reconstruction.  
 Note that the most uncertain region of the reconstruction are the initial discretization points corresponding to the height of the PSF, however, the true solution falls within the 90\% quantiles at each point.
 
-The MCMC diagnostics are summarized in Table \Cref{tab:PSFDeltaChain}. 
+The MCMC diagnostics are summarized in \Cref{tab:PSFDeltaChain}. 
 With the exception of the $\delta$ chain generated by the Gibbs sampler, each method yields Geweke $p$-values sufficiently large to indicate strong statistical evidence that burn-in has completed. 
 The lack of convergence for the Gibbs sampler $\delta$ chain is the likely cause for the mean estimate of $\delta$ being marginally larger than the other three. 
 The large autocorrelation in the $\delta$ chain generated by the Gibbs sampler results in an ESS that is significantly lower than the other three algorithms. 
@@ -578,7 +578,7 @@ PC Gibbs &                 1.102 &                 5.515&                    0.9
 \end{table}
 
 The chain autocorrelation plots in \Cref{fig:syntheticPsfACF} give additional insights. 
-First, for the Gibbs sampler, the autocorrelation of the $\delta$ chain is quite large, and the $\lambda$ chain is approximately uncorrelated, as values in Table \Cref{tab:PSFDeltaChain} suggested would be the case. 
+First, for the Gibbs sampler, the autocorrelation of the $\delta$ chain is quite large, and the $\lambda$ chain is approximately uncorrelated, as values in \Cref{tab:PSFDeltaChain} suggested would be the case. 
 Note also that sampling jointly in the MTC algorithm degrades the efficiency of $\lambda$. 
 Finally, note that we also include autocorrelation plots for the first component, $x_1$, of $\vect p$, in order to show that the $\vect p$ chain is essentially uncorrelated, and hence that the correlation in the MCMC chains generated by Gibbs and PC-Gibbs samplers is driven by the $\delta$ chain. 
 
@@ -636,15 +636,12 @@ PC Gibbs &                 9.178 &               1.189  &                     0.
 
 \subsection{Conclusions} \label{sec:Conclusions}
 
-\begin{com}
-Our focus in this paper is two fold. 
-First, we address the degeneracy issue pointed out in \cite{AgaBarPapStu} for the Gibbs sampler above when it is applied to linear inverse problems. 
-Specifically, the main theoretical result in \cite{AgaBarPapStu} shows that as the numerical mesh size tends to zero, the autocorrelation of the $\delta$ chain increases, to the extent that in the infinite limit, the MCMC chain will stay fixed on the initial value $\delta_0$. 
-The result is that for problems with a fine mesh, the $\delta$ chain is highly correlated and hence a huge number of samples are needed. 
-We overcome this by applying the partially collapsed Gibbs framework to the Gibbs sampler, yielding two related MCMC methods, neither of which have have the $\delta$ chain correlation issues. 
-Second, our paper focuses on the application of PSF reconstruction in X-ray imaging, which to our knowledge has not appeared elsewhere in the inverse problems literature. 
-To that end, we present details for what we believe is a novel derivation of the inverse problem, which makes use of radial symmetry and a square-Laplacian regularization (or precision) matrix. 
-Finally, we test our MCMC methods on this inverse problem, using both a synthetic test case and a real data example. 
+The synthetic and measured data both exhibit the theoretical degeneracy derived \cite{AgaBarPapStu} for standard Gibbs sampler.
+%Specifically, the main theoretical result in \cite{AgaBarPapStu} shows that as the numerical mesh size tends to zero, the autocorrelation of the $\delta$ chain increases, to the extent that in the infinite limit, the MCMC chain will stay fixed on the initial value $\delta_0$. 
+%The result is that for problems with a fine mesh, the $\delta$ chain is highly correlated and hence a huge number of samples are needed. 
+We've also demonstrated that the issue is alleviated by applying the partially collapsed Gibbs framework to the Gibbs sampler, yielding two related MCMC methods, neither of which have have the $\delta$ chain correlation issues. 
+This work provides the first, to our knowledge, successful non-parametric radial PSF reconstruction in X-ray imaging. 
+Moreover, the theory for the modeling and algorithms have been rigorously derived from first principles, and may serve as a template for other symmetry based prior regularization schemes.
+%Finally, we test our MCMC methods on this inverse problem, using both a synthetic test case and a real data example. 
 The results illustrate the effectiveness of the partially collapsed Gibbs approach, and show how a sample-based approach can be used for uncertainty quantification.
-\end{com}
 \end{chapter}
