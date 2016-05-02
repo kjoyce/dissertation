@@ -5,7 +5,7 @@
 The domain and geometry of an image and a point spread function are inherently two-dimensional. 
 While the assumption of radial symmetry reduces the representation dimension, the geometry of the problem is still two-dimensional and must be appropriately translated to the radial representations. 
 The question of how regularity assumptions like square summability of derivatives translates to a radial representation does not have an obvious resolution if we allow generalised functions and generalized derivatives.
-The goal of this chapter is rigorously address these issues by developing the necessary mathematical tools to encapsulate prior notions of regularity and radial symmetry within the structure of separable Hilbert spaces and concretely establish how that affects a radial representation.
+The goal of this chapter is to rigorously address these issues by developing the necessary mathematical tools to encapsulate prior notions of regularity and radial symmetry within the structure of separable Hilbert spaces and concretely establish how that affects a radial representation.
 The development is done within the theory of distributions, developed initially for the analysis of linear partial differential equations (PDEs). 
 This framework provides sufficient generality to encapsulate radial symmetry and sufficient regularization via generalization of differential operators and function composition, all within the rich structure of a separable Hilbert space.
 Hence, tools for analyzing inverse problems that require radial symmetry are readily applicable to the PSF estimation problem.
@@ -20,18 +20,18 @@ Let $\DD(\Omega)$ denote the space of compactly supported smooth functions defin
 Endow $\DD(\Omega)$ with the topology such that convergence of the sequence $(\phi_n)\subset \DD(\Omega)$ happens whenever there exists a compact set $K$ such that 
 \begin{equation}
   \bigcup_{n=1}^\infty \supp \phi_n \subseteq K \quad\text{and}\quad
-  \sup_{m\ge n} \left|\del^\alpha (\phi_n-\phi_m)\right|\to 0, \label{eq:testFunctionContinuity}
+  \sup_{m\ge n} \left|\del^\alpha (\phi_n-\phi_m)\right|\to 0\text{ as }n\to\infty \label{eq:testFunctionContinuity}
 \end{equation} 
 for any multi-index such that $|\alpha|\le k$.
 That is,  $\alpha$ is a $k$-tuple of non-negative integers $(\alpha_1,\dots, \alpha_k)$, such that $\sum \alpha_i \le k$ and $\del^\alpha = \prod \left(\frac{\del}{\del x_i}\right)^{\alpha_i}$.
 In distribution theory, these are called \emph{test functions} on $\Omega$.
-The space of continuous linear functionals, denoted $D^*(\Omega)$, are the \emph{distributions} on $\Omega$.
+The space of continuous linear functionals, denoted $\DD^*(\Omega)$, are the \emph{distributions} on $\Omega$.
 We adopt the notation $\langle f, \phi\rangle$ for the action of a linear functional $f$ on $\phi \in \DD(\Omega)$ and freely use the natural inclusion of functions $g \to \tilde g \in \DD^*(\Omega)$ by $\langle \tilde g, \phi \rangle = \int g\, \phi\,dx$ when the integration exists and omit the tilde notation distinguishing $g$ and $\tilde g$ as the representation should be clear from context. 
 
 Consider the following two general topological results regarding distributions. 
 See \citep[Chapter 2]{hormander1983} for the proofs of each.
 \begin{thm} \label{thm:completeness}
-  Suppose $(f_n)$ is a sequence in $\DD^*(\Omega)$ such that $\lim\langle f_n,\phi\rangle$ exists for all $\phi \in \DD(\Omega)$, then there exists a unique $f\in \DD^*(\Omega)$ such that
+  \citep{hormander1983} Suppose $(f_n)$ is a sequence in $\DD^*(\Omega)$ such that $\lim\langle f_n,\phi\rangle$ exists for all $\phi \in \DD(\Omega)$, then there exists a unique $f\in \DD^*(\Omega)$ such that
   \begin{equation}
     \langle f, \phi\rangle = \lim_{n\to\infty} \langle f_n, \phi \rangle.
   \end{equation}
@@ -41,13 +41,13 @@ It essentially follows from a general statement of the Banach-Steinhaus theorem 
 
 The next result, sometimes referred to as localization, establishes a dense embedding of the $\DD(\Omega)$ into $\DD^*(\Omega)$.
 \begin{thm} \label{thm:localization}
-  Given $f\in \DD^*(\Omega)$, there exists a sequence $(\phi_n) \subset \DD(\Omega)$ such that 
+  \citep{hormander1983} Given $f\in \DD^*(\Omega)$, there exists a sequence $(\phi_n) \subset \DD(\Omega)$ such that 
   \begin{equation}
     \langle f,\psi\rangle = \lim_{n\to\infty}\langle \phi_n,\psi\rangle.
   \end{equation}
 \end{thm}
 
-These results allow for operators defined on $\DD(\Omega)$ to be extended in a continuous way to $\DD^*(\Omega)$ so long as one can define an adjoint operation with respect to the bilinear form $\langle \cdot,\cdot \rangle$.
+These results allow for operators defined on $\DD(\Omega)$ to be extended in a continuous way to $\DD^*(\Omega)$ so long as one can define an adjoint operation with respect to the sesquilinear form $\langle \cdot,\cdot \rangle$.
 Moreover, if the operation is well-defined on test functions, then uniqueness of the extension follows from \Cref{thm:localization}.
 The classical example of this process is extending the differential operator $\frac{\del}{\del x_i}:\DD^*(\Omega) \to \DD^*(\Omega)$. 
 First, for test functions observe that integrating by parts and using the compactness of the support of $\psi$ yields
@@ -75,17 +75,17 @@ Since the operator $\del^\alpha:\DD^*(\Omega)\to\DD^*(\Omega)$ is expressed as a
 
 The idea of expressing an operation adjointly on test functions, serves as the model for extending radial symmetry to distributions. 
 That is, the radial change of variables introduced in \Cref{chapter:introduction} can be `moved' to test functions in an analgous way to express function composition on distributions.
-Before this argument is undertaken, we first show how $L^2$ functions can be thought of as distributions, and how regularity can be imposed through generalized derivatives with so-called Sobolev spaces.
+Before this argument is undertaken, we first show how $L^2$ functions can be thought of as distributions, and how regularity can be imposed through generalized derivatives with Sobolev spaces.
 
 \subsection{$L^2$ as a subspace of distributions}
 
-Hilbert spaces provide the rich structure of a complete inner product to guarantee that converging sequences represent elements of the space.
-Moreover, a Hilbert space is, in many cases, a prerequisite for employing variational or infinite dimensional probabilistic Bayesian methods.
-This development will show how the space of square integrable functions $L^2$ and their generalized derivatives can be defined within the space of distributions, which is necessarily for defining the Hilbert space for radial profiles and also provides valuable insights in how they will be constructed.
+Hilbert spaces provide the rich structure of a complete inner product and guarantee completeness in the sense that Cauchy sequences converge to elements in the space.
+Moreover, formulating inverse problems on a Hilbert space is, in many cases, a prerequisite for employing variational or infinite dimensional probabilistic Bayesian methods.
+This development will show how the space of square integrable functions $L^2$ and their generalized derivatives can be defined as distributions, which is necessary for defining the Hilbert space for radial profiles and also provides valuable insights in how they will be constructed.
 The development follows \citep{richtmyer1978principles,griffel2002}, for which we need only the notion the $L^2$ inner product, as opposed to the more common Fourier based approaches which can be found in \citep{rudin1991,hormander1983,strichartz2000}.
 Our development also provides several details that are omitted in \citep{richtmyer1978principles}. 
 
-We define the $L^2$ inner-product for test functions as the sesquilinear form $(\cdot,\cdot)_{L^2(\Omega)}:\DD(\Omega)\times\DD(\Omega) \to \C$ by 
+We define the $L^2$ inner-product for test functions as the sesquilinear form $(\cdot,\cdot)_{L^2(\Omega)}:\DD(\Omega)\times\DD(\Omega) \to \C$ by the Riemann integral
 \begin{equation} \label{eq:l2innerProduct}
   (\phi,\psi)_{L^2(\Omega)} \eqdef \int_{\Omega} \phi(x)\bar{\psi(x)}\,dx,
 \end{equation}
@@ -121,7 +121,7 @@ Hence, $\lim\langle \phi_n,\psi\rangle$ exists for all $\psi \in \DD(\Omega)$ (b
 \end{equation}
 All such $f$ are elements of the space $L^2(\Omega)$.
 
-Sequences $(\phi_n)$ and $(\psi_n)$ are \emph{equivalent} $L^2(\Omega)$ Cauchy sequences if
+Sequences $(\phi_n)$ and $(\phi_n')$ are \emph{equivalent} $L^2(\Omega)$ Cauchy sequences if
 \begin{equation}\label{eq:cauchyEquivalence}
   \|\phi_n - \phi_n'\|_{L^2(\Omega)} \to 0.
 \end{equation}
@@ -187,7 +187,7 @@ Now observe,
     &\le \|\phi_n\|_{L^2(\Omega)}\|\psi_n-\psi_k\|_{L^2(\Omega)} \nonumber\\
     &\quad\quad+ \|\phi_n - \phi_k\|_{L^2(\Omega)}\big(\|\psi_k - \psi_n\|_{L^2(\Omega)} + \|\psi_n\|_{L^2(\Omega)}\big).
 \end{align}
-  Since the $\lim \sup_{k\ge n}$ on the right hand side of the inequality results in 0 (since $(\|\phi_n\|)$ and $(\|\psi_n\|$ have finite limits) the convergence of the left hand side follows.
+  Since the limit as $n\to\infty$ of the $\sup_{k\ge n}$ of the right hand side of the inequality results in 0 (the sequences $(\|\phi_n\|)$ and $(\|\psi_n\|)$ have finite limits) the convergence of the left hand side follows.
 Thus, $(\phi_n,\psi_n)$ is a Cauchy sequence in $\C$, and hence, has a finite limit.
 
 Let $\eps > 0$ be given. 
@@ -198,7 +198,7 @@ For all $n$, choose $m$ sufficiently large so that
     &\le |\langle f - \phi_m,\bar{\psi_n}\rangle| + \| \phi_m - \phi_n\| \|\psi_n\| + |\langle \phi_n,\bar{\psi_n}\rangle - (f,g)_{L^2(\Omega)}| \nonumber\\
     &< \eps +|\langle \phi_n,\bar{\psi_n}\rangle - (f,g)_{L^2(\Omega)}|.
 \end{align}
-Taking limits on both sides gives 
+Taking limits on both sides of the inequality 
 \begin{equation} \label{eq:iteratedInnerProduct}
   \lim_{n\to\infty} \langle f,\bar{\psi_n}\rangle = (f,g)_{L^2(\Omega)}, 
 \end{equation}
@@ -239,8 +239,8 @@ Sobolev spaces provide a framework for imposing regularity on distributions in t
 In this work, we will be concerned only with Sobolev subspaces of $L^2$, which are sometimes denoted $W^{k,2}$.
 In this subsection, we briefly overview the definition of these spaces, and state a version of the Sobolev embedding theorem sufficient for characterizing PSFs of interest in this work.
 
-A Sobolev space of order $n$ over an open set $\Omega \subseteq \R^k$ is $\HH^n(\Omega) = \{f \in L^2(\Omega): \del^\alpha f \in L^2(\Omega)\text{ and }|\alpha|\le N\}$.
-By the linearity of the derivative operator $\del^\alpha$, each of these form a sequence of linear subspaces $\HH^n(\Omega) \subset \HH^{n-1}(\Omega) \subset \dots \subset \HH^1(\Omega) \subset L^2(\Omega)$, however, the inclusion is strict and they are \emph{not} closed with respect to the $L^2$ norm \citep{richtmyer1978principles}.
+A Sobolev space of order $n$ over an open set $\Omega \subseteq \R^k$ is $\HH^n(\Omega) = \{f \in L^2(\Omega): \del^\alpha f \in L^2(\Omega)\text{ whenever }|\alpha|\le N\}$.
+Each of these form a sequence of linear subspaces $\HH^n(\Omega) \subset \HH^{n-1}(\Omega) \subset \dots \subset \HH^1(\Omega) \subset L^2(\Omega)$, however, the inclusion is strict and they are not closed with respect to the $L^2$ norm \citep{richtmyer1978principles}.
 
 \begin{com}
   A classic example that demonstrates this is the Heaviside distribution on an open bounded $\Omega$ in $\subset \R$.
@@ -311,8 +311,8 @@ and
 \section{Radial symmetry}
 Symmetry is established by casting it as precomposition with a many-to-one smooth map $T$ that is constant on circles of a fixed radius.  
 If $f$ is a function on $\R^2$ and there exists a function $p$ so that $f(x,y) = p(\sqrt{x^2 + y^2})$, then observe that $f$ has the common notion of radial symmetry with a radial profile $p$.
-This notion is easily adapted to distributions by developing a notion of composition with $T$ on using a so-called linear pullback operator to $T^\sharp$.
-That is, $T^\sharp$ maps $p$ to $f$ by precomposition by $T(x,y)$ on sequences of test functions converging to $p$.
+This notion is easily adapted to distributions by developing a notion of composition with $T$ and using a so-called linear pullback operator to $T^\sharp$.
+That is, $T^\sharp$ maps $p$ to $f$ by precomposition with $T(x,y)$ on sequences of test functions converging to $p$.
 A pullback is the analogous notion of composition for distributions, and the idea of the construction is to extend the range of $T$ to a bijection similar to the polar coordinates map and use it to perform an integral change of variables to `move' the composition to a test functions.
 For topological reasons, the bijection will only be with a dense subset of $\R^2$.
 %Because the set will be dense in a straight forward way, we will be able to extend the pullback using ideas similar to extending applying boundary conditions to PDEs.
@@ -383,8 +383,8 @@ Using \Cref{lem:existence}, we can now define the \emph{pullback} by $T$ on $\DD
   \langle T^\sharp p, \phi \rangle_{\Omega_2} \eqdef \langle p, T_\sharp\phi\rangle_{\Omega_1}.
 \end{equation}
 As previously remarked, this operator generalizes smooth composition for distributions, and will be the basis for how we define radial symmetry.
-To see that $T^\sharp p \in \DD^*(\Omega_2)$ (i.e.~acts continuously on $\DD(\Omega_2)$ as a linear functional), let $(\phi_n) \to 0$ in $\DD(\Omega_2)$, so fixing $\alpha = 0$ in \eqref{eq:testFunctionContinuity}, we, have $\sup|\phi_n| \to 0$. 
-Then, by \eqref{eq:psiPhiDef}, $\sup |T_\sharp\phi_n| \to 0$, and thus $\langle p, T_\sharp\phi_n\rangle \to 0$ by the continuity of $p$. 
+To see that $T^\sharp p \in \DD^*(\Omega_2)$ (i.e.~acts continuously on $\DD(\Omega_2)$ as a linear functional), let $(\phi_n) \to 0$ in $\DD(\Omega_2)$, so fixing $\alpha = 0$ in \eqref{eq:testFunctionContinuity}, we have $\sup_{\Omega_2}|\phi_n| \to 0$ as $n\to\infty$. 
+Then, by \eqref{eq:psiPhiDef}, $\sup_{\Omega_1} |T_\sharp\phi_n| \to 0$ as $n\to\infty$, and thus $\langle p, T_\sharp\phi_n\rangle \to 0$ by the continuity of $p$. 
 %  Moreover, if we take $p = Id_{\DD(\Omega_1)}$ the iden, then $\langle Id_{}$
 %  $T_\sharp:\DD(\Omega_2) \to \DD(\Omega_1)$.
 
@@ -402,10 +402,10 @@ Then, by \eqref{eq:psiPhiDef}, $\sup |T_\sharp\phi_n| \to 0$, and thus $\langle 
   \end{equation}
 
 %As a corollary to this result, we can establish the existence in the statement of \Cref{thm:pullback}. That is, define $T^\sharp:\DD^*(\Omega_1) \to \DD^*(\Omega_2)$ by 
-Loosely speaking, the pullback by $T$ represents a change of variables from $(x,y)$ to $(r,v)$ by expanding the domain of $T$ to an invertible $T_{ij}(x,y)$ with the choice of $T_{ij}$ is arbitrary.  
+Loosely speaking, the pullback by $T$ represents a change of variables from $(x,y)$ to $(r,v)$ by expanding the domain of $T$ to an invertible $T_{ij}(x,y)$ with the choice of $T_{ij}$ arbitrary.  
 Observe that for a fixed $\tilde r = r^{1/(2a)}$, the image of $T_{ij}^{-1}(r,v)$ is a quarter circle of radius $\tilde r$ in the quadrant determined by $i,j$.
 Another valid choice of $T_{ij}$, which is similar to a polar-coordinates transformation, would be $(T(x,y), \mathrm{Arg}(x,y))$, but the calculations in this case are somewhat more tedious.
-We will show that $T^\sharp$ is unique with respect to this choice, and it will allow us to freely choose any other change of variables such that $T \circ T_{ij}(r,v) = r$, and the analysis on $T$ will still be valid.
+We will show that $T^\sharp$ is unique with respect to the choice of $T_{ij}$, and it will allow us to freely choose any other change of variables such that $T \circ T_{ij}(r,v) = r$ with the analysis on $T$ remains valid.
 %Our choice was such that the analysis is straight-forward, although we will make use of the polar-coordinate variable transformation later to define the forward operator on linear representations.
 We remark that the existence and continuity of a more generally defined pullback operator can be carried for any smooth $T$ and is outlined in \citep{hormander1983}.
 However, in this case, because of the specific form of $T$ under consideration, the induced pullback $T^\sharp$ is injective. 
@@ -507,7 +507,7 @@ With this powerful extension theorem, we can easily construct sequences of test 
 We will use this to construct an important example that will guide the construction of the space of radially symmetric functions and their profiles.
 
 Consider the sequence of functions $\rho_n:\Omega_1 \to \R$ defined by $\rho_n(r) = r^{-1/2}$ for $r\in [1/n,1]$ and are smoothly extended  by \Cref{thm:extension} such that $\rho_n \in \DD(\Omega_1)$.
-Since $\rho_n$ is compactly supported on $\Omega_1 = (0,\infty)$, there exists $\delta>0$ and a sequence $(k_n)$ such that $0<k_n<1/n$ with $\supp \rho_n \subseteq \left[k_n,1+\delta\right]$.
+Since $\rho_n$ is compactly supported on $\Omega_1 = (0,\infty)$, there exists $\delta>0$ and a sequence $(k_n)$ such that $0<k_n<1/n$ with $\supp \rho_n \subseteq \left[k_n,1+\delta\right]$, hence, upon showing that it is Cauchy with respect to the $L^2$ norm, we will have shown that it corresponds to distribution in $L^2(\Omega_2)$.
 \begin{com}
 Without loss of generality, choose $k_n$ so that $(k_n)^{-1/2} > \supp \rho_n$.
 \end{com}

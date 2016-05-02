@@ -23,22 +23,22 @@ Committee Chairs: Johnathan Bardsley, Ph.D.~and Aaron Luttman, Ph.D.    % Self E
 
 \indent 
 An important component of analyzing images quantitatively is modeling image blur due to effects from the system for image capture. 
-When the effect of image blur is assumed to be translation invariant and isotropic, it can be generally modeled as convolution with a radially symmetric kernel called the point spread function (PSF).
+When the effect of image blur is assumed to be translation invariant and isotropic, it can be generally modeled as convolution with a radially symmetric kernel, called the point spread function (PSF).
 Standard techniques for estimating the PSF involve imaging a bright point source, but this is not always feasible (e.g.~high energy radiography).  
 This work provides a novel non-parametric approach to estimating the PSF from a calibration image of a vertical edge.
-Moreover, we take a hierarchical Bayesian approach that in addition to providing a method for estimation, also gives a quantification of uncertainty in the estimate by Markov Chain Monte Carlo (MCMC) methods.
+Moreover, the approach is within a hierarchical Bayesian framework that in addition to providing a method for estimation, also gives a quantification of uncertainty in the estimate by Markov Chain Monte Carlo (MCMC) methods.
 %This work takes a novel non-parametric approach to modeling a radially symmetric PSF, in which an estimate can be obtained from the calibration image of a vertical edge.
 
 \indent
 In the development, we employ a recently developed enhancement to Gibbs sampling, referred to as partial collapse. 
 The improved algorithm has been independently derived in several other works, however, it has been shown that partial collapse may be improperly implemented resulting in a sampling algorithm that that no longer converges to the desired posterior.
 The algorithm we present is proven to satisfy invariance with respect to the target density.
-The implementation and results are the content of a paper ``Partially Collapsed Gibbs Samplers for Linear Inverse Problems and Applications to X-ray Imaging,'' under review for a special issue of Inverse Problems.
+This work and its implementation on radiographic data from the U.S.~Department of Energy's Cygnus high-energy X-ray diagnostic system have culminated in a paper titled ``Partially Collapsed Gibbs Samplers for Linear Inverse Problems and Applications to X-ray Imaging,'' which is under review for a special issue of journal \emph{Inverse Problems}.
 
 \indent
 The other component of this work is mainly theoretical and attempts to develop from first principles the requisite functional analysis to make the integration based model derived in the first chapter rigorous.
-The literature source is from functional analysis related to distribution theory for linear partial differential equations, and briefly addresses infinite dimensional probability theory for Hilbert space valued stochastic processes, a burgeoning and very active research area for the analysis of inverse problems.
+The literature source is from functional analysis related to distribution theory for linear partial differential equations, and briefly addresses infinite dimensional probability theory for Hilbert space-valued stochastic processes, a burgeoning and very active research area for the analysis of inverse problems.
 To our knowledge, this provides a new development of a notion of radial symmetry for $L^2$ based distributions.
-This work results in defining an $L^2$ complete space of radially symmetric distributions, which is an important step toward rigorously placing the PSF estimation problem in the infinite dimensional frameork and is part of ongoing work toward that end.
+This work results in defining an $L^2$ complete space of radially symmetric distributions, which is an important step toward rigorously placing the PSF estimation problem in the infinite dimensional framework and is part of ongoing work toward that end.
 
 \pagebreak
