@@ -1,0 +1,59 @@
+\documentclass[12pt]{article}
+\usepackage{amsmath, amssymb, amsfonts}
+\renewcommand{\abstract}[4]{{\noindent\it #3}\\{\bf #2}\\[6pt] {\upshape #4}}
+\newcommand{\presenter}{$^{\dagger}$}
+\newcommand{\gradstudent}{$^{**}$}
+\newcommand{\undergrad}{$^{*}$}
+
+\begin{document}
+%
+% This is an abstract template for inclusion in the PNW MAA meeting program.
+%
+% Standard LaTeX (including AMS-LaTeX commands) are allowed.
+%
+% Please submit the .tex file (not a dvi or pdf file)
+%
+% Abstract format is as follows:
+%
+% \abstract{presenternickname} %
+% {First Author Name, FA Institution\presenter\\Second Author Name, SA Institution\\etc.}
+% {Paper Title}
+% {Text of the paper abstract}
+%
+% Remark: in the author line \presenter, \gradstudent, and \undergrad
+% denote the appropriate role. Multiple roles are allowed.
+%
+% Two examples follow:
+%
+%\abstract{professionals}
+%{Bill Pompous, Big U\\Sherry Professional, Private College\presenter}
+%{Partial Homomorphisms of Deflators}
+%{A very important talk with lots of deep results.}
+
+\abstract{pompousb} %nicknames are used by the Program Chair; it's helpful if you use your last name+initial, e.g. pompousb
+{% AUTHORS
+Kevin Joyce, University of Montana\\ 
+John Bardsley, University of Montana\\
+Aaron Luttman, National Securities Technologies
+}
+{% TITLE
+Enhanced Gibbs sampling for an application to X-ray imaging
+}
+{% ABSTRACT
+Image deblurring techniques derived from convolution require, a priori, an estimate for the convolution kernel or point spread function (PSF).
+Standard techniques for estimating the PSF involve imaging a bright point source, but this is not always feasible (e.g.~high energy radiography).  
+This work takes a novel non-parametric approach to modeling a radially symmetric PSF, in which an estimate can be obtained from the calibration image of a vertical edge.
+Moreover, we take a hierarchical Bayesian approach that in addition to providing a method for estimation, also gives a quantification of uncertainty in the estimate.
+
+We will present a recently developed improvement to the Gibbs algorithm for simulating samples of the Bayesian posterior of the hierarchical model, referred to as partial collapse.
+The improved algorithm has been independently derived in several other works, however, it has been shown that partial collapse may be improperly implemented resulting in a sampling algorithm that that no longer converges to the desired posterior.
+The algorithm we present is proven to satisfy invariance with respect to the target density.
+
+}
+
+% Please name your file using the presenter's last name and first
+% initial; if the presenter is submitting more than one abstract,
+% enumerate, as in:
+% pompousb.tex and pompousb2.tex
+%
+\end{document}
