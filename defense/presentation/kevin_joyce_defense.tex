@@ -121,7 +121,7 @@ commentstyle=\color{dkgreen}
 \usepackage[T1]{fontenc}
 
 \title{Point Spread Function Estimation and Uncertainty Quantification}
-\author{Kevin Joyce$^{\dagger*}$\\ advised by John Bardsley$^\dagger$ and Aaron Luttman$^{*}$} %, \texttt{kevin1.joyce@umt.edu}}
+\author{Kevin Joyce$^{\dagger*}$\\ {\small advised by John Bardsley$^\dagger$ and Aaron Luttman$^{*}$}} %, \texttt{kevin1.joyce@umt.edu}}
 \date[UM Colloquium]{May 5, 2016}
 
 \institute[The University of Montana] % (optional, but mostly needed)
@@ -171,7 +171,7 @@ commentstyle=\color{dkgreen}
   \put(-30,-155){%
     \pgfuseimage{titlebackground}
   }
-  \put(275,100){\scalebox{.5}{DOE/NV/25946-{}-\alert{????}}}
+%  \put(275,100){\scalebox{.5}{DOE/NV/25946-{}-\alert{????}}}
   \put(0,-110.7){%
     \begin{minipage}[b][15em][t]{\textwidth}
       \centering
@@ -525,14 +525,6 @@ commentstyle=\color{dkgreen}
 %\end{frame}
 
 
-\begin{frame}
-  \frametitle{X-ray Edge Calibration Data}
-  \includegraphics[width=.5\textwidth]{partially_collapsed_gibbs/cygnusImage.pdf}
-  \includegraphics[width=.5\textwidth]{partially_collapsed_gibbs/cygnusLineout.pdf}
-
-  {\small Radiographic data from the Cygnus Dual Beam Radiography Facility at the NNSS in North Las Vegas.}
-\end{frame}
-
 \begin{frame}[t]
   \frametitle{General Edge Blur Problem}
   \vspace{-1em}
@@ -565,6 +557,22 @@ commentstyle=\color{dkgreen}
     \end{tikzpicture}
 \end{frame}
 
+\begin{frame}
+  \frametitle{X-ray Edge Calibration Data}
+  \includegraphics[width=.5\textwidth]{partially_collapsed_gibbs/cygnusImage.pdf}
+  \includegraphics[width=.5\textwidth]{partially_collapsed_gibbs/cygnusLineout.pdf}
+
+  {\small Radiographic data from the Cygnus Dual Beam Radiography Facility at the NNSS in North Las Vegas.}
+\end{frame}
+
+\begin{frame}
+  \frametitle{Cygnus X-ray Source}
+  \includegraphics[width=.5\textwidth]{figures/cygnus_image_1.jpg}
+  \includegraphics[width=.5\textwidth]{figures/nnss_cygnus_0.jpg} 
+
+  [Smith, et.al. 2012] Cygnus Dual Beam Radiographic Imaging Facility at U1A in the Nevada National Security Site.
+\end{frame}
+
 \begin{frame}[t]
   \frametitle{Radially Symmetric PSF}
   \vspace{-.5em}
@@ -574,7 +582,7 @@ commentstyle=\color{dkgreen}
     b(x,y) 
      &= \int_{-\infty}^\infty\int_{-\infty}^\infty k(s,t)\alert{E(x-s)}dtds + \eps_{x,y}\\
 %     &= \int_0^\infty p(r) \alert{\left(\int_0^{2\pi} E(x - r\cos \theta)d \theta \right)\,r dr} + \eps_{x,y}\\
-     &= \int_0^\infty p(r) \cdot \alert{g(x,r)\,r dr} + \eps_{x,y}.
+     &= \int_0^\infty p(r) \cdot \alert{g(x,r)\,2\pi r dr} + \eps_{x,y}.
   \end{align*}
 
   \begin{center}
@@ -617,7 +625,7 @@ commentstyle=\color{dkgreen}
 
 
 \section{Radial Symmetry for Function Spaces}
-\subsection{Sobolev Spaces}
+\subsection{Distributions and Sobolev Spaces}
 \subsection{Variable Transformation and the Pullback Operator}
 \begin{frame}[t]
   \frametitle{Distributions and Sobolev spaces}
@@ -630,35 +638,57 @@ commentstyle=\color{dkgreen}
   \end{itemize}
 \end{frame}
 
-\begin{frame}[t]
-  \frametitle{Distributions and Sobolev spaces}
-  \begin{itemize}
-    \itemsep 1.2em
-    \item We define the \alert{$L^2$ inner-product} for test functions as the sesquilinear form $(\cdot,\cdot)_{L^2(\Omega)}:\DD(\Omega)\times\DD(\Omega) \to \C$ by the Riemann integral
-    $$
-      (\phi,\psi)_{L^2(\Omega)} \eqdef \int_{\Omega} \phi(x)\bar{\psi(x)}\,dx,
-    $$
-    with a norm $\|\cdot \|_{L^2(\Omega)}$.
-    \item We can construct $L^2$ from test functions with a completion argument. Idea: Equivalence classes of $L^2$ \alert{Cauchy sequences of test functions $(\phi_n)$} correspond to \alert{$L^2$ distributions}.
-  \end{itemize}
-\end{frame}
-
-\begin{frame}[t]
-  \frametitle{Distributions and Sobolev spaces}
-  \begin{itemize}
-    \itemsep 1.2em
+%\begin{frame}[t]
+%  \frametitle{Distributions and Sobolev spaces}
+%  \begin{itemize}
+%    \itemsep 1.2em
 %    \item We define the \alert{$L^2$ inner-product} for test functions as the sesquilinear form $(\cdot,\cdot)_{L^2(\Omega)}:\DD(\Omega)\times\DD(\Omega) \to \C$ by the Riemann integral
 %    $$
 %      (\phi,\psi)_{L^2(\Omega)} \eqdef \int_{\Omega} \phi(x)\bar{\psi(x)}\,dx,
 %    $$
 %    with a norm $\|\cdot \|_{L^2(\Omega)}$.
 %    \item We can construct $L^2$ from test functions with a completion argument. Idea: Equivalence classes of $L^2$ \alert{Cauchy sequences of test functions $(\phi_n)$} correspond to \alert{$L^2$ distributions}.
-    \item A \alert{Sobolev space} of order $n$ over an open set $\Omega \subseteq \R^k$ is $\HH^n(\Omega) = \{f \in L^2(\Omega): \del^\alpha f \in L^2(\Omega)\text{ whenever }|\alpha|\le N\}$.
-    \item They are endowed with the sum of semi-norms
-\begin{equation}
-  \alert{(f,g)_{\Omega,n}} = \sum_{0\le |\alpha| \le n} \left( \del^\alpha f, \del^\alpha g\right)_{L^2(\Omega)}.
-\end{equation}
-    \item Each of these form a sequence of linear subspaces $\HH^n(\Omega) \subset \HH^{n-1}(\Omega) \subset \dots \subset \HH^1(\Omega) \subset L^2(\Omega)$, however, the inclusion is strict and they are not closed with respect to the $L^2$ norm.
+%  \end{itemize}
+%\end{frame}
+
+%\begin{frame}[t]
+%  \frametitle{Distributions and Sobolev spaces}
+%  \begin{itemize}
+%    \itemsep 1.2em
+%%    \item We define the \alert{$L^2$ inner-product} for test functions as the sesquilinear form $(\cdot,\cdot)_{L^2(\Omega)}:\DD(\Omega)\times\DD(\Omega) \to \C$ by the Riemann integral
+%%    $$
+%%      (\phi,\psi)_{L^2(\Omega)} \eqdef \int_{\Omega} \phi(x)\bar{\psi(x)}\,dx,
+%%    $$
+%%    with a norm $\|\cdot \|_{L^2(\Omega)}$.
+%%    \item We can construct $L^2$ from test functions with a completion argument. Idea: Equivalence classes of $L^2$ \alert{Cauchy sequences of test functions $(\phi_n)$} correspond to \alert{$L^2$ distributions}.
+%    \item A \alert{Sobolev space} of order $n$ over an open set $\Omega \subseteq \R^k$ is $\HH^n(\Omega) = \{f \in L^2(\Omega): \del^\alpha f \in L^2(\Omega)\text{ whenever }|\alpha|\le N\}$.
+%    \item They are endowed with the sum of semi-norms
+%\begin{equation}
+%  \alert{(f,g)_{\Omega,n}} = \sum_{0\le |\alpha| \le n} \left( \del^\alpha f, \del^\alpha g\right)_{L^2(\Omega)}.
+%\end{equation}
+%    \item Each of these form a sequence of linear subspaces $\HH^n(\Omega) \subset \HH^{n-1}(\Omega) \subset \dots \subset \HH^1(\Omega) \subset L^2(\Omega)$, however, the inclusion is strict and they are not closed with respect to the $L^2$ norm.
+%  \end{itemize}
+%\end{frame}
+
+\begin{frame}[t]
+  \frametitle{Variable Transformation and the Pullback Operator}
+  \begin{itemize}
+    \itemsep 1.2em
+    \item Idea: Extend the notion of \alert{$k(x,y) = p\left(\sqrt{x^2+y^2}\right) = T^\sharp p$} to distributions ``adjointly'' as was done for derivatives%: $\alert{\langle T^\sharp p,  \phi \rangle \eqdef \langle  p,  T_\sharp\phi \rangle }$
+    \item Use \alert{change of variables} so that one component is $r = \sqrt{x^2 + y^2}$, for topological reasons, this can only be done
+      on a \alert{proper subset} of $\R^2$.
+    \item Let $T_{ij}(x,y) = \Big(\sqrt{x^2 + y^2}, (-1)^jy\Big)$, 
+\begin{tikzpicture}[scale=.8]
+  \draw[dotted,thick] (0,-2.2) -- (0,2.2);
+  \draw[dotted,thick] (-3,0) -- (3,0);
+
+  \draw[-latex] (2,0) node[above right]{$T_{0,0}^{-1}(r,t)$} arc [radius=2,start angle=0,end angle=90];
+  \draw[-latex](-2,0) node[above left]{$T_{1,0}^{-1}(r,t)$} arc [radius=2,start angle=180,end angle=90];
+  \draw[-latex](-2,0) node[below left]{$T_{1,1}^{-1}(r,t)$} arc [radius=2,start angle=180,end angle=270];
+  \draw[-latex](2,0) node[below right]{$T_{0,1}^{-1}(r,t)$} arc [radius=2,start angle=360,end angle=270];
+  ;
+\end{tikzpicture}
+    
   \end{itemize}
 \end{frame}
 
@@ -666,10 +696,19 @@ commentstyle=\color{dkgreen}
   \frametitle{Variable Transformation and the Pullback Operator}
   \begin{itemize}
     \itemsep 1.2em
-    \item Idea: Extend the notion of \alert{$k(x,y) = p\left(\sqrt{x^2+y^2}\right) = T^\sharp p$} to distributions ``adjointly'' as was done for derivatives: $\alert{\langle T^\sharp p,  \phi \rangle \eqdef \langle  p,  T_\sharp\phi \rangle }$
-    \item Use \alert{change of variables} so that one component is $r = \sqrt{x^2 + y^2}$, for topological reasons, this can only be done
-      on a \alert{proper subset} of $\R^2$.
-    \item Let $T_{ij}(x,y) = \Big(\sqrt{x^2 + y^2}, (-1)^jy\Big)$, 
+    \item When $k(x,y) = p(\sqrt{x^2+y^2}) = p(T(x,y))$ is a function, then
+  \begin{align*}
+    \langle \rho \circ T, \phi\rangle_{\Omega_2} 
+    &= \sum_{ij}\iint_{Q_{ij}} \rho\circ T(x,y)\cdot \phi(x,y)dxdy \\
+%    &= \sum_{ij}\iint_{R} \rho(r)\cdot  \phi \circ T_{ij}^{-1}(r,t)\left|dT_{ij}\right|drdt \\
+    &= \int_0^\infty \rho(r) \left(\int_0^{\sqrt{r}} \sum_{ij}\phi \circ T_{ij}^{-1}(r,t)\left|dT_{ij}\right|dt \right)dr.
+  \end{align*}
+%    \item So we define $T_\sharp \DD(\Omega_2) \to \DD(\Omega_1)$ by
+%  \begin{align*}
+%    [T_\sharp\phi](r) 
+%      &= \sum_{ij}\iint\limits_{T_{ij}(\Omega_{ij})} \phi \circ T_{ij}^{-1}(r,t)\left|dT_{ij}\right|dt \\
+%      &= \frac{r^{\frac 1a -1} }{2a}\sum_{ij}\int_0^{r^{\frac{1}{2a}}} \phi \left((-1)^i\sqrt{r^{\frac 1a} - t^2}, (-1)^jt\right) \left( r^{\frac 1a} - t^2 \right)^{-1/2} dt
+%  \end{align*}
 \begin{tikzpicture}[scale=.8]
   \draw[dotted,thick] (0,-2.2) -- (0,2.2);
   \draw[dotted,thick] (-3,0) -- (3,0);
@@ -717,9 +756,48 @@ commentstyle=\color{dkgreen}
   \end{itemize}
 \end{frame}
 
+\begin{frame}[t]
+  \frametitle{Radial Symmetry for Sobolev Spaces}
+  \begin{itemize}
+    \itemsep 1.2em
+    \item So, the expressions
+    $$
+    \alert{(\rho,\omega)_{T(\Omega_1)}} = \Big( S_{1/2}(\rho),S_{1/2}(\omega) \Big)_{L^2(\Omega_1)}  %\|p\|_{T(\Omega_1)}^2 = \lim_{n\to\infty} \|(S_{1/2}(\rho_n)\|^2_{L^2(\Omega_1)} = \lim_{n\to\infty} \|T^\sharp \rho_n \|^2_{L^2(\Omega_2)}.
+    $$ 
+      and
+    $$
+      \alert{(\del \rho,\del \omega)_{T(\Omega_1)}}  =  (\nabla T^\sharp \rho, \nabla T^\sharp \omega)_{L^2(\Omega_2)}   $$
+      induce the \alert{isometries $$\left.T^\sharp\right|_{\pp^k}: \pp^k \to \KK^k \subset \HH^k(\Omega_2)$$}.
+
+  \end{itemize}
+\end{frame}
+
+%\begin{frame}
+%  \frametitle{Radial $L^2$ and the Laplacian}
+%  {\footnotesize For the two representations $k = T^\sharp p$}
+%  \begin{equation*}
+%   b= \mathcal F k \quad \implies\quad  b =  \alert{\left(\mathcal F T^\sharp\right)} p = \alert{\mathcal G} p 
+%  \end{equation*}
+%  {\footnotesize
+%%  regularization and uncertainty quantification can be achieved by modeling the PSF as a random quantity with an appropriate prior.
+%  \begin{itemize}
+%    \itemsep 1.2em
+%    \item When $k$ and $p$ are smooth, real-valued functions, the Laplacian on $\RR^2$  with the $L^2$ inner product translates to
+%    \begin{align*}
+%       \left\|\nabla k\right\|_{L^2(\Omega_2)}^2 
+%        = (\del p,\del p)_{T(\Omega_1)} 
+%        &= \int_0^\infty \frac{d}{dr} p(r)\cdot \frac{d}{dr} p(r) rdr\\
+%        &= \int_0^\infty p \cdot \alert{\underbrace{\left(-\frac 1r \frac{d}{dr}r \frac{d}{dr}\right)}_{\mathcal L} }p(r) rdr
+%    \end{align*}
+%%      with the inner product $\ds{(p,q)_{rad} = \int p(r)\cdot \bar q(r)\, \alert{r dr}}$.
+%    \item We solve the inverse problem on the \alert{radial profile p}, with regularization on the \alert{radially symmetric function k}.
+%  \end{itemize}
+%  }
+%\end{frame}
+\subsection{Regularization and Discrete representation}
 \begin{frame}
-  \frametitle{Radial $L^2$ and the Laplacian}
-  {\footnotesize For the two representations $k = T^\sharp p$}
+  \frametitle{Tikhonov Laplacian Regularization}
+  {\footnotesize For the two representations }
   \begin{equation*}
    b= \mathcal F k \quad \implies\quad  b =  \alert{\left(\mathcal F T^\sharp\right)} p = \alert{\mathcal G} p 
   \end{equation*}
@@ -727,33 +805,10 @@ commentstyle=\color{dkgreen}
 %  regularization and uncertainty quantification can be achieved by modeling the PSF as a random quantity with an appropriate prior.
   \begin{itemize}
     \itemsep 1.2em
-    \item When $k$ and $p$ are smooth, real-valued functions, the Laplacian on $\RR^2$  with the $L^2$ inner product translates to
-    \begin{align*}
-       \left\|\nabla k\right\|_{L^2(\Omega_2)}^2 
-        = (\del p,\del p)_{T(\Omega_1)} 
-        &= \int_0^\infty \frac{d}{dr} p(r)\cdot \frac{d}{dr} p(r) rdr\\
-        &= \int_0^\infty p \cdot \alert{\underbrace{\frac 1r \frac{d}{dr}r \frac{d}{dr}}_{\mathcal L} }p(r) rdr
-    \end{align*}
-%      with the inner product $\ds{(p,q)_{rad} = \int p(r)\cdot \bar q(r)\, \alert{r dr}}$.
-    \item We solve the inverse problem on the \alert{radial profile p}, with regularization on the \alert{radially symmetric function k}.
-  \end{itemize}
-  }
-\end{frame}
-\subsection{Regularization and Discrete representation}
-\begin{frame}
-  \frametitle{Tikhonov Laplacian Regularization}
-  {\footnotesize For the two representations }
-  \begin{equation*}
-    b = \mathcal G p + \epsilon\quad\text{ and }\quad b= \mathcal F k + \epsilon
-  \end{equation*}
-  {\footnotesize
-%  regularization and uncertainty quantification can be achieved by modeling the PSF as a random quantity with an appropriate prior.
-  \begin{itemize}
-    \itemsep 1.2em
     \item Minimizing the second order Tikhonov-Laplacian functional subject to $k$ radially symmetric
-    $$ \frac \lambda 2 \Big\|b - \G p\Big\|_{L^2}^2 + \frac \delta 2 \left\|\nabla^2 k\right\|_{L^2}^2  $$
+    $$ \frac \lambda 2 \Big\|b - \F k\Big\|_{L^2}^2 + \frac \delta 2 \Big\langle k,\nabla^4 k\Big\rangle_{L^2}  $$
     \item is equivalent to minimizing 
-    $$ \frac \lambda 2 \Big\|b - \G p\Big\|_{L^2}^2 + \frac \delta 2 \alert{\Big\|\LL^2 p\Big\|_{rad}^2}  $$
+    $$ \frac \lambda 2 \Big\|b - \alert{\G p}\Big\|_{L^2}^2 + \frac \delta 2 \alert{\Big\langle p,\LL^2 p\Big\rangle_{T(\Omega_1)}}  $$
   \end{itemize}
   }
 \end{frame}
@@ -766,11 +821,11 @@ commentstyle=\color{dkgreen}
   $$
   {\footnotesize  Further, we discretize the regularization operator $\LL$ using \alert{finite differencing} }
 %  regularization and uncertainty quantification can be achieved by modeling the PSF as a random quantity with an appropriate prior.
-    $$ 
-      \ds{\|\LL p\|_{rad}^2 = \int \left[\frac1r \frac{d}{dr} \left(r \frac d{dr} \right)\right]^2 p(r) rdr}
-      \implies 
-      \vect L \vect p = \vect r^{-1/2} \odot \vect D \left(\vect r \odot \vect D\vect p\right) 
-    $$
+    \begin{align*}
+      \Big\langle p, \LL^k p \Big\rangle_{T(\Omega_1)} 
+      &= \int \left[\frac1r \frac{d}{dr} \left(r \frac d{dr} \right)\right]^kp(r)  rdr \\
+      &\implies \vect L \vect p = \alert{\vect r^{-k+1}} \odot \vect D \left(\vect r \odot \vect D\vect p\right) 
+    \end{align*}
     {\footnotesize and \alert{midpoint quadrature} for the inner products
     \begin{align*}
       \frac \lambda {2} \Big\|b - \G p\Big\|_{L^2}^2 &\implies \alert{\underbrace{\frac \lambda {2m}}_{\ds{\lambda}}} \Big\|\vect b - \vect G \alert{\vect p}\Big\|_{\R^m}^2 \\ 
@@ -792,7 +847,7 @@ commentstyle=\color{dkgreen}
     \itemsep 1.2em
     \item The \alert{likelihood} $\alert{\pi(\vect b|\vect p,\lambda,\delta) = \pi(\vect b| \vect p,\lambda) \propto \lambda^{M/2}\exp\left(-\frac\lambda2 \|\vect b - \vect G\vect p\|^2\right)}$ since $\vect \epsilon$ is independent Gaussian noise.
     \item The \alert{prior} \alert{$\pi(\vect p| \delta,\lambda) = \pi(\vect p| \delta) \propto \delta^{N/2}\exp\left(-\frac \delta{2} \|\vect L \vect p\|^2\right)$} since $k \sim \N(0,\nabla^{-2}) \implies p\sim N(0,\LL^{-2})$ 
-    \item The \alert{hyperpriors} \alert{$\pi(\lambda) \propto \exp\left(-10^{-4}\lambda\right)$} and \alert{$\pi(\delta) \propto \exp\left(-10^{-4} \delta\right)$} are independent ``unobjective'' Gamma distributions.
+    \item The \alert{hyperpriors} \alert{$\pi(\lambda) \propto \exp\left(-10^{-4}\lambda\right)$} and \alert{$\pi(\delta) \propto \exp\left(-10^{-4} \delta\right)$} are independent Gamma distributions.
   \end{itemize}
 \end{frame}
 \newcommand{\pib}{\pi_{\mathbf b}}
@@ -828,7 +883,7 @@ commentstyle=\color{dkgreen}
   \propto \lambda^{(2N+1)/2+\alpha-1}\exp\left(-\lambda\left(\frac{1}{2}\|\vect{Gx} - \vect b\|^2 - \beta\right)  \right), \nonumber\\
   \pi(\delta| \vect b,\vect p,\lambda) 
   &%= \frac{\pi(\vect p,\lambda,\delta|\vect b)}{\pi(\vect p,\lambda|\vect b) } 
-  \propto \delta^{N/2+\alpha-1}\exp\left(-\delta\left(\frac{1}{2}\vect \langle \vect p,\vect L\vect p \rangle- \beta\right)  \right), \\
+  \propto \delta^{N/2+\alpha-1}\exp\left(-\delta\left(\frac{1}{2}\vect \|\vect L\vect p \|- \beta\right)  \right), \\
   \pi(\vect p|\vect b,\lambda,\delta) 
 %    &= \frac{\pi(\vect p,\lambda,\delta|\vect b)}{\pi(\lambda,\delta|\vect b) } \nonumber\\
     &\propto \exp\left(-\frac 12\Big\langle (\vect p-\vect m_{\lambda,\delta}),\alert{\vect J_{\lambda,\delta}}(\vect p - \vect m_{\lambda,\delta})\Big\rangle\right)
@@ -845,7 +900,53 @@ $$
 
 \begin{frame}[t]
   \frametitle{Gibbs sampling}
+{\small
   The Gibbs sampler [Geman and Geman 1984]: 
+  
+Given $\left(\lambda^{k-1},\delta^{k-1},\vect p^{k-1}\right)$, simulate
+\begin{center}
+\begin{algorithmic}[1]
+  \STATE $\lambda^k \sim \alert{\pib(\lambda|\delta^{k-1},\vect p^{k-1})}$
+  \STATE $\delta^{k} \sim \color{blue}{\pib(\delta|\lambda^k,\vect p^{k-1})}$ 
+  \STATE $\vect p^{k} \sim \pib(\vect p|\lambda^k,\delta^k)$
+\end{algorithmic}
+\end{center}
+
+}
+The associated Markov Chain is invariant with respect to $\pi$:
+{\footnotesize
+\begin{align*}
+[\K\pib](\lambda',\delta',\vect p') 
+  &= \iiint \pib(\vect p'|\lambda',\delta') \textcolor{blue}{\pib(\delta'|\lambda',\vect p)}\alert{\pib(\lambda'|\delta,\vect p)}\pib(\lambda,\delta,\vect p)d\lambda d\delta d\vect p \\
+  &= \pib(\vect p'|\lambda',\delta')\int \textcolor{blue}{\pib(\delta'|\lambda',\vect p)}\int\alert{\pib(\lambda'|\delta,\vect p)}\int\pib(\lambda,\delta,\vect p)d\lambda d\delta d\vect p \\
+  &= \K_{\lambda,\delta} \textcolor{blue}{\K_{\lambda,\mathbf b}} \alert{\K_{\delta,\mathbf b}} \pi_{\mathbf b}
+\end{align*}
+}
+{\scriptsize
+$$
+\alert{\K_{\delta,\mathbf b}} \pib(\lambda|\delta,\vect p) = \pib(\lambda'|\delta,\vect p) 
+\quad \textcolor{blue}{\K_{\lambda,\mathbf b}} \pib(\delta|\lambda,\vect p) = \pib(\delta'|\lambda,\vect p)
+\quad \K_{\lambda,\delta}\pib(\vect p|\lambda,\delta) = \pib(\vect p'|\lambda,\delta)
+$$
+}
+$$
+\implies \K\pib = \pib
+$$ 
+\end{frame}
+
+\begin{frame}
+  \frametitle{Corollary to Gibbs Invariance}
+\begin{itemize}
+  \itemsep 1.2em
+  \item {\bf Corrollary }
+    Suppose $\K = \K_m\dots\K_1$ is a transition operator with an invariant density $\pi$ and $\tilde \K_i$ given $\rem xi$ is an operator such that $\tilde \K_i \big[\pi(x_i|\rem xi)\big] = \pi(x_1'|\rem xi)$, then $\K_m\dots\alert{\tilde \K_i}\K_{i-1}\dots\K$ is invariant with respect to $\pi$.
+  \item {\bf Corrollary } A Metropolis-within-Gibbs algorithm that samples $M$ steps that is invariant with respect to $\pi(x_1'|\rem xi)$ is invariant with respect to $\pi$.
+\end{itemize}
+\end{frame}
+
+\begin{frame}[t]
+  \frametitle{Gibbs sampling}
+  The Gibbs sampler: 
   
 Given $\left(\lambda^{k-1},\delta^{k-1},\vect p^{k-1}\right)$, simulate
 \begin{center}
@@ -906,11 +1007,11 @@ The associated Markov Chain is invariant with respect to $\tilde \pib(\lambda,\d
 {\footnotesize
 \begin{align*}
  [\K\tilde\pib] 
-\pause   &= \iiiint  \textcolor{blue}{\pib(\vect p'|\lambda',\delta')\pib(\delta',\tilde{\vect p}'|\lambda')}\pib(\lambda',\vect p|\delta)\alert{\tilde \pib(\lambda,\delta,\vect p,\tilde{\vect p})}d\lambda d\delta d\vect p d\tilde{\vect p} \\ 
-\pause   &= \textcolor{blue}{\pib(\vect p'|\lambda',\delta')} \textcolor{blue}{\pib(\delta',\tilde{\vect p}'|\lambda')}\iint {\pib(\lambda'|\delta,\vect p)}\underbrace{\int\alert{\int \tilde \pib(\lambda,\delta,\vect p,\tilde{\vect p}) d\tilde{\vect p}}d\lambda }_{\pib(\delta,\mathbf p)}d\delta d\vect p \\
-\pause   &= \textcolor{blue}{\underbrace{\pib(\vect p'|\lambda',\delta')}_{\pib(\mathbf p',\delta',\lambda')/\pib(\delta',\lambda')} \pib(\delta',\tilde{\vect p}'|\lambda')}\underbrace{\iint \pib(\lambda',\delta,\vect p) d\delta d\vect p}_{\pib(\lambda')} \\
-\pause   &= \pib(\vect p',\lambda',\delta') \frac{\pib( \tilde {\vect p}',\lambda',\delta')}{\pib(\lambda',\delta')} \\
-\pause   &= \tilde \pib(\lambda',\delta',\vect p',\tilde{\vect p}')
+   &= \iiiint  \textcolor{blue}{\pib(\vect p'|\lambda',\delta')\pib(\delta',\tilde{\vect p}'|\lambda')}\pib(\lambda',\vect p|\delta)\alert{\tilde \pib(\lambda,\delta,\vect p,\tilde{\vect p})}d\lambda d\delta d\vect p d\tilde{\vect p} \\ 
+   &= \textcolor{blue}{\pib(\vect p'|\lambda',\delta')} \textcolor{blue}{\pib(\delta',\tilde{\vect p}'|\lambda')}\iint {\pib(\lambda'|\delta,\vect p)}\underbrace{\int\alert{\int \tilde \pib(\lambda,\delta,\vect p,\tilde{\vect p}) d\tilde{\vect p}}d\lambda }_{\pib(\delta,\mathbf p)}d\delta d\vect p \\
+   &= \textcolor{blue}{\underbrace{\pib(\vect p'|\lambda',\delta')}_{\pib(\mathbf p',\delta',\lambda')/\pib(\delta',\lambda')} \pib(\delta',\tilde{\vect p}'|\lambda')}\underbrace{\iint \pib(\lambda',\delta,\vect p) d\delta d\vect p}_{\pib(\lambda')} \\
+   &= \pib(\vect p',\lambda',\delta') \frac{\pib( \tilde {\vect p}',\lambda',\delta')}{\pib(\lambda',\delta')} \\
+   &= \tilde \pib(\lambda',\delta',\vect p',\tilde{\vect p}')
 \end{align*}
 }
 \end{frame}
@@ -922,19 +1023,21 @@ Given $\left(\lambda^{k-1},\delta^{k-1},\vect p^{k-1}\right)$, simulate
 \begin{center}
 \begin{algorithmic}[1]
   \STATE $\lambda^k \sim \pib(\lambda|\delta^{k-1},\vect p^{k-1})$
-  \STATE $\delta^{k} \sim \pib(\delta|\lambda^k)$ 
+  \STATE \alert{$\delta^{k} \sim \pib(\delta|\lambda^k)$}
   \STATE $\vect p^{k} \sim \pib(\vect p|\lambda^k,\delta^k)$
 \end{algorithmic}
 \end{center}
 The associated Markov Chain is invariant with respect to $\int \tilde \pib(\lambda,\delta,\vect p,\tilde{\vect p}) = \int \pib(\lambda,\delta,\vect p)\pib(\tilde{\vect p}| \lambda,\delta) = \pib(\lambda,\delta,\vect p)$.
 }
 
+{\small
 \begin{itemize}
   \itemsep 1.2em
   \item The order of the chain matters in the previous arguments.
   \item \alert{Permuting} steps 2 and 3 results in a chain that is no longer \alert{invariant} with respect to $\pib$.
   \item \alert{Cyclically permuting} results in a different sampler as well, however, this does not practically effect the overall chain, only the first and last steps, e.g. $(\K_1\K_3\K_2)^N = \K_1\alert{(\K_3\K_2\K_1)^{N-1}}\K_2\K_3$
 \end{itemize}
+}
 \end{frame}
 \begin{frame}[t]
 \frametitle{Marginalized Posterior Density}
@@ -942,44 +1045,40 @@ The associated Markov Chain is invariant with respect to $\int \tilde \pib(\lamb
 In order to sample $\pib(\delta|\lambda)$, we \alert{complete the square} of the quadratic form in $\pib(\lambda,\delta,\vect p)$ and integrate out $\lambda$, this results in
   \begin{align*}
     \pib( \delta|\lambda) 
-    &\propto\exp\left( (n/2)\delta -  \alert{\ln |\det \vect J_{\lambda,\delta}|}  - \alert{\frac \lambda 2 \langle\vect b, \vect H_{\lambda,\delta}\vect b \rangle}  -10^{-4}\delta \right),
+    &\propto\exp\left( \underbrace{(n/2)\delta -  \alert{\ln |\det \vect J_{\lambda,\delta}|  - \frac \lambda 2 \langle\vect b, \vect H_{\lambda,\delta}\vect b \rangle} -10^{-4}\delta }_{c\left(\vect R,\lambda,\delta\right) }\right),
   \end{align*}
   where \alert{$\vect J_{\lambda,\delta} = \lambda \vect G^T\vect G + \delta \vect L$ and $\vect H_{\lambda,\delta} = \vect I - \lambda \vect G\vect J_{\lambda,\delta}^{-1}\vect G^T$}.
 \begin{itemize}
 \itemsep 1.2em
   \item To draw from this density, we embed a \alert{Metropolis-Hastings} algorithm within the Gibbs sampler.
-  \item It can be shown that the resulting MCMC algorithm remains invariant.
-%  \item Both constants can be carried out using a Cholesky factorization \alert{$\vect R_{\lambda,\delta}^T \vect R_{\lambda,\delta} = J_{\lambda,\delta}$} in ($O(n^3)$) flops, and will be required for each Metropolis step. 
   \item {\bf Corrollary }
-    Suppose $\K = \K_m\dots\K_1$ is the transition operator for the Gibbs sampler, and $\tilde \K_i$ given $\rem xi$ is an operator such that $\tilde \K_i \big[\pi(x_i|\rem xi)\big] = \pi(x_1'|\rem xi)$, then $\K_m\dots\alert{\tilde \K_i}\K_{i-1}\dots\K$ is invariant with respect to $\pi$.
+    The transition operator $\K = \K_{\lambda,\delta}\alert{\tilde{\K_{MH}}}\K_{\delta,\mathbf b}$  is invariant with respect to $\pib$.
+  \item Both constants can be carried out using a Cholesky factorization \alert{$\vect R_{\lambda,\delta}^T \vect R_{\lambda,\delta} = J_{\lambda,\delta}$} in ($O(n^3)$) flops, and will be required for each Metropolis step. 
 \end{itemize}
 }
 \end{frame}
 
 \begin{frame}[t]
   \frametitle{Metropolis-Hastings within Gibbs Sampling}
-  {\footnotesize
   \begin{itemize}
     \itemsep 1.1em
     \item We use $n_{MH}$ \alert{Metropolis-Hastings} steps using a Gaussian proposal with variance $\gamma$.
     \item Due to numerical overflow issues, all computations are carried out on the log scale.
-    \item The full implementation is:
   \end{itemize}
-  \begin{algorithmic}[1]
-  \STATE Let $\lambda_0$, $\delta_0$,$\vect p$ and $\gamma$ be given.
-  %STATE   \item Draw $\vect z_k$ from  $N(0,\vect I)$, and compute $\vect p_k = \vect S_k^{-1}(\vect z_k + \vect {S_k^T}^{-1}\lambda_k \vect A^T \vect b)$.
-  \STATE Draw $\lambda_{k+1}$ from $\Gamma \Big(n/2+\alpha,\,\frac12\|\vect{Ax_k} - \vect b\|^2 - \beta \Big)$.
-  %\STATE Compute $\vect {J_k} = \vect{R_k}^T \vect{R_k}$. 
-  \STATE Set $j = 1$, Compute \alert{$\vect R_0^T \vect R_0  = \vect J_{\lambda^k,\delta^{k-1}}$, then $\pi_0 = \log \pib(\delta^{k-1}|\lambda^k)$}.
-  \FOR{$1<j<n_{MH}$} 
-    \STATE Draw $\tilde \delta$ from $N(\tilde \delta_{j-1}, \gamma)$.
-    \STATE Compute \alert{$\tilde{\vect R}^T\tilde{\vect R} = J_{\lambda^k,\tilde \delta}$, then $\pi_j = \log p(\tilde \delta_j|\vect f \lambda _k)$}.
-    \STATE Set $\tilde \pi = \pi_j, \vect R_j = \tilde{\vect R}$ and $\delta_{k} = \tilde \delta_j$ with probability $\tilde \pi/\pi_j$
-  \ENDFOR
-  \STATE Draw $\vect p_k$ from $N\Big( \vect R_k^{-1}\lambda_k \vect A^T\vect b, \vect R_k^{-1} \Big)$.
-  \STATE Set $k=k+1$ and return to 2.
-  \end{algorithmic}
-  }
+  {\footnotesize
+\begin{flalign*}
+1.&\text{ Simulate }\lambda^{k+1}\sim \Gamma\left((2N+1)/2+\alpha,\frac{1}{2}\Vert\vect G\vect p^{k}-\vect b\Vert^2+\beta\right).&\\
+2.&\text{ Set } \lambda = \lambda^{k+1},\delta = \delta^k \text{ and compute }\alert{\vect R_{\lambda,\delta}\, \vect m_{\lambda,\delta},\text{ then } c(\vect R,\lambda,\delta).}\\
+  &\text{ For }j=1\dots n_{mh}\\
+  &\quad\text{i.~Simulate }w \sim \N(0,1)\text{ and set }\delta' = \exp(\gamma w + \delta)\\
+  &\quad\text{ii.~Compute }\alert{\vect R_{\lambda,\delta'}, \vect m_{\lambda,\delta'},\text{ then } c(\vect R,\lambda,\delta')}.\\
+  &\quad\text{iii.~Simulate }u\sim U([0,1])\text{ and }\\
+  &\quad\quad\text{if }\ln u > \min\left\{0,c(\vect R,\lambda,\delta')-c(\vect R_{\lambda,\delta},\vect m_{\lambda,\delta},\delta)\right\}\\
+    &\quad\quad\quad\text{set }\delta = \delta',\vect R_{\lambda,\delta}=\vect R_{\lambda,\delta'},\vect m_{\lambda,\delta}=\vect m_{\lambda,\delta},\text{ and }c(\vect R_{\lambda,\delta},\vect m_{\lambda,\delta},\delta) = c(\vect R_{\lambda,\delta'},\vect m_{\lambda,\delta'},\delta')\\
+  &\text{ Set }\delta^{k+1} = \delta&\\
+3.&\text{ Simulate }\vect z\sim \N\left(\vect 0,\vect I_{N\times N}\right)\text{ and set }\vect p^{k+1} = \vect R_{\lambda,\delta}^{-1} \vect z + \vect m_{\lambda,\delta}.&
+\end{flalign*}
+}
 \end{frame}
 
 \subsection{Results}
@@ -1003,7 +1102,7 @@ In order to sample $\pib(\delta|\lambda)$, we \alert{complete the square} of the
   $$
   \item When $(X_k)$ are assumed to be nearly \alert{identically distributed} via the ergodic theorem, then for large $N$, we can approximate
   $$
-    {\rm Var}(\bar X_N) \approx \frac{\sigma^2}{N}\sum_{k=-\infty}^\infty \rho(k) \text{ where }  \rho(k) \eqdef \frac{\mathrm{Cov}(X^1, X^{|k|})}{\sigma^2}.
+    {\rm Var}(\bar X_N) \approx \frac{\sigma^2}{N^2}\sum_{k=-\infty}^\infty \rho(k) \text{ where }  \rho(k) \eqdef \frac{\mathrm{Cov}(X^1, X^{|k|})}{\sigma^2}.
   $$
   \item The function $\rho$ is called the \alert{normalized auto-correlation function} and the parameter $\displaystyle{\tau_{\rm int}\eqdef \sum_{k=-\infty}^\infty \rho(k)}$ is the \alert{integrated auto-correlation time}.
   \end{itemize}
@@ -1012,7 +1111,10 @@ In order to sample $\pib(\delta|\lambda)$, we \alert{complete the square} of the
 \begin{frame}[t]
   \frametitle{Comparing algorithms}
   \begin{itemize}
-    \item 
+    \item We can estimate $\tau_{int}$ using a convolution estimator.
+    \item The essential sample size is \alert{$ESS = M / \hat{\tau}_{int}$}.
+    \includegraphics[width=.75\textwidth]{figures/ESS_vs_substeps.pdf}
+    \item Our measure of efficiency is \alert{$\#Chol/ESS$}.
   \end{itemize}
   
 \end{frame}
@@ -1070,7 +1172,7 @@ PC Gibbs &                 1.102 &                 5.515 &                   0.9
 \hspace{.2in}$n_{mh}=1$ & & & & & & & \\
                PC Gibbs &                 9.178 &               1.189  &                     0.994 &                    0.980&  1.5 & 3278.5 &      \alert{18.3} \\
 \hspace{.2in} $n_{mh}=5$ & & & & & & & \\
-		    MTC &                 9.090 &               1.200  &                     0.996 &                    0.969& 12.5 &  432.2 &      \alert{23.1} \\
+%		    MTC &                 9.090 &               1.200  &                     0.996 &                    0.969& 12.5 &  432.2 &      \alert{23.1} \\
     \hline
   \end{tabular}
 }
@@ -1092,10 +1194,18 @@ PC Gibbs &                 1.102 &                 5.515 &                   0.9
 \end{frame}
 
 \begin{frame}
-  \frametitle{References}
-  \bibliographystyle{alpha}
-  {\footnotesize
-  \bibliography{edge_spread}
+  \frametitle{Acknowledgements}
+  This work would not have been possible without the support and guidence of my dear friends and colleagues:
+  {\small
+  \begin{itemize} 
+    \item John Bardsley and Aaron Luttman
+    \item Peter Golubtsov, Jon Graham, Leonid Kalachev
+    \item NSTec Cygnus Radiography and Applied Math groups -- in particular, Marylesa Howard, Eric Machoro, Tim Meehan, and Steve Mitchell
+    \item Mathetmatical Sciences Faculty and Staff and the Analysis group -- Greg St. George, Jen Brooks, Karel Stroethoff, and Linda Azure
+    \item Graduate Chairs -- Emily Stone and Cory Palmer
+    \item All fellow graduate students especially my partners in pontification and procrastination Cody Palmer, Nhan Nguyen, and Charlie Katerba 
+    \item To all my friends and family without whom I would not be a functioning human -- Mom, Dad, Abbey, Dayne, Lora, Alexis, ...
+  \end{itemize}
   }
 \end{frame}
 
