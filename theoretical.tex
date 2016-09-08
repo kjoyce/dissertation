@@ -100,8 +100,8 @@ Since \eqref{eq:l2innerProduct} defines an inner-product, the triangle inequalit
   \|\phi + \psi\|_{L^2(\Omega)}^2 
     &= \|\phi\|_{L^2(\Omega)}^2 + 2\mathrm{Re} (\phi,\psi)_{L^2(\Omega)}  + \|\psi\|_{L^2(\Omega)}^2 \nonumber\\
     &\le \|\phi\|_{L^2(\Omega)}^2 + 2|(\phi,\psi)_{L^2(\Omega)}|  + \|\psi\|_{L^2(\Omega)}^2 \nonumber\\
-    &\le \|\phi\|_{L^2(\Omega)}^2 + 2\|\phi\|\|\psi\|  + \|\psi\|_{L^2(\Omega)}^2 \nonumber \\
-    &= (\|\phi\|_{L^2(\Omega)}^2 + \|\psi\|_{L^2(\Omega)}^2)^2.
+    &\le \|\phi\|_{L^2(\Omega)}^2 + 2\|\phi\|_{L^2(\Omega)}\|\psi\|_{L^2(\Omega)}  + \|\psi\|_{L^2(\Omega)}^2 \nonumber \\
+    &= \left(\|\phi\|_{L^2(\Omega)}^2 + \|\psi\|_{L^2(\Omega)}^2\right)^2.
 \end{align}
 
 A sequence $(\phi_n)\subset \DD(\Omega)$ is Cauchy with respect to $L^2(\Omega)$ if
@@ -182,7 +182,7 @@ The following proposition is not proved in \citep{richtmyer1978principles}, so w
 Now observe,
 \begin{align}
   |(\phi_n,\psi_n)_{L^2(\Omega)} - (\phi_k,\psi_k)_{L^2(\Omega)}| 
-    &= (\phi_n,\psi_n-\psi_k)_{L^2(\Omega)} -(\phi_n-\phi_k,\psi_k)_{L^2(\Omega)}| \nonumber\\
+    &= \left|(\phi_n,\psi_n-\psi_k)_{L^2(\Omega)} -(\phi_n-\phi_k,\psi_k)_{L^2(\Omega)}\right| \nonumber\\
     &\le \|\phi_n\|_{L^2(\Omega)}\|\psi_n-\psi_k\|_{L^2(\Omega)} + \|\phi_n - \phi_k\|_{L^2(\Omega)}\|\psi_k\|_{L^2(\Omega)} \nonumber\\
     &\le \|\phi_n\|_{L^2(\Omega)}\|\psi_n-\psi_k\|_{L^2(\Omega)} \nonumber\\
     &\quad\quad+ \|\phi_n - \phi_k\|_{L^2(\Omega)}\big(\|\psi_k - \psi_n\|_{L^2(\Omega)} + \|\psi_n\|_{L^2(\Omega)}\big).
@@ -222,7 +222,7 @@ Thus, the inner product is well-defined for equivalent Cauchy sequences.
 
 Showing that \eqref{eq:l2innerProductFull} is an inner product on $L^2(\Omega)$ is straight-forward, and the resulting inner product space is a Hilbert space, as stated in the following theorem.
 \begin{thm}
-The space $L^2(\Omega)$ is complete complete with respect to the inner product defined in \eqref{eq:l2innerProductFull}, hence, is a Hilbert space.
+The space $L^2(\Omega)$ is complete with respect to the inner product defined in \eqref{eq:l2innerProductFull}, hence, is a Hilbert space.
 \end{thm}
 %\begin{proof}
 %  Let $(f_n)\subseteq $ be a Cauchy sequence with respect to \eqref{eq:l2innerProductFull}. 
@@ -239,7 +239,7 @@ Sobolev spaces provide a framework for imposing regularity on distributions in t
 In this work, we will be concerned only with Sobolev subspaces of $L^2$, which are sometimes denoted $W^{k,2}$.
 In this subsection, we briefly overview the definition of these spaces, and state a version of the Sobolev embedding theorem sufficient for characterizing PSFs of interest in this work.
 
-A Sobolev space of order $n$ over an open set $\Omega \subseteq \R^k$ is $\HH^n(\Omega) = \{f \in L^2(\Omega): \del^\alpha f \in L^2(\Omega)\text{ whenever }|\alpha|\le N\}$.
+A Sobolev space of order $n$ over an open set $\Omega \subseteq \R^k$ is $\HH^n(\Omega) = \{f \in L^2(\Omega): \del^\alpha f \in L^2(\Omega)\text{ whenever }|\alpha|\le n\}$.
 Each of these form a sequence of linear subspaces $\HH^n(\Omega) \subset \HH^{n-1}(\Omega) \subset \dots \subset \HH^1(\Omega) \subset L^2(\Omega)$, however, the inclusion is strict and they are not closed with respect to the $L^2$ norm \citep{richtmyer1978principles}.
 
 \begin{com}
@@ -368,13 +368,13 @@ In order to establish the operator on distributions, we first observe its adjoin
       &= \frac{r^{\frac 1a -1} }{2a}\sum_{ij}\int_0^{r^{\frac{1}{2a}}} \phi \left((-1)^i\sqrt{r^{\frac 1a} - t^2}, (-1)^jt\right) \left( r^{\frac 1a} - t^2 \right)^{-1/2} dt, \label{eq:psiPhiDef}
   \end{align}
   and we must show that $T_\sharp\phi \in \DD(\Omega_1)$.
-  Note that $\supp \left(\phi \circ T_{ij}^{-1} \right) = T_{ij}( \supp \phi )$ is compact in $R$ as the continuous image a compact set, and since $T_{ij}$ is a diffeomorphism, $\phi \circ T_{ij}^{-1} \in \DD(\Omega_2)$. 
+  Note that $\supp \left(\phi \circ T_{ij}^{-1} \right) = T_{ij}( \supp \phi )$ is compact in $R$ as it is the continuous image of a compact set, and since $T_{ij}$ is a diffeomorphism, $\phi \circ T_{ij}^{-1} \in \DD(\Omega_2)$. 
 %  Moreover, integrating marginally over $t$ and summing over ${i,j}$ are smooth operations, so $\Phi_{\phi,T_{ij}}$ is smooth. 
 %  The support of $\Phi_{\phi,T_{ij}}$ is the projection of the support of $\phi\circ T_{ij}^{-1}$, hence is compact.
 %  Marginially integrating $\phi\circ T_{ij}^{-1}$ results in a test function, thus $\Phi_{\phi,T_{ij}} \in \DD(\Omega_1)$. 
   Since $\phi\circ T_{ij}^{-1}(r,t)$ is smooth, a result in \cite[pg. 433]{strichartz2000} guarantees that integrating out $t$, i.e., $\int \phi \circ T_{ij}^{-1}(r,t)\,dt$ results in a smooth function in $r$.  
   The support of this function is the projection of the support of $\phi\circ T_{ij}$ onto the second coordinate, and hence, is compact.
-  Summing over $i,j$ results results in a compactly supported smooth function.
+  Summing over $i,j$ results in a compactly supported smooth function.
 
 \end{proof}
 
@@ -411,7 +411,7 @@ We remark that the existence and continuity of a more generally defined pullback
 However, in this case, because of the specific form of $T$ under consideration, the induced pullback $T^\sharp$ is injective. 
 This will be a consequence of the next lemma.
 \begin{lem} \label{lem:innerProduct}
-  For all $p\in\DD^*(\Omega_1)$ and $\omega \in \DD(\Omega_1)$, then 
+  For all $p\in\DD^*(\Omega_1)$ and $\omega \in \DD(\Omega_1)$
   \begin{equation}
     \langle T^\sharp p , \omega \circ T \rangle_{\Omega_2} = \langle p,S(\omega)\rangle_{\Omega_1},
   \end{equation}
@@ -511,7 +511,7 @@ Since $\rho_n$ is compactly supported on $\Omega_1 = (0,\infty)$, there exists $
 \begin{com}
 Without loss of generality, choose $k_n$ so that $(k_n)^{-1/2} > \supp \rho_n$.
 \end{com}
-The limit of this sequence defines a distribution, since for a given $\omega \in \DD(\Omega_1)$, let $N>0$ such that $\frac 1N < \inf \big(\supp (\omega)\big)$ and $M = \sup \{r>0:r^{-1/2}\omega(r)\}$. 
+The limit of this sequence defines a distribution, since for a given $\omega \in \DD(\Omega_1)$, let $N>0$ such that $\frac 1N < \inf \{r\in\Omega_1: r \in \supp (\omega)\}$ and $M = \sup \{r>0:r^{-1/2}\omega(r)\}$. 
 Then $\|\rho_n \omega \|_{\infty}$ is bounded by $M$ for $n\ge N$, hence $\displaystyle{\left|\lim_{n\to\infty} \langle \rho_n,\omega\rangle\right| < \infty}$.
 
 Now, observe that
@@ -543,7 +543,7 @@ since $\rho_1$ is smooth and compactly supported.
 
 We have shown that $T^\sharp$ is not a closed map with respect to the $L^2$ topologies, or equivalently, that ${T^\sharp}^{-1}$ is unbounded with respect to the $L^2$ topologies.
 This means that the closure of $T^\sharp \DD(\Omega_1)$ with respect to the $L^2(\Omega_2)$ inner product is not equal to the image of the closure of $\DD(\Omega_1)$ with respect to $L^2(\Omega_1)$ under $T^\sharp$. 
-This lack of agreement is not too concerning, as we can alleviate the issue in the same way that it was dealt with in the case of the Sobolev space construction.
+This lack of agreement is overcome in the same way that it was dealt with in the case of the Sobolev space construction.
 That is, we let the topology of radial profiles be inherited by enforcing $L^2(\Omega_2)$ convergence of the two-dimensional PSF through the linear map $T^\sharp$.
 This is carried out in detail in the next section.
 
@@ -579,18 +579,18 @@ Unfortunately $n^{-2}/k_n$ cannot be bounded since we have no control over $k_n$
 As previously mentioned, the structure of the space of radial profiles will be induced by imposing structure on their images under $T^\sharp$.
 As before, we denote $\Omega_1 = (0,\infty)$ and $\Omega_2 = \R^2\setminus\{x=0\text{ or }y=0\}$.  
 We also fix $T(x,y) = \sqrt{x^2+y^2}$, and remark that the arguments can be modified in a straight forward was so that they apply to $T(x,y) = (x^2 + y^2)^a$. 
-Define $k\in \KK^0 \subset \DD^*(\Omega_2)$, the space of \emph{$L^2(\Omega)$ radially symmetric distributions}, if there exists a sequence $(\rho_n) \subset \DD(\Omega_1)$, so that $(T^\sharp \rho_n)$ is Cauchy with respect to $L^2(\Omega_2)$ and
+We define for a distribution $k\in L^2(\Omega_2)$ to be \emph{radially symmetric} whenever there exists a sequence $(\rho_n) \subset \DD(\Omega_1)$, so that $(T^\sharp \rho_n)$ is Cauchy with respect to $L^2(\Omega_2)$,and
 \begin{equation} \label{eq:cauchySequenceCorrespondence}
   \Big\langle k,\phi\Big\rangle_{\Omega_2} = \lim_{n\to\infty}\left\langle T^\sharp \rho_n, \phi\right\rangle_{\Omega_2} = \lim_{n\to\infty}\Big\langle \rho_n, T_\sharp \phi\Big\rangle_{\Omega_1}.
 \end{equation}
-Note that by construction $\KK^0 \subseteq L^2(\Omega_2)$ and that we have completed the subspace of radially symmetric test functions $T^\sharp \DD(\Omega_1)$.
-Moreover, the completion results in a radially symmetric distribution.
+This collection forms a linear subspace of $L^2(\Omega_2)$ which we denote $\KK^0 \subset \DD^*(\Omega_2)$, and by construction is complete with respect to the $L^2$ norm.
+Moreover, the completion results in a radially symmetric distribution, as is stated in the following proposition.
 \begin{prop}
   The space $\KK^0 \subseteq T^\sharp \DD^*(\Omega_1)$.
 \end{prop}
 \begin{proof}
   Let $\rho_n \in \DD(\Omega_1)$ so that $(T^\sharp \rho_n)$ is Cauchy with respect to $L^2(\Omega_2)$.
-  We must show that there exists $p \in \DD^*(\Omega)$ such that
+  We must show that there exists $p \in \DD^*(\Omega_1)$ such that
   \begin{equation}
     \lim_{n\to\infty} \left\langle T^\sharp \rho_n,\psi\right\rangle_{\Omega_2} = \left\langle T^\sharp p,\psi \right\rangle_{\Omega_2}
   \end{equation}
@@ -607,13 +607,15 @@ Moreover, the completion results in a radially symmetric distribution.
 \end{proof}
 
 Now, the space of radial profiles corresponding to radially symmetric $L^2(\Omega_2)$ distributions is $\PP^0 = \{p \in \DD^*(\Omega_1): T^\sharp p \in \KK^0\}$.
-This induces the following regularity 
+Observe that this set is precisely the preimage of $\KK^0$ under $T^\sharp$, and similar to the computation in \Cref{lem:innerProduct}, imposes a regularity on the shift of $p$.
+That is, let $\langle S_{1/2}(p),\omega\rangle_{\Omega_1} \eqdef \left\langle p, \sqrt{2\pi r}\cdot \omega\right\rangle_{\Omega_1}$ and consider the following proposition:
+%This induces the following regularity 
 \begin{prop} \label{prop:radialL2}
-  If $p \in \PP^0$ then the shift operator defined by $\langle S_{1/2}(p),\omega\rangle_{\Omega_1} \eqdef \left\langle p, \sqrt{2\pi r}\cdot \omega\right\rangle_{\Omega_1}$ is such that $S_{1/2}(p) \in L^2(\Omega_1)$.
+  If $p \in \PP^0$ then $S_{1/2}(p) \in L^2(\Omega_1)$.
 \end{prop}
 \begin{proof}
   We will construct a sequence of test functions $(\rho_n) \subset \DD(\Omega_1)$ that converges in $L^2(\Omega_1)$ to $p$.
-For $p\in \PP^0$, there is a sequence of test functions $(\rho_n)\subset \DD(\Omega_1)$ such that $(T^\sharp \rho_n)$ is Cauchy with respect to $L^2(\Omega_2)$ and
+By construction, $p\in \PP^0$ implies that there is a sequence of test functions $(\rho_n)\subset \DD(\Omega_1)$ such that $(T^\sharp \rho_n)$ is Cauchy with respect to $L^2(\Omega_2)$ and
 \begin{equation}
   \langle p,\omega\rangle_{\Omega_1} = \lim_{n\to\infty}\langle \rho_n, \omega\rangle_{\Omega_1}
 \end{equation}
@@ -641,7 +643,7 @@ In fact, the computation in \eqref{eq:isometry} gives precisely the method for t
 \end{thm}
 \begin{proof}
   Note that ${T^\sharp}^{-1}\KK^0 = \PP^0$ by definition, hence restricting $T^\sharp: \PP^0 \to \KK^0$ is a surjection, and by \Cref{thm:pullback} a bijection.
-  Moreover, for any $p \in \PP^0$, let $(\rho_n)$ be a corresponding Cauchy sequence, then the same calculation as \eqref{eq:isometry} yields 
+  Moreover, for any $p \in \PP^0$, let $(\rho_n)$ be a corresponding Cauchy sequence with respect to $L^2(\Omega_1)$, then the same calculation as \eqref{eq:isometry} yields 
   \begin{equation}
     \|p\|_{T(\Omega_1)}^2 = \lim_{n\to\infty} \|(S_{1/2}(\rho_n)\|^2_{L^2(\Omega_1)} = \lim_{n\to\infty} \|T^\sharp \rho_n \|^2_{L^2(\Omega_2)},
   \end{equation}
@@ -835,7 +837,7 @@ The theory to rigorously develop this is ongoing, however, we will state results
 
 We now state a version of the Sobolev embedding theorem that shows how higher order Sobolev spaces enforce regularity in terms of spaces of continuous functions, whose proof can be found in \citep{strichartz2003guide}.
 \begin{thm} \label{thm:sobolevInequality}
-  Suppose $\left\|\del^\alpha f\right\|_{L^2(\R^N)}$ is finite whenever all $\alpha$ such that $|\alpha| <n$ where $n$ is equal to the smallest integer greater than $n/2$ (so $n=\frac{N+1}2$ if $N$ is odd and $n=\frac{N+2}2$ if $N$ is even). Then $f$ corresponds to integration against a continuous and bounded function with
+  Suppose $\left\|\del^\alpha f\right\|_{L^2(\R^N)}$ is finite whenever all $\alpha$ are such that $|\alpha| <n$ where $n$ is equal to the smallest integer greater than $n/2$ (so $n=\frac{N+1}2$ if $N$ is odd and $n=\frac{N+2}2$ if $N$ is even). Then $f$ corresponds to integration against a continuous and bounded function with
   \begin{equation} \label{eq:sobolevInequality}
     \| f \|_\infty \le c \sum_{0\le |\alpha| \le n}\|\del^\alpha f\|_{L^2(\R^N)}.
   \end{equation}
@@ -859,8 +861,8 @@ This is formally stated in the following corollary
 
 This theorem is not directly applicable since it is only stated for domains $\Omega = \R^k$.
 Yet, if we can appropriately extend $k \in \KK^n \subset \DD^*(\Omega_2)$ to a distribution on $\DD(\R^2)$, then \Cref{cor:sobolev} implies that the extension corresponds to integration with a bounded continuous function.
-Providing this extension rigorously has proven to be a delicate matter, and the work is ongoing.
-In order to proceed, we state the following unproven claim,
+Providing this extension rigorously is a delicate, and the work is ongoing.
+The goal of this future work is to prove the following claim:
 
 \begin{claim} \label{claim:pspace}
   If $k \in \KK^2 \subseteq \HH^2(\Omega_2)$, then $k$ is equal in distribution to a bounded continuous function and $k$ continuously extends to $\R^2$. 
